@@ -1,46 +1,46 @@
-function INFADI_easyMultiPSDplot(cfg, data)
-% INFADI_EASYMULTIPSDPLOT is a function, which makes it easier to plot the
+function coSMIC_easyMultiPSDplot(cfg, data)
+% COSMIC_EASYMULTIPSDPLOT is a function, which makes it easier to plot the
 % power spectral density of all electrodes within a specific condition on a
 % head model.
 %
 % Use as
-%   INFADI_easyMultiPSDplot(cfg, data)
+%   coSMIC_easyMultiPSDplot(cfg, data)
 %
-% where the input data have to be a result from INFADI_PWELCH.
+% where the input data have to be a result from COSMIC_PWELCH.
 %
 % The configuration options are 
-%   cfg.part        = participant identifier, options: 'experimenter' or 'child' (default: 'experimenter')
-%   cfg.condition   = condition (default: 4 or 'Baseline', see INFADI_DATASTRUCTURE)
+%   cfg.part        = participant identifier, options: 'mother' or 'child' (default: 'mother')
+%   cfg.condition   = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_PWELCH, INFADI_DATASTRUCTURE
+% See also COSMIC_PWELCH, COSMIC_DATASTRUCTURE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-cfg.part    = ft_getopt(cfg, 'part', 'experimenter');
+cfg.part    = ft_getopt(cfg, 'part', 'mother');
 cfg.cond    = ft_getopt(cfg, 'condition', 4);
 
-if ~ismember(cfg.part, {'experimenter', 'child'})                           % check cfg.part definition
-  error('cfg.part has to either ''experimenter'' or ''child''.');
+if ~ismember(cfg.part, {'mother', 'child'})                                 % check cfg.part definition
+  error('cfg.part has to either ''mother'' or ''child''.');
 end
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
 
 switch cfg.part                                                             % extract selected participant
-  case 'experimenter'
-    dataPlot = data.experimenter;
+  case 'mother'
+    dataPlot = data.mother;
   case 'child'
     dataPlot = data.child;
 end
 
 trialinfo = dataPlot.trialinfo;                                             % get trialinfo
 
-cfg.cond = INFADI_checkCondition( cfg.cond );                               % check cfg.condition definition
+cfg.cond = coSMIC_checkCondition( cfg.cond );                               % check cfg.condition definition
 if isempty(find(trialinfo == cfg.cond, 1))
   error('The selected dataset contains no condition %d.', cfg.cond);
 else
@@ -192,7 +192,7 @@ if ~isempty(label)
     fprintf('selected cfg.electrode = {%s}\n', vec2str(cfg.electrode, [], [], 0));
     % ensure that the new figure appears at the same position
     figure('Position', get(gcf, 'Position'));
-    INFADI_easyPSDplot(cfg, data);
+    coSMIC_easyPSDplot(cfg, data);
   end
 end
 

@@ -1,14 +1,14 @@
-function [ data_repaired ] = INFADI_repairBadChan( data_badchan, data_raw )
-% INFADI_REPAIRBADCHAN can be used for repairing previously selected bad
+function [ data_repaired ] = coSMIC_repairBadChan( data_badchan, data_raw )
+% COSMIC_REPAIRBADCHAN can be used for repairing previously selected bad
 % channels. For repairing this function uses the weighted neighbour
 % approach. After the repairing operation, the result will be displayed in
 % the fieldtrip databrowser for verification purpose.
 %
 % Use as
-%   [ data_repaired ] = INFADI_repairBadChan( data_badchan, data_raw )
+%   [ data_repaired ] = coSMIC_repairBadChan( data_badchan, data_raw )
 %
 % where data_raw has to be raw data and data_badchan the result of
-% INFADI_SELECTBADCHAN.
+% COSMIC_SELECTBADCHAN.
 %
 % Used layout and neighbour definitions:
 %   mpi_customized_acticap32.mat
@@ -16,7 +16,7 @@ function [ data_repaired ] = INFADI_repairBadChan( data_badchan, data_raw )
 %
 % The function requires the fieldtrip toolbox
 %
-% SEE also INFADI_DATABROWSER and FT_CHANNELREPAIR
+% SEE also COSMIC_DATABROWSER and FT_CHANNELREPAIR
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -39,15 +39,15 @@ cfg.showcallinfo  = 'no';
 % -------------------------------------------------------------------------
 % Repairing bad channels
 % -------------------------------------------------------------------------
-cfg.badchannel    = data_badchan.experimenter.badChan;
+cfg.badchannel    = data_badchan.mother.badChan;
 
-fprintf('<strong>Repairing bad channels of experimenter...</strong>\n');
+fprintf('<strong>Repairing bad channels of mother...</strong>\n');
 if isempty(cfg.badchannel)
   fprintf('All channels are good, no repairing operation required!\n');
-  data_repaired.experimenter = data_raw.experimenter;
+  data_repaired.mother = data_raw.mother;
 else
-  data_repaired.experimenter = ft_channelrepair(cfg, data_raw.experimenter);
-  data_repaired.experimenter = removefields(data_repaired.experimenter, {'elec'});
+  data_repaired.mother = ft_channelrepair(cfg, data_raw.mother);
+  data_repaired.mother = removefields(data_repaired.mother, {'elec'});
 end
 
 cfgView           = [];
@@ -55,9 +55,9 @@ cfgView.ylim      = [-200 200];
 cfgView.blocksize = 120;
 cfgView.part      = 1;
   
-fprintf('\n<strong>Verification view for experimenter...</strong>\n');
-INFADI_databrowser( cfgView, data_repaired );
-commandwindow;                                                            % set focus to commandwindow
+fprintf('\n<strong>Verification view for mother...</strong>\n');
+coSMIC_databrowser( cfgView, data_repaired );
+commandwindow;                                                              % set focus to commandwindow
 input('Press enter to continue!:');
 close(gcf);
 
@@ -83,7 +83,7 @@ cfgView.blocksize = 120;
 cfgView.part      = 2;
   
 fprintf('\n<strong>Verification view for child...</strong>\n');
-INFADI_databrowser( cfgView, data_repaired );
+coSMIC_databrowser( cfgView, data_repaired );
 commandwindow;                                                              % set focus to commandwindow
 input('Press enter to continue!:');
 close(gcf);

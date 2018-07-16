@@ -1,16 +1,16 @@
-function [ cfgArtifacts ] = INFADI_databrowser( cfg, data )
-% INFADI_DATABROWSER displays a certain joint attention imitation project 
+function [ cfgArtifacts ] = coSMIC_databrowser( cfg, data )
+% COSMIC_DATABROWSER displays a certain joint attention imitation project 
 % dataset using a appropriate scaling.
 %
 % Use as
-%   INFADI_databrowser( cfg, data )
+%   coSMIC_databrowser( cfg, data )
 %
-% where the input can be the result of INFADI_IMPORTDATASET,
-% INFADI_PREPROCESSING or INFADI_SEGMENTATION
+% where the input can be the result of COSMIC_IMPORTDATASET,
+% COSMIC_PREPROCESSING or COSMIC_SEGMENTATION
 %
 % The configuration options are
 %   cfg.dyad        = number of dyad (no default value)
-%   cfg.part        = number of participant, 1 = experimenter, 2 = child (default: 1)
+%   cfg.part        = number of participant, 1 = mother, 2 = child (default: 1)
 %   cfg.artifact    = Nx2 matrix with artifact segments (default: [])
 %   cfg.channel     = channels of interest (default: 'all')
 %   cfg.ylim        = vertical scaling (default: [-100 100]);
@@ -21,8 +21,8 @@ function [ cfgArtifacts ] = INFADI_databrowser( cfg, data )
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_IMPORTDATASET, INFADI_PREPROCESSING, INFADI_SEGMENTATION, 
-% INFADI_DATASTRUCTURE, FT_DATABROWSER
+% See also COSMIC_IMPORTDATASET, COSMIC_PREPROCESSING, COSMIC_SEGMENTATION, 
+% COSMIC_DATASTRUCTURE, FT_DATABROWSER
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -40,8 +40,8 @@ plotevents  = ft_getopt(cfg, 'plotevents', 'yes');
 if isempty(dyad)                                                            % if dyad number is not specified
   event = [];                                                               % the associated markers cannot be loaded and displayed
 else                                                                        % else, load the stimulus markers 
-  source = '/data/pt_01905/eegData/DualEEG_INFADI_rawData/';
-  filename = sprintf('INFADI_%02d.vhdr', dyad);
+  source = '/data/pt_01905/eegData/DualEEG_coSMIC_rawData/';
+  filename = sprintf('coSMIC_all_P%02d.vhdr', dyad);
   path = strcat(source, filename);
   event = ft_read_event(path);                                              % read stimulus markers
   
@@ -63,7 +63,7 @@ else                                                                        % el
 end
 
 if ~ismember(part, [1,2])                                                   % check cfg.part definition
-  error('cfg.part has to either 1 or 2, 1 = experimenter, 2 = child');
+  error('cfg.part has to either 1 or 2, 1 = mother, 2 = child');
 end
 
 % -------------------------------------------------------------------------
@@ -85,9 +85,9 @@ fprintf('Databrowser - Participant: %d\n', part);
 switch part
   case 1
     if nargout > 0
-      cfgArtifacts = ft_databrowser(cfg, data.experimenter);
+      cfgArtifacts = ft_databrowser(cfg, data.mother);
     else
-      ft_databrowser(cfg, data.experimenter);
+      ft_databrowser(cfg, data.mother);
     end
     
   case 2

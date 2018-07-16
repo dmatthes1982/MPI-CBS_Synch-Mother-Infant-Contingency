@@ -1,18 +1,18 @@
-function  [ data_pwelchod ] = INFADI_PSDoverDyads( cfg )
-% INFADI_PSDOVERDYADS estimates the mean of the power spectral density
-% values over dyads for all conditions separately for experimenters and
+function  [ data_pwelchod ] = coSMIC_PSDoverDyads( cfg )
+% COSMIC_PSDOVERDYADS estimates the mean of the power spectral density
+% values over dyads for all conditions separately for mothers and
 % children.
 %
 % Use as
-%   [ data_pwelchod ] = INFADI_PSDoverDyads( cfg )
+%   [ data_pwelchod ] = coSMIC_PSDoverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01905/eegData/DualEEG_INFADI_processedData/08b_pwelch/')
+%   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/08b_pwelch/')
 %   cfg.session   = session number (default: 1)
 %
 % This function requires the fieldtrip toolbox
 % 
-% See also INFADI_PWELCH
+% See also COSMIC_PWELCH
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS 
 
@@ -20,14 +20,14 @@ function  [ data_pwelchod ] = INFADI_PSDoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01905/eegData/DualEEG_INFADI_processedData/08b_pwelch/');
+              '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/08b_pwelch/');
 session   = ft_getopt(cfg, 'session', 1);
 
 % -------------------------------------------------------------------------
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');   
 
 % -------------------------------------------------------------------------
@@ -35,13 +35,13 @@ load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------    
 fprintf('<strong>Averaging PSD values over dyads...</strong>\n');
 
-dyadsList   = dir([path, sprintf('INFADI_d*_08b_pwelch_%03d.mat', session)]);
+dyadsList   = dir([path, sprintf('coSMIC_d*_08b_pwelch_%03d.mat', session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['INFADI_d%d_08b'...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['coSMIC_d%d_08b'...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
 
@@ -63,7 +63,7 @@ fprintf('\n');
 % -------------------------------------------------------------------------
 % Load and organize data
 % -------------------------------------------------------------------------
-data_out.experimenter.trialinfo = generalDefinitions.condNum';
+data_out.mother.trialinfo = generalDefinitions.condNum';
 data_out.child.trialinfo        = generalDefinitions.condNum';
 
 dataExp{1, numOfDyads}        = [];
@@ -72,21 +72,21 @@ trialinfoExp{1, numOfDyads}   = [];
 trialinfoChild{1, numOfDyads} = [];
 
 for i=1:1:numOfDyads
-  filename = sprintf('INFADI_d%02d_08b_pwelch_%03d.mat', listOfDyads(i), ...
+  filename = sprintf('coSMIC_d%02d_08b_pwelch_%03d.mat', listOfDyads(i), ...
                      session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
   load(file, 'data_pwelch');
-  dataExp{i}        = data_pwelch.experimenter.powspctrm;
+  dataExp{i}        = data_pwelch.mother.powspctrm;
   dataChild{i}      = data_pwelch.child.powspctrm;
-  trialinfoExp{i}   = data_pwelch.experimenter.trialinfo;
+  trialinfoExp{i}   = data_pwelch.mother.trialinfo;
   trialinfoChild{i} = data_pwelch.child.trialinfo;
   if i == 1
-    data_out.experimenter.label   = data_pwelch.experimenter.label;
+    data_out.mother.label   = data_pwelch.mother.label;
     data_out.child.label          = data_pwelch.child.label;
-    data_out.experimenter.dimord  = data_pwelch.experimenter.dimord;
+    data_out.mother.dimord  = data_pwelch.mother.dimord;
     data_out.child.dimord         = data_pwelch.child.dimord;
-    data_out.experimenter.freq    = data_pwelch.experimenter.freq;
+    data_out.mother.freq    = data_pwelch.mother.freq;
     data_out.child.freq           = data_pwelch.child.freq;
   end
   clear data_pwelch
@@ -120,7 +120,7 @@ dataChild = cat(4, dataChild{:});
 dataExp   = nanmean(dataExp, 4);
 dataChild = nanmean(dataChild, 4);
 
-data_out.experimenter.powspctrm = dataExp;
+data_out.mother.powspctrm = dataExp;
 data_out.child.powspctrm        = dataChild;
 data_out.dyads                  = listOfDyads;
 
@@ -146,7 +146,7 @@ for k = 1:1:size(dataTmp, 2)
     missingPhases = ~ismember(trInfOrg, trInf{k});
     missingPhases = trInfOrg(missingPhases);
     missingPhases = vec2str(missingPhases, [], [], 0);
-    cprintf([1,0.4,1], ...
+    cprintf([0,0.6,0], ...
             sprintf('Dyad %d - %s: Phase(s) %s missing. Empty matrix(matrices) with NaNs created.\n', ...
             dyadNum(k), part, missingPhases));
     [~, loc] = ismember(trInfOrg, trInf{k});

@@ -1,13 +1,14 @@
-% INFADI_DATASTRUCTURE
+% coSMIC_DATASTRUCTURE
 %
-% The data in the --- Infant Adult Imitation Project --- is structured 
+% The data in the --- Synchronization in Mother Infant Contingency project 
+% (coSMIC) --- is structured 
 % as follows:
 %
 % dataset example:
 %
 % data_raw
 %    |               
-%    |---- experimenter (1x1 fieldtrip data structure for experimenter)    
+%    |---- mother (1x1 fieldtrip data structure for mother)    
 %    |---- child (1x1 fieldtrip data structure for child)
 %
 % In every substep of the data processing pipeline (i.e. 01a_raw, 
@@ -26,13 +27,27 @@
 % available through the relating time elements. 
 %
 % Many functions especially the plot functions need a declaration of the 
-% specific condition, which should be selected. The INFADI study is 
+% specific condition, which should be selected. The coSMIC study is 
 % described by the following conditions:
 %
-% - WarmUpPhase   - 5
-% - Baseline      - 4
-% - ContImi       - 2
-% - ContOtherAct  - 3
+% - DFreePlay       - 11
+% - DRestFreePlay   - 13
+% - DRestHighCont   - 20
+% - DHighCont       - 21
+% - DRestLowCont    - 22
+% - DLowCont        - 23
+% - SRestContToy1   - 41
+% - SContToy1       - 42
+% - SRestContToy2   - 43
+% - SContToy2       - 44
+% - SRestNoContToy1 - 45
+% - SNoContToy1     - 46
+% - SRestNoContToy2 - 47
+% - SNoContToy2     - 48
+% - SRestContReToy1 - 49
+% - SContReToy1     - 50
+% - SRestContReToy2 - 51
+% - SContReToy2     - 52
 %
 % The declaration of the condition is done by setting the cfg.condition
 % option with the string or the number of the specific condition.

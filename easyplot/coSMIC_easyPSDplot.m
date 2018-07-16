@@ -1,41 +1,41 @@
-function INFADI_easyPSDplot(cfg, data)
-% INFADI_EASYPSDPLOT is a function, which makes it easier to plot the power
-% spectral density within a specific condition of the INFADI_DATASTRUCTURE
+function coSMIC_easyPSDplot(cfg, data)
+% COSMIC_EASYPSDPLOT is a function, which makes it easier to plot the power
+% spectral density within a specific condition of the coSMIC_DATASTRUCTURE
 %
 % Use as
-%   INFADI_easyPSDplot(cfg, data)
+%   coSMIC_easyPSDplot(cfg, data)
 %
-% where the input data have to be a result from INFADI_PWELCH.
+% where the input data have to be a result from COSMIC_PWELCH.
 %
 % The configuration options are 
-%   cfg.part        = participant identifier, options: 'experimenter' or 'child' (default: 'experimenter')
-%   cfg.condition   = condition (default: 4 or 'Baseline', see INFADI_DATASTRUCTURE)
+%   cfg.part        = participant identifier, options: 'mother' or 'child' (default: 'mother')
+%   cfg.condition   = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
 %   cfg.electrode   = number of electrodes (default: {'Cz'} repsectively [8])
 %                     examples: {'Cz'}, {'F3', 'Fz', 'F4'}, [8] or [2, 1, 28]
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_PWELCH, INFADI_DATASTRUCTURE
+% See also COSMIC_PWELCH, COSMIC_DATASTRUCTURE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part    = ft_getopt(cfg, 'part', 'experimenter');
+part    = ft_getopt(cfg, 'part', 'mother');
 cond    = ft_getopt(cfg, 'condition', 4);
 elec    = ft_getopt(cfg, 'electrode', {'Cz'});
 
 filepath = fileparts(mfilename('fullpath'));                                % add utilities folder to path
 addpath(sprintf('%s/../utilities', filepath));
 
-if ~ismember(part, {'experimenter', 'child'})                               % check cfg.part definition
-  error('cfg.part has to either ''experimenter'' or ''child''.');
+if ~ismember(part, {'mother', 'child'})                                     % check cfg.part definition
+  error('cfg.part has to either ''mother'' or ''child''.');
 end
 
 switch part                                                                 % extract selected participant
-    case 'experimenter'
-    data = data.experimenter;
+    case 'mother'
+    data = data.mother;
   case 'child'
     data = data.child;
 end
@@ -43,7 +43,7 @@ end
 trialinfo = data.trialinfo;                                                 % get trialinfo
 label     = data.label;                                                     % get labels 
 
-cond    = INFADI_checkCondition( cond );                                    % check cfg.condition definition    
+cond    = coSMIC_checkCondition( cond );                                    % check cfg.condition definition    
 if isempty(find(trialinfo == cond, 1))
   error('The selected dataset contains no condition %d.', cond);
 else

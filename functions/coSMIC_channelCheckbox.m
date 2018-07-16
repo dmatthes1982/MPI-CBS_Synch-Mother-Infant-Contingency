@@ -1,10 +1,10 @@
-function [ badLabel ] = INFADI_channelCheckbox()
-% INFADI_CHANNELCHECKBOX is a function, which displays a small GUI for the 
+function [ badLabel ] = coSMIC_channelCheckbox()
+% COSMIC_CHANNELCHECKBOX is a function, which displays a small GUI for the 
 % selection of bad channels. It returns a cell array including the labels
 % of the bad channels
 %
 % Use as
-%   [ badLabel ] = INFADI_channelCheckbox()
+%   [ badLabel ] = coSMIC_channelCheckbox()
 %
 % SEE also UIFIGURE, UICHECKBOX, UIBUTTON, UIRESUME, UIWAIT
 

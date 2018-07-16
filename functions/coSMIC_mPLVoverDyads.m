@@ -1,19 +1,19 @@
-function [ data_mplv ] = INFADI_mPLVoverDyads( cfg )
-% INFADI_MPLVOVERDYADS estimates the mean of the phase locking values for
+function [ data_mplv ] = coSMIC_mPLVoverDyads( cfg )
+% COSMIC_MPLVOVERDYADS estimates the mean of the phase locking values for
 % all conditions and over all dyads.
 %
 % Use as
-%   [ data_mplv ] = INFADI_mPLVoverDyads( cfg )
+%   [ data_mplv ] = coSMIC_mPLVoverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01905/eegData/DualEEG_INFADI_processedData/07b_mplv/')
+%   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/07b_mplv/')
 %   cfg.session   = session number (default: 1)
 %   cfg.passband  = select passband of interest (default: theta)
 %                   (accepted values: theta, alpha, beta, gamma)
 %
 % This function requires the fieldtrip toolbox
 % 
-% See also INFADI_CALCMEANPLV
+% See also COSMIC_CALCMEANPLV
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS 
 
@@ -21,7 +21,7 @@ function [ data_mplv ] = INFADI_mPLVoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01905/eegData/DualEEG_INFADI_processedData/07b_mplv/');
+              '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/07b_mplv/');
 session   = ft_getopt(cfg, 'session', 1);
 passband  = ft_getopt(cfg, 'passband', 'theta');
 
@@ -39,7 +39,7 @@ end
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
 % -------------------------------------------------------------------------
@@ -47,14 +47,14 @@ load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------    
 fprintf('<strong>Averaging of Phase Locking Values over dyads at %s...</strong>\n', passband);
 
-dyadsList   = dir([path, sprintf('INFADI_d*_07b_mplv%s_%03d.mat', ...
+dyadsList   = dir([path, sprintf('coSMIC_d*_07b_mplv%s_%03d.mat', ...
                    fileSuffix, session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['INFADI_d%d_07b'...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['coSMIC_d%d_07b'...
                                    sprintf('%s_', fileSuffix) ...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
@@ -83,7 +83,7 @@ data{1, length(listOfDyads)} = [];
 trialinfo{1, length(listOfDyads)} = []; 
 
 for i=1:1:length(listOfDyads)
-  filename = sprintf('INFADI_d%02d_07b_mplv%s_%03d.mat', listOfDyads(i), ...
+  filename = sprintf('coSMIC_d%02d_07b_mplv%s_%03d.mat', listOfDyads(i), ...
                     fileSuffix, session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
@@ -140,7 +140,7 @@ for k = 1:1:size(dataTmp, 2)
     missingPhases = ~ismember(trlInfOrg, trlInf{k});
     missingPhases = trlInfOrg(missingPhases);
     missingPhases = vec2str(missingPhases, [], [], 0);
-    cprintf([1,0.4,1], ...
+    cprintf([0,0.6,0], ...
             sprintf('Dyad %d: Phase(s) %s missing. Empty matrix(matrices) with NaNs created.\n', ...
             dyadNum(k), missingPhases));
     [~, loc] = ismember(trlInfOrg, trlInf{k});

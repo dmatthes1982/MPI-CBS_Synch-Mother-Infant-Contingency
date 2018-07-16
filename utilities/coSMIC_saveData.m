@@ -1,13 +1,13 @@
-function INFADI_saveData( cfg, varargin )
-% INFADI_SAVEDATA stores the data of various structure elements (generally the
-% INFADI-datastructures) into a MAT_File.
+function coSMIC_saveData( cfg, varargin )
+% COSMIC_SAVEDATA stores the data of various structure elements (generally the
+% COSMIC_DATASTRUCTURE) into a MAT_File.
 %
 % Use as
-%   INFADI_saveData( cfg, varargin )
+%   coSMIC_saveData( cfg, varargin )
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01905/eegData/DualEEG_INFADI_processedData/01_raw/')
-%   cfg.filename    = filename (default: 'INFADI_d01_01_raw')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/01_raw/')
+%   cfg.filename    = filename (default: 'coSMIC_d01_01_raw')
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %
 % This function requires the fieldtrip toolbox.
@@ -19,8 +19,8 @@ function INFADI_saveData( cfg, varargin )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01905/eegData/DualEEG_INFADI_processedData/01_raw/');
-filename    = ft_getopt(cfg, 'filename', 'INFADI_d01_01_raw');
+desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/01_raw/');
+filename    = ft_getopt(cfg, 'filename', 'coSMIC_d01_01_raw');
 sessionStr  = ft_getopt(cfg, 'sessionStr', '001');
 
 % -------------------------------------------------------------------------

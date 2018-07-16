@@ -1,12 +1,12 @@
-function [ data ] = INFADI_bpFiltering( cfg, data) 
-% INFADI_BPFILTERING applies a specific bandpass filter to every channel in
-% the INFADI_DATASTRUCTURE
+function [ data ] = coSMIC_bpFiltering( cfg, data) 
+% COSMIC_BPFILTERING applies a specific bandpass filter to every channel in
+% the COSMIC_DATASTRUCTURE
 %
 % Use as
-%   [ data ] = INFADI_bpFiltering( cfg, data)
+%   [ data ] = coSMIC_bpFiltering( cfg, data)
 %
-% where the input data have to be the result from INFADI_IMPORTDATASET,
-% INFADI_PREPROCESSING or INFADI_SEGMENTATION 
+% where the input data have to be the result from COSMIC_IMPORTDATASET,
+% COSMIC_PREPROCESSING or COSMIC_SEGMENTATION 
 %
 % The configuration options are
 %   cfg.bpfreq      = passband range [begin end] (default: [1.9 2.1])
@@ -18,8 +18,8 @@ function [ data ] = INFADI_bpFiltering( cfg, data)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_IMPORTDATASET, INFADI_PREPROCESSING, INFADI_SEGMENTATION, 
-% INFADI_DATASTRUCTURE, FT_PREPROCESSING
+% See also COSMIC_IMPORTDATASET, COSMIC_PREPROCESSING, COSMIC_SEGMENTATION, 
+% COSMIC_DATASTRUCTURE, FT_PREPROCESSING
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -51,9 +51,9 @@ centerFreq = (bpfreq(2) + bpfreq(1))/2;
 % -------------------------------------------------------------------------
 data.centerFreq = [];
 
-fprintf('<strong>Apply bandpass to experimenters data with a center frequency of %g Hz...</strong>\n', ...           
+fprintf('<strong>Apply bandpass to mothers data with a center frequency of %g Hz...</strong>\n', ...           
           centerFreq);
-data.experimenter   = ft_preprocessing(cfg, data.experimenter);        
+data.mother   = ft_preprocessing(cfg, data.mother);        
           
 fprintf('<strong>Apply bandpass to childs data with a center frequency of %g Hz...</strong>\n', ...           
           centerFreq);

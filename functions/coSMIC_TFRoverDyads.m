@@ -1,17 +1,17 @@
-function  [ data_tfrod ] = INFADI_TFRoverDyads( cfg )
-% INFADI_TFROVERDYADS estimates the mean of the time frequency responses
+function  [ data_tfrod ] = coSMIC_TFRoverDyads( cfg )
+% COSMIC_TFROVERDYADS estimates the mean of the time frequency responses
 % over dyads for all conditions seperately for experimenters and children.
 %
 % Use as
-%   [ data_tfrod ] = INFADI_TFRoverDyads( cfg )
+%   [ data_tfrod ] = coSMIC_TFRoverDyads( cfg )
 %
 % The configuration options are
-%   cfg.path      = source path' (i.e. '/data/pt_01905/eegData/DualEEG_INFADI_processedData/08a_tfr/')
+%   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/08a_tfr/')
 %   cfg.session   = session number (default: 1)
 %
 % This function requires the fieldtrip toolbox
 % 
-% See also INFADI_TIMEFREQANALYSIS
+% See also COSMIC_TIMEFREQANALYSIS
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS 
 
@@ -19,14 +19,14 @@ function  [ data_tfrod ] = INFADI_TFRoverDyads( cfg )
 % Get and check config options
 % -------------------------------------------------------------------------
 path      = ft_getopt(cfg, 'path', ...
-              '/data/pt_01905/eegData/DualEEG_INFADI_processedData/08a_tfr/');
+              '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/08a_tfr/');
 session   = ft_getopt(cfg, 'session', 1);
 
 % -------------------------------------------------------------------------
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');   
 
 % -------------------------------------------------------------------------
@@ -34,13 +34,13 @@ load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------    
 fprintf('<strong>Averaging TFR values over dyads...</strong>\n');
 
-dyadsList   = dir([path, sprintf('INFADI_d*_08a_tfr_%03d.mat', session)]);
+dyadsList   = dir([path, sprintf('coSMIC_d*_08a_tfr_%03d.mat', session)]);
 dyadsList   = struct2cell(dyadsList);
 dyadsList   = dyadsList(1,:);
 numOfDyads  = length(dyadsList);
 
 for i=1:1:numOfDyads
-  listOfDyads(i) = sscanf(dyadsList{i}, ['INFADI_d%d_08a'...
+  listOfDyads(i) = sscanf(dyadsList{i}, ['coSMIC_d%d_08a'...
                                    sprintf('%03d.mat', session)]);          %#ok<AGROW>
 end
 
@@ -71,7 +71,7 @@ tfrExp{length(data_out.experimenter.trialinfo)} = [];
 tfrChild{length(data_out.child.trialinfo)}      = [];
 
 for i=1:1:numOfDyads
-  filename = sprintf('INFADI_d%02d_08a_tfr_%03d.mat', listOfDyads(i), ...
+  filename = sprintf('coSMIC_d%02d_08a_tfr_%03d.mat', listOfDyads(i), ...
                      session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
@@ -149,7 +149,7 @@ if ~isequal(trInf, trInfOrg')
   missingPhases = trInfOrg(missingPhases);
   if ~isempty(missingPhases)
     missingPhases = vec2str(missingPhases, [], [], 0);
-    cprintf([1,0.4,1], ...
+    cprintf([0,0.6,0], ...
           sprintf('Dyad %d/%d: Phase(s) %s missing. Empty matrix(matrices) with zeros created.\n', ...
           dyadNum, part, missingPhases));
     fixed = true;

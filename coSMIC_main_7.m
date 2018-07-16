@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '06b_hilbert/';
-  cfg.filename  = 'INFADI_d01_06b_hilbertGamma';
-  sessionStr    = sprintf('%03d', INFADI_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'coSMIC_d01_06b_hilbertGamma';
+  sessionStr    = sprintf('%03d', coSMIC_getSessionNum( cfg ));             % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('INFADI_d%d_06b_hilbertGamma_', sessionStr, '.mat'));
+                    strcat('coSMIC_d%d_06b_hilbertGamma_', sessionStr, '.mat'));
   end
 end
 
@@ -32,14 +32,14 @@ end
 % 3. PLV estimation
 % 4. mPLV estimation
 
-cprintf([1,0.4,1], '<strong>[7] - Estimation of Phase Locking Values (PLV)</strong>\n');
+cprintf([0,0.6,0], '<strong>[7] - Estimation of Phase Locking Values (PLV)</strong>\n');
 fprintf('\n');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% general adjustment
 choise = false;
 while choise == false
-  cprintf([1,0.4,1], 'Should rejection of detected artifacts be applied before PLV estimation?\n');
+  cprintf([0,0.6,0], 'Should rejection of detected artifacts be applied before PLV estimation?\n');
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
     choise = true;
@@ -61,7 +61,7 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  INFADI_createTbl(cfg);                                                    % create settings file
+  coSMIC_createTbl(cfg);                                                    % create settings file
 end
 
 T = readtable(file_path);                                                   % update settings table
@@ -80,14 +80,14 @@ for i = numOfPart
   if artifactRejection == true
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '05b_allart/');
-    cfg.filename    = sprintf('INFADI_d%02d_05b_allart', i);
+    cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
     cfg.sessionStr  = sessionStr;
   
     file_path = strcat(cfg.srcFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
     if ~isempty(dir(file_path))
       fprintf('Loading %s ...\n', file_path);
-      INFADI_loadData( cfg );                                                  
+      coSMIC_loadData( cfg );                                                  
       artifactAvailable = true;     
     else
       fprintf('File %s is not existent,\n', file_path);
@@ -102,9 +102,9 @@ for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('INFADI_d%02d_06b_hilbertTheta', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_06b_hilbertTheta', i);
   fprintf('Load hilbert phase data at theta (4-7Hz)...\n');
-  INFADI_loadData( cfg );
+  coSMIC_loadData( cfg );
   
   % segmentation at theta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg           = [];
@@ -112,7 +112,7 @@ for i = numOfPart
   cfg.overlap   = 0;
   
   fprintf('<strong>Segmentation of Hilbert phase data at theta (4-7Hz).</strong>\n');
-  data_hilbert_theta  = INFADI_segmentation( cfg, data_hilbert_theta );
+  data_hilbert_theta  = coSMIC_segmentation( cfg, data_hilbert_theta );
   
   % artifact rejection at theta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if artifactRejection == true
@@ -123,7 +123,7 @@ for i = numOfPart
       cfg.target    = 'dual';
   
       fprintf('<strong>Artifact Rejection of Hilbert phase data at theta (4-7Hz).</strong>\n');
-      data_hilbert_theta = INFADI_rejectArtifacts(cfg, data_hilbert_theta);
+      data_hilbert_theta = coSMIC_rejectArtifacts(cfg, data_hilbert_theta);
       fprintf('\n');
     end
   end
@@ -132,8 +132,8 @@ for i = numOfPart
   cfg           = [];
   cfg.winlen    = 5;                                                        % window length for one PLV value in seconds
   
-  data_plv_theta  = INFADI_phaseLockVal(cfg, data_hilbert_theta);
-  data_mplv_theta = INFADI_calcMeanPLV(data_plv_theta);
+  data_plv_theta  = coSMIC_phaseLockVal(cfg, data_hilbert_theta);
+  data_mplv_theta = coSMIC_calcMeanPLV(data_plv_theta);
   clear data_hilbert_theta
   
   % export number of good trials into a spreadsheet
@@ -143,12 +143,12 @@ for i = numOfPart
   cfg.type = 'plv';
   cfg.param = 'theta';
   cfg.sessionStr = sessionStr;
-  INFADI_writeTbl(cfg, data_plv_theta);
+  coSMIC_writeTbl(cfg, data_plv_theta);
   
   % export the PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07a_plv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07a_plvTheta', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07a_plvTheta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -156,14 +156,14 @@ for i = numOfPart
                    
   fprintf('Saving PLVs (theta: 4-7Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_plv_theta', data_plv_theta);
+  coSMIC_saveData(cfg, 'data_plv_theta', data_plv_theta);
   fprintf('Data stored!\n');
   clear data_plv_theta
   
   % export the mean PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07b_mplv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07b_mplvTheta', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07b_mplvTheta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -171,7 +171,7 @@ for i = numOfPart
                    
   fprintf('Saving mean PLVs (theta: 4-7Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_mplv_theta', data_mplv_theta);
+  coSMIC_saveData(cfg, 'data_mplv_theta', data_mplv_theta);
   fprintf('Data stored!\n\n');
   clear data_mplv_theta
   
@@ -180,9 +180,9 @@ for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('INFADI_d%02d_06b_hilbertAlpha', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_06b_hilbertAlpha', i);
   fprintf('Load hilbert phase data at alpha (8-12Hz)...\n');
-  INFADI_loadData( cfg );
+  coSMIC_loadData( cfg );
 
   % segmentation at alpha %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg           = [];
@@ -190,7 +190,7 @@ for i = numOfPart
   cfg.overlap   = 0;
   
   fprintf('<strong>Segmentation of Hilbert phase data at alpha (8-12Hz).</strong>\n');
-  data_hilbert_alpha  = INFADI_segmentation( cfg, data_hilbert_alpha );
+  data_hilbert_alpha  = coSMIC_segmentation( cfg, data_hilbert_alpha );
   
   % artifact rejection at alpha %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if artifactRejection == true
@@ -201,7 +201,7 @@ for i = numOfPart
       cfg.target    = 'dual';
   
       fprintf('<strong>Artifact Rejection of Hilbert phase data at alpha (8-12Hz).</strong>\n');
-      data_hilbert_alpha = INFADI_rejectArtifacts(cfg, data_hilbert_alpha);
+      data_hilbert_alpha = coSMIC_rejectArtifacts(cfg, data_hilbert_alpha);
       fprintf('\n');
     end
   end
@@ -210,8 +210,8 @@ for i = numOfPart
   cfg           = [];
   cfg.winlen    = 1;                                                        % window length for one PLV value in seconds
   
-  data_plv_alpha  = INFADI_phaseLockVal(cfg, data_hilbert_alpha);
-  data_mplv_alpha = INFADI_calcMeanPLV(data_plv_alpha);
+  data_plv_alpha  = coSMIC_phaseLockVal(cfg, data_hilbert_alpha);
+  data_mplv_alpha = coSMIC_calcMeanPLV(data_plv_alpha);
   clear data_hilbert_alpha
   
   % export number of good trials into a spreadsheet
@@ -221,12 +221,12 @@ for i = numOfPart
   cfg.type = 'plv';
   cfg.param = 'alpha';
   cfg.sessionStr = sessionStr;
-  INFADI_writeTbl(cfg, data_plv_alpha);
+  coSMIC_writeTbl(cfg, data_plv_alpha);
   
   % export the PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07a_plv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07a_plvAlpha', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07a_plvAlpha', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -234,14 +234,14 @@ for i = numOfPart
                    
   fprintf('Saving PLVs (alpha: 8-12Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_plv_alpha', data_plv_alpha);
+  coSMIC_saveData(cfg, 'data_plv_alpha', data_plv_alpha);
   fprintf('Data stored!\n');
   clear data_plv_alpha
   
   % export the mean PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07b_mplv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07b_mplvAlpha', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07b_mplvAlpha', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -249,7 +249,7 @@ for i = numOfPart
                    
   fprintf('Saving mean PLVs (alpha: 8-12Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_mplv_alpha', data_mplv_alpha);
+  coSMIC_saveData(cfg, 'data_mplv_alpha', data_mplv_alpha);
   fprintf('Data stored!\n\n');
   clear data_mplv_alpha
   
@@ -258,9 +258,9 @@ for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('INFADI_d%02d_06b_hilbertBeta', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_06b_hilbertBeta', i);
   fprintf('Load hilbert phase data at beta (13-30Hz)...\n');
-  INFADI_loadData( cfg );
+  coSMIC_loadData( cfg );
    
   % segmentation at beta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg           = [];
@@ -268,7 +268,7 @@ for i = numOfPart
   cfg.overlap   = 0;
     
   fprintf('<strong>Segmentation of Hilbert phase data at beta (13-30Hz).</strong>\n');
-  data_hilbert_beta  = INFADI_segmentation( cfg, data_hilbert_beta );
+  data_hilbert_beta  = coSMIC_segmentation( cfg, data_hilbert_beta );
   
   % artifact rejection at beta %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if artifactRejection == true
@@ -279,7 +279,7 @@ for i = numOfPart
       cfg.target    = 'dual';
   
       fprintf('<strong>Artifact Rejection of Hilbert phase data at beta (13-30Hz).</strong>\n');
-      data_hilbert_beta = INFADI_rejectArtifacts(cfg, data_hilbert_beta);
+      data_hilbert_beta = coSMIC_rejectArtifacts(cfg, data_hilbert_beta);
       fprintf('\n');
     end
   end
@@ -288,8 +288,8 @@ for i = numOfPart
   cfg           = [];
   cfg.winlen    = 1;                                                        % window length for one PLV value in seconds
   
-  data_plv_beta  = INFADI_phaseLockVal(cfg, data_hilbert_beta);
-  data_mplv_beta = INFADI_calcMeanPLV(data_plv_beta);
+  data_plv_beta  = coSMIC_phaseLockVal(cfg, data_hilbert_beta);
+  data_mplv_beta = coSMIC_calcMeanPLV(data_plv_beta);
   clear data_hilbert_beta
   
   % export number of good trials into a spreadsheet
@@ -299,12 +299,12 @@ for i = numOfPart
   cfg.type = 'plv';
   cfg.param = 'beta';
   cfg.sessionStr = sessionStr;
-  INFADI_writeTbl(cfg, data_plv_beta);
+  coSMIC_writeTbl(cfg, data_plv_beta);
   
   % export the PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07a_plv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07a_plvBeta', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07a_plvBeta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -312,14 +312,14 @@ for i = numOfPart
                    
   fprintf('Saving PLVs (beta: 13-30Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_plv_beta', data_plv_beta);
+  coSMIC_saveData(cfg, 'data_plv_beta', data_plv_beta);
   fprintf('Data stored!\n');
   clear data_plv_beta
   
   % export the mean PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07b_mplv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07b_mplvBeta', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07b_mplvBeta', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -327,7 +327,7 @@ for i = numOfPart
                    
   fprintf('Saving mean PLVs (beta: 13-30Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_mplv_beta', data_mplv_beta);
+  coSMIC_saveData(cfg, 'data_mplv_beta', data_mplv_beta);
   fprintf('Data stored!\n\n');
   clear data_mplv_beta
   
@@ -336,9 +336,9 @@ for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '06b_hilbert/');
   cfg.sessionStr  = sessionStr;
-  cfg.filename    = sprintf('INFADI_d%02d_06b_hilbertGamma', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_06b_hilbertGamma', i);
   fprintf('Load hilbert phase data at gamma (31-48Hz)...\n');
-  INFADI_loadData( cfg );
+  coSMIC_loadData( cfg );
     
   % segmentation at gamma %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   cfg           = [];
@@ -346,7 +346,7 @@ for i = numOfPart
   cfg.overlap   = 0;
     
   fprintf('<strong>Segmentation of Hilbert phase data at gamma (31-48Hz).</strong>\n');
-  data_hilbert_gamma  = INFADI_segmentation( cfg, data_hilbert_gamma );
+  data_hilbert_gamma  = coSMIC_segmentation( cfg, data_hilbert_gamma );
   
   % artifact rejection at gamma %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   if artifactRejection == true
@@ -357,7 +357,7 @@ for i = numOfPart
       cfg.target    = 'dual';
   
       fprintf('<strong>Artifact Rejection of Hilbert phase data at gamma (31-48Hz).</strong>\n');
-      data_hilbert_gamma = INFADI_rejectArtifacts(cfg, data_hilbert_gamma);
+      data_hilbert_gamma = coSMIC_rejectArtifacts(cfg, data_hilbert_gamma);
       fprintf('\n');
       
       clear cfg_allart
@@ -368,8 +368,8 @@ for i = numOfPart
   cfg           = [];
   cfg.winlen    = 1;                                                        % window length for one PLV value in seconds
   
-  data_plv_gamma  = INFADI_phaseLockVal(cfg, data_hilbert_gamma);
-  data_mplv_gamma = INFADI_calcMeanPLV(data_plv_gamma);
+  data_plv_gamma  = coSMIC_phaseLockVal(cfg, data_hilbert_gamma);
+  data_mplv_gamma = coSMIC_calcMeanPLV(data_plv_gamma);
   clear data_hilbert_gamma
   
   % export number of good trials into a spreadsheet
@@ -379,12 +379,12 @@ for i = numOfPart
   cfg.type = 'plv';
   cfg.param = 'gamma';
   cfg.sessionStr = sessionStr;
-  INFADI_writeTbl(cfg, data_plv_gamma);
+  coSMIC_writeTbl(cfg, data_plv_gamma);
   
   % export the PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07a_plv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07a_plvGamma', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07a_plvGamma', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -392,14 +392,14 @@ for i = numOfPart
                    
   fprintf('Saving PLVs (gamma: 31-48Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_plv_gamma', data_plv_gamma);
+  coSMIC_saveData(cfg, 'data_plv_gamma', data_plv_gamma);
   fprintf('Data stored!\n');
   clear data_plv_gamma
   
   % export the mean PLVs into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '07b_mplv/');
-  cfg.filename    = sprintf('INFADI_d%02d_07b_mplvGamma', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_07b_mplvGamma', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -407,7 +407,7 @@ for i = numOfPart
                    
   fprintf('Saving mean PLVs (gamma: 31-48Hz) of dyad %d in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_mplv_gamma', data_mplv_gamma);
+  coSMIC_saveData(cfg, 'data_mplv_gamma', data_mplv_gamma);
   fprintf('Data stored!\n\n');
   clear data_mplv_gamma
 end

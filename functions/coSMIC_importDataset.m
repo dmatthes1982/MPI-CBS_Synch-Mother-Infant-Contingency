@@ -1,12 +1,12 @@
-function [ data ] = INFADI_importDataset(cfg)
-% INFADI_IMPORTDATASET imports one specific dataset recorded with a device 
+function [ data ] = coSMIC_importDataset(cfg)
+% COSMIC_IMPORTDATASET imports one specific dataset recorded with a device 
 % from brain vision.
 %
 % Use as
-%   [ data ] = INFADI_importDataset(cfg)
+%   [ data ] = coSMIC_importDataset(cfg)
 %
 % The configuration options are
-%   cfg.path          = source path' (i.e. '/data/pt_01905/eegData/DualEEG_INFADI_rawData/')
+%   cfg.path          = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/')
 %   cfg.dyad          = number of dyad
 %   cfg.continuous    = 'yes' or 'no' (default: 'no')
 %   cfg.prestim       = define pre-Stimulus offset in seconds (default: 0)
@@ -19,7 +19,7 @@ function [ data ] = INFADI_importDataset(cfg)
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also FT_PREPROCESSING, INFADI_DATASTRUCTURE
+% See also FT_PREPROCESSING, COSMIC_DATASTRUCTURE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -40,14 +40,14 @@ if isempty(dyad)
   error('No specific participant is defined!');
 end
 
-headerfile = sprintf('%sINFADI_%02d.vhdr', path, dyad);
+headerfile = sprintf('%scoSMIC_all_P%02d.vhdr', path, dyad);
 
 if strcmp(continuous, 'no')
   % -----------------------------------------------------------------------
   % Load general definitions
   % -------------------------------------------------------------------------
   filepath = fileparts(mfilename('fullpath'));
-  load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+  load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
   % definition of all possible stimuli, two for each condition, the first 
@@ -111,10 +111,10 @@ end
 % -------------------------------------------------------------------------
 dataTmp = ft_preprocessing(cfg);                                            % import data
 
-data.experimenter = dataTmp;                                                % split dataset into two datasets, one for each participant
-data.experimenter.label = strrep(dataTmp.label(33:64), '_2', '');
+data.mother = dataTmp;                                                      % split dataset into two datasets, one for each participant
+data.mother.label = strrep(dataTmp.label(33:64), '_2', '');
 for i=1:1:length(dataTmp.trial)
-  data.experimenter.trial{i} = dataTmp.trial{i}(33:64,:);
+  data.mother.trial{i} = dataTmp.trial{i}(33:64,:);
 end
 
 data.child = dataTmp;

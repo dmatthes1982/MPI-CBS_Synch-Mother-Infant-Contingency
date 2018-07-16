@@ -1,13 +1,13 @@
-function [ trl ] = INFADI_genTrl( cfg, data )
-% INFADI_GENTRL is a function which generates a trl fragmentation of 
+function [ trl ] = coSMIC_genTrl( cfg, data )
+% COSMIC_GENTRL is a function which generates a trl fragmentation of 
 % continuous data for subsequent artifact detection. This function could be 
 % used when the actual segmentation of the data is not needed for the 
 % subsequent steps (i.e. in line with the estimation of eye artifacts)
 %
 % Use as
-%   [ trl ] = INFADI_genTrl( cfg, data )
+%   [ trl ] = coSMIC_genTrl( cfg, data )
 %
-% where the input data have to be the result from INFADI_CONCATDATA
+% where the input data have to be the result from COSMIC_CONCATDATA
 %
 % The configuration options are 
 %   cfg.length  = trial length in milliseconds (default: 200, choose even number)
@@ -15,7 +15,7 @@ function [ trl ] = INFADI_genTrl( cfg, data )
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_CONCATDATA
+% See also COSMIC_CONCATDATA
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -28,13 +28,13 @@ overlap       = ft_getopt(cfg, 'overlap', 0);
 if mod(trlDuration, 2)
   error('Choose even number for trial leght!');
 else
-  trlLength = data.experimenter.fsample * trlDuration / 1000;
+  trlLength = data.mother.fsample * trlDuration / 1000;
 end
 
-numOfOrgTrials  = size(data.experimenter.trialinfo, 1);
+numOfOrgTrials  = size(data.mother.trialinfo, 1);
 numOfTrials     = zeros(1, numOfOrgTrials);
-trialinfo       = data.experimenter.trialinfo;
-sampleinfo      = data.experimenter.sampleinfo;
+trialinfo       = data.mother.trialinfo;
+sampleinfo      = data.mother.sampleinfo;
 
 switch overlap
   case 0
@@ -91,4 +91,3 @@ switch overlap
 end
 
 end
-

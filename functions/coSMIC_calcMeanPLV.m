@@ -1,15 +1,15 @@
-function [ data ] = INFADI_calcMeanPLV( data )
-% INFADI_CALCMEANPLV estimates the mean of the phase locking values within
+function [ data ] = coSMIC_calcMeanPLV( data )
+% COSMIC_CALCMEANPLV estimates the mean of the phase locking values within
 % the different conditions for all dyads and connections.
 %
 % Use as
-%   [ data ] = INFADI_calcMeanPLV( data )
+%   [ data ] = coSMIC_calcMeanPLV( data )
 %
-%  where the input data have to be the result from INFADI_PHASELOCKVAL
+%  where the input data have to be the result from COSMIC_PHASELOCKVAL
 %
 % This function requires the fieldtrip toolbox
 % 
-% See also INFADI_DATASTRUCTURE, INFADI_PHASELOCKVAL
+% See also COSMIC_DATASTRUCTURE, COSMIC_PHASELOCKVAL
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS 
 

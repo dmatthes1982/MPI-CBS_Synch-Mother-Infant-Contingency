@@ -2,7 +2,7 @@
 % Add directory and subfolders to path
 % -------------------------------------------------------------------------
 clc;
-INFADI_init;
+coSMIC_init;
 
 % -------------------------------------------------------------------------
 % Set number of cores/threads to 4
@@ -10,17 +10,17 @@ INFADI_init;
 LASTN = maxNumCompThreads(4);                                               %#ok<NASGU>
 clear LASTN
 
-cprintf([1,0.4,1], '<strong>---------------------------------------------------</strong>\n');
-cprintf([1,0.4,1], '<strong>Infant adult imitation project - data processing</strong>\n');
-cprintf([1,0.4,1], '<strong>Version: 0.1</strong>\n');
-cprintf([1,0.4,1], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
-cprintf([1,0.4,1], '<strong>---------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>Synchronization in Mother Infant Contingency project - data processing</strong>\n');
+cprintf([0,0.6,0], '<strong>Version: 0.1</strong>\n');
+cprintf([0,0.6,0], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-srcPath = '/data/pt_01905/eegData/DualEEG_INFADI_rawData/';
-desPath = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';
+srcPath = '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/';
+desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
 
 fprintf('\nThe default paths are:\n');
 fprintf('Source: %s\n',srcPath);
@@ -119,7 +119,7 @@ selection = false;
 
 tmpPath = strcat(desPath, '01a_raw/');
 
-sessionList     = dir([tmpPath, 'INFADI_d*_01a_raw_*.mat']);
+sessionList     = dir([tmpPath, 'coSMIC_d*_01a_raw_*.mat']);
 sessionList     = struct2cell(sessionList);
 sessionList     = sessionList(1,:);
 numOfSessions   = length(sessionList);
@@ -288,49 +288,49 @@ numOfSources  = length(sourceList);
 fileNum       = zeros(1, numOfSources);
 
 for i=1:1:numOfSources
-  fileNum(i)     = sscanf(sourceList{i}, 'INFADI_%d.vhdr');
+  fileNum(i)     = sscanf(sourceList{i}, 'coSMIC_all_P%d.vhdr');
 end
 
 switch part
   case 1
     fileNamePre = [];
     tmpPath = strcat(desPath, '01a_raw/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_01a_raw_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_01a_raw_', sessionStr, '.mat');
   case 2
     tmpPath = strcat(desPath, '01c_repaired/');
-    fileNamePre = strcat(tmpPath, 'INFADI_d*_01c_repaired_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_01c_repaired_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_02_preproc_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_02_preproc_', sessionStr, '.mat');
   case 3
     tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePre = strcat(tmpPath, 'INFADI_d*_02_preproc_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_02_preproc_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '03b_eogchan/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_03b_eogchan_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_03b_eogchan_', sessionStr, '.mat');
   case 4
     tmpPath = strcat(desPath, '03b_eogchan/');
-    fileNamePre = strcat(tmpPath, 'INFADI_d*_03b_eogchan_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_03b_eogchan_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_04b_eyecor_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
   case 5
     tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePre = strcat(tmpPath, 'INFADI_d*_04b_eyecor_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '05b_allart/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_05b_allart_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_05b_allart_', sessionStr, '.mat');
   case 6
     tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePre = strcat(tmpPath, 'INFADI_d*_04b_eyecor_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '06b_hilbert/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_06b_hilbertGamma_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_06b_hilbertGamma_', sessionStr, '.mat');
   case 7
     tmpPath = strcat(desPath, '06b_hilbert/');
-    fileNamePre = strcat(tmpPath, 'INFADI_d*_06b_hilbertGamma_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_06b_hilbertGamma_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '07b_mplv/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_07b_mplvGamma_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_07b_mplvGamma_', sessionStr, '.mat');
   case 8
     tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePre = strcat(tmpPath, 'INFADI_d*_04b_eyecor_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '08b_pwelch/');
-    fileNamePost = strcat(tmpPath, 'INFADI_d*_08b_pwelch_', sessionStr, '.mat');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_08b_pwelch_', sessionStr, '.mat');
   case 9
     fileNamePre = 0;
   otherwise
@@ -357,7 +357,7 @@ if ~isequal(fileNamePre, 0)
       numOfFiles  = length(fileListPre);
       numOfPrePart = zeros(1, numOfFiles);
       for i=1:1:numOfFiles
-        numOfPrePart(i) = sscanf(fileListPre{i}, strcat('INFADI_d%d*', sessionStr, '.mat'));
+        numOfPrePart(i) = sscanf(fileListPre{i}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
       end
     end
   end
@@ -395,7 +395,7 @@ if ~isequal(fileNamePre, 0)
         numOfFiles  = length(fileListPost);
         numOfPostPart = zeros(1, numOfFiles);
         for i=1:1:numOfFiles
-          numOfPostPart(i) = sscanf(fileListPost{i}, strcat('INFADI_d%d*', sessionStr, '.mat'));
+          numOfPostPart(i) = sscanf(fileListPost{i}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
         end
       end
   
@@ -440,7 +440,7 @@ clear part;
 while sessionStatus == true
   switch sessionPart
     case 1
-      INFADI_main_1;
+      coSMIC_main_1;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -458,7 +458,7 @@ while sessionStatus == true
         end
       end
     case 2
-      INFADI_main_2;
+      coSMIC_main_2;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -476,7 +476,7 @@ while sessionStatus == true
         end
       end
     case 3
-      INFADI_main_3;
+      coSMIC_main_3;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -494,7 +494,7 @@ while sessionStatus == true
         end
       end
     case 4
-      INFADI_main_4;
+      coSMIC_main_4;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -512,7 +512,7 @@ while sessionStatus == true
         end
       end
     case 5
-      INFADI_main_5;
+      coSMIC_main_5;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -538,7 +538,7 @@ while sessionStatus == true
         end
       end
     case 6
-      INFADI_main_6;
+      coSMIC_main_6;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -556,7 +556,7 @@ while sessionStatus == true
         end
       end  
     case 7
-      INFADI_main_7;
+      coSMIC_main_7;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -582,7 +582,7 @@ while sessionStatus == true
         end
       end
     case 8
-      INFADI_main_8;
+      coSMIC_main_8;
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
@@ -600,7 +600,7 @@ while sessionStatus == true
         end
       end
     case 9
-      INFADI_main_9;
+      coSMIC_main_9;
       sessionStatus = false;
     otherwise
       sessionStatus = false;

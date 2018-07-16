@@ -2,18 +2,18 @@
 % Add directory and subfolders to path
 % -------------------------------------------------------------------------
 clc;
-INFADI_init;
+coSMIC_init;
 
-cprintf([1,0.4,1], '<strong>------------------------------------------------</strong>\n');
-cprintf([1,0.4,1], '<strong>Infant adult imitation project</strong>\n');
-cprintf([1,0.4,1], '<strong>Clone session script</strong>\n');
-cprintf([1,0.4,1], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
-cprintf([1,0.4,1], '<strong>------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>Synchronization in Mother Infant Contingency project</strong>\n');
+cprintf([0,0.6,0], '<strong>Clone session script</strong>\n');
+cprintf([0,0.6,0], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-path = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';
+path = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
 
 fprintf('\nThe default path is: %s\n', path);
 
@@ -42,7 +42,7 @@ folderList = dir(path);
 folderList = struct2cell(folderList);
 folderList = folderList(1,3:end)';
 if ~strcmp(folderList{1}, '00_settings')
-  cprintf([1,0.5,0], '\nSelected path has no INFADI data!\n');
+  cprintf([1,0.5,0], '\nSelected path has no coSMIC data!\n');
   return;
 end
 
@@ -51,7 +51,7 @@ end
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '01a_raw/');
 
-fileList     = dir([tmpPath, 'INFADI_d*_01a_raw_*.mat']);
+fileList     = dir([tmpPath, 'coSMIC_d*_01a_raw_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);

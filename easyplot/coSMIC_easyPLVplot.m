@@ -1,20 +1,20 @@
-function INFADI_easyPLVplot( cfg, data )
-% INFADI_EASYPLVPLOT is a function, which makes it easier to plot the PLV 
-% values of a specific condition from the INFADI_DATASTRUCTURE.
+function coSMIC_easyPLVplot( cfg, data )
+% COSMIC_EASYPLVPLOT is a function, which makes it easier to plot the PLV 
+% values of a specific condition from the COSMIC_DATASTRUCTURE.
 %
 % Use as
-%   INFADI_easyPLVplot( cfg, data )
+%   coSMIC_easyPLVplot( cfg, data )
 %
-% where the input data has to be the result of INFADI_PHASELOCKVAL
+% where the input data has to be the result of COSMIC_PHASELOCKVAL
 %
 % The configuration options are
-%   cfg.condition = condition (default: 4 or 'Baseline', see INFADI_DATASTRUCTURE)
-%   cfg.elecPart1 = number of electrode of experimenter (default: 'Cz')
+%   cfg.condition = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
+%   cfg.elecPart1 = number of electrode of mother (default: 'Cz')
 %   cfg.elecPart2 = number of electrode of child (default: 'Cz')
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_DATASTRUCTURE, PLOT, INFADI_PHASELOCKVAL
+% See also COSMIC_DATASTRUCTURE, PLOT, COSMIC_PHASELOCKVAL
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -30,7 +30,7 @@ trialinfo = data.dyad.trialinfo;                                            % ge
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond = INFADI_checkCondition( cond );                                       % check cfg.condition definition and translate it into trl number    
+cond = coSMIC_checkCondition( cond );                                       % check cfg.condition definition and translate it into trl number    
 trl  = find(trialinfo == cond);
 if isempty(trl)
   error('The selected dataset contains no condition %d.', cond);

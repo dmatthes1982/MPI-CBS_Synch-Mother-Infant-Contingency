@@ -1,18 +1,18 @@
-function [ data ] = INFADI_pWelch( cfg, data )
-% INFADI_PWELCH calculates the power spectral density using Welch's method
+function [ data ] = coSMIC_pWelch( cfg, data )
+% COSMIC_PWELCH calculates the power spectral density using Welch's method
 % for every condition of every participant in the dataset.
 %
 % Use as
-%   [ data ] = INFADI_pWelch( cfg, data)
+%   [ data ] = coSMIC_pWelch( cfg, data)
 %
-% where the input data hast to be the result from INFADI_SEGMENTATION
+% where the input data hast to be the result from COSMIC_SEGMENTATION
 %
 % The configuration options are
 %   cfg.foi = frequency of interest - begin:resolution:end (default: 1:1:50)
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_SEGMENTATION
+% See also COSMIC_SEGMENTATION
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -39,11 +39,11 @@ cfg.showcallinfo    = 'no';                                                 % su
 % -------------------------------------------------------------------------
 % Calculate power spectral density using Welch's method
 % -------------------------------------------------------------------------
-fprintf('<strong>Calc power spectral density of experimenters data...</strong>\n');
+fprintf('<strong>Calc power spectral density of mothers data...</strong>\n');
 ft_warning off;
-data.experimenter = ft_freqanalysis(cfg, data.experimenter);
+data.mother = ft_freqanalysis(cfg, data.mother);
 ft_warning on;
-data.experimenter = pWelch(data.experimenter);
+data.mother = pWelch(data.mother);
 
 fprintf('<strong>Calc power spectral density of childs data...</strong>\n');
 ft_warning off;
@@ -61,7 +61,7 @@ function [ data_pWelch ] = pWelch(data_psd)
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');  
 
 val       = ismember(generalDefinitions.condNum, data_psd.trialinfo);

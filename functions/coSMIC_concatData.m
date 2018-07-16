@@ -1,19 +1,19 @@
-function [ data ] = INFADI_concatData( cfg, data )
-% INFADI_CONCATDATA concatenate all trials of a dataset to a continuous
+function [ data ] = coSMIC_concatData( cfg, data )
+% COSMIC_CONCATDATA concatenate all trials of a dataset to a continuous
 % data stream.
 %
 % Use as
-%   [ data ] = INFADI_concatData( cfg, data )
+%   [ data ] = coSMIC_concatData( cfg, data )
 %
-% where the input can be i.e. the result from INFADI_IMPORTDATASET or 
-% INFADI_PREPROCESSING
+% where the input can be i.e. the result from COSMIC_IMPORTDATASET or 
+% COSMIC_PREPROCESSING
 %
 % The configuration options are
-%   cfg.part = participants which shall be processed: experimenter, child or both (default: both)
+%   cfg.part = participants which shall be processed: mother, child or both (default: both)
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_IMPORTDATASET, INFADI_PREPROCESSING
+% See also COSMIC_IMPORTDATASET, COSMIC_PREPROCESSING
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -22,16 +22,16 @@ function [ data ] = INFADI_concatData( cfg, data )
 % -------------------------------------------------------------------------
 part = ft_getopt(cfg, 'part', 'both');                                      % participant selection
 
-if ~ismember(part, {'experimenter', 'child', 'both'})                       % check cfg.part definition
-  error('cfg.part has to either ''experimenter'', ''child'' or ''both''.');
+if ~ismember(part, {'mother', 'child', 'both'})                             % check cfg.part definition
+  error('cfg.part has to either ''mother'', ''child'' or ''both''.');
 end
 
 % -------------------------------------------------------------------------
 % Concatenate the data
 % -------------------------------------------------------------------------
-if ismember(part, {'experimenter', 'both'})
-  fprintf('Concatenate trials of experimenter...\n');
-  dataTmp.experimenter = concatenate(data.experimenter);
+if ismember(part, {'mother', 'both'})
+  fprintf('Concatenate trials of mother...\n');
+  dataTmp.mother = concatenate(data.mother);
 end
 
 if ismember(part, {'child', 'both'})

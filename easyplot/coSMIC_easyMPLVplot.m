@@ -1,22 +1,22 @@
-function INFADI_easyMPLVplot( cfg, data )
-% INFADI_EASYMPLVPLOT is a function, which makes it easier to plot the mean 
+function coSMIC_easyMPLVplot( cfg, data )
+% COSMIC_EASYMPLVPLOT is a function, which makes it easier to plot the mean 
 % PLV values from all electrodes of a specific condition from the 
-% INFADI_DATASTRUCTURE.
+% COSMIC_DATASTRUCTURE.
 %
 % Use as
-%   INFADI_easyPLVplot( cfg, data )
+%   coSMIC_easyPLVplot( cfg, data )
 %
-% where the input data has to be the result either of INFADI_CALCMEANPLV or
-% INFADI_MPLVOVERDYADS
+% where the input data has to be the result either of COSMIC_CALCMEANPLV or
+% COSMIC_MPLVOVERDYADS
 %
 % The configuration options are
-%   cfg.condition = condition (default: 4 or 'Baseline', see INFADI_DATASTRUCTURE)
+%   cfg.condition = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
 %   cfg.elecorder = describes the order of electrodes (use 'default' or specific order i.e.: 'infadi_01')
 %                   default value: 'default'
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_DATASTRUCTURE, PLOT, INFADI_CALCMEANPLV, INFADI_MPLVOVERDYADS
+% See also COSMIC_DATASTRUCTURE, PLOT, COSMIC_CALCMEANPLV, COSMIC_MPLVOVERDYADS
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -40,7 +40,7 @@ trialinfo = data.trialinfo;                                                 % ge
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond = INFADI_checkCondition( cond );                                       % check cfg.condition definition and translate it into trl number    
+cond = coSMIC_checkCondition( cond );                                       % check cfg.condition definition and translate it into trl number    
 trl  = find(trialinfo == cond);
 if isempty(trl)
   error('The selected dataset contains no condition %d.', cond);

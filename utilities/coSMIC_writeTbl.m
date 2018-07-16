@@ -1,14 +1,14 @@
-function INFADI_writeTbl( cfg, data )
-% INFADI_WRITETBL writes the numbers of good trials for each condition of a 
+function coSMIC_writeTbl( cfg, data )
+% COSMIC_WRITETBL writes the numbers of good trials for each condition of a 
 % specific dyad in plv or itpc estimations to the associated files.
 %
 % Use as
-%   INFADI_writeTbl( cfg, data )
+%   coSMIC_writeTbl( cfg, data )
 %
-% The input data hast to be from INFADI_PHASELOCKVAL
+% The input data hast to be from COSMIC_PHASELOCKVAL
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01905/eegData/DualEEG_INFADI_processedData/00_settings/')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/00_settings/')
 %   cfg.dyad        = number of dyad
 %   cfg.type        = type of documentation file (options: plv)
 %   cfg.param       = additional params for type 'plv' (options: 'theta', 'alpha', 'beta', 'gamma');
@@ -16,7 +16,7 @@ function INFADI_writeTbl( cfg, data )
 %
 % This function requires the fieldtrip toolbox.
 %
-% SEE also INFADI_INTERTRIALPHASECOH, INFADI_PHASELOCKVAL
+% SEE also COSMIC_INTERTRIALPHASECOH, COSMIC_PHASELOCKVAL
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -24,7 +24,7 @@ function INFADI_writeTbl( cfg, data )
 % Get config options
 % -------------------------------------------------------------------------
 desFolder   = ft_getopt(cfg, 'desFolder', ...
-          '/data/pt_01905/eegData/DualEEG_INFADI_processedData/00_settings/');
+          '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/00_settings/');
 dyad        = ft_getopt(cfg, 'dyad', []);
 type        = ft_getopt(cfg, 'type', []);
 param       = ft_getopt(cfg, 'param', []);
@@ -53,7 +53,7 @@ end
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
 % -------------------------------------------------------------------------
@@ -93,7 +93,7 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
   cfg.param       = param;
   cfg.sessionStr  = sessionStr;
   
-  INFADI_createTbl(cfg);                                                    % create file
+  coSMIC_createTbl(cfg);                                                    % create file
 end
 
 % -------------------------------------------------------------------------

@@ -1,19 +1,19 @@
-function [ data_eogcomp ] = INFADI_verifyComp( cfg, data_eogcomp, data_icacomp )
-% INFADI_VERIFYCOMP is a function to verify visually the ICA components
+function [ data_eogcomp ] = coSMIC_verifyComp( cfg, data_eogcomp, data_icacomp )
+% COSMIC_VERIFYCOMP is a function to verify visually the ICA components
 % having a high correlation with one of the measured EOG signals.
 %
 % Use as
-%   [ data_eogcomp ] = INFADI_verifyComp( data_eogcomp, data_icacomp )
+%   [ data_eogcomp ] = coSMIC_verifyComp( data_eogcomp, data_icacomp )
 %
-% where the input data_eogcomp has to be the result of INFADI_CORRCOMP ans 
-% data_icacomp the result of INFADI_ICA
+% where the input data_eogcomp has to be the result of COSMIC_CORRCOMP ans 
+% data_icacomp the result of COSMIC_ICA
 %
 % The configuration options are
 %   cfg.part        = participants which shall be processed: experimenter, child or both (default: both)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_CORRCOMP, INFADI_ICA and FT_DATABROWSER
+% See also COSMIC_CORRCOMP, COSMIC_ICA and FT_DATABROWSER
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -22,7 +22,7 @@ function [ data_eogcomp ] = INFADI_verifyComp( cfg, data_eogcomp, data_icacomp )
 % -------------------------------------------------------------------------
 part        = ft_getopt(cfg, 'part', 'both');
 
-if ~ismember(part, {'experimenter', 'child', 'both'})                       % check cfg.part definition
+if ~ismember(part, {'mother', 'child', 'both'})                             % check cfg.part definition
   error('cfg.part has to either ''experimenter'', ''child'' or ''both''.');
 end
 

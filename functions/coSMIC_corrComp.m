@@ -1,12 +1,12 @@
-function [ data_eogcomp ] = INFADI_corrComp( cfg, data_icacomp, data_sensor )
-% INFADI_CORRCOMP estimates components which have a high correlation
+function [ data_eogcomp ] = coSMIC_corrComp( cfg, data_icacomp, data_sensor )
+% COSMIC_CORRCOMP estimates components which have a high correlation
 % (> 80%) with the EOGV and EOGH components of the original data
 %
 % Use as
-%   [ data_eogcomp ] = INFADI_corrComp( data_icacomp, data_sensor )
+%   [ data_eogcomp ] = COSMIC_corrComp( data_icacomp, data_sensor )
 %
-% where input data_icacomp has to be the results of INFADI_ICA and 
-% data_sensor the results of INFADI_SELECTDATA
+% where input data_icacomp has to be the results of COSMIC_ICA and 
+% data_sensor the results of COSMIC_SELECTDATA
 %
 % The configuration options are
 %   cfg.part        = participants which shall be processed: experimenter, child or both (default: both)
@@ -15,7 +15,7 @@ function [ data_eogcomp ] = INFADI_corrComp( cfg, data_icacomp, data_sensor )
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_ICA and INFADI_SELECTDATA
+% See also COSMIC_ICA and COSMIC_SELECTDATA
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 

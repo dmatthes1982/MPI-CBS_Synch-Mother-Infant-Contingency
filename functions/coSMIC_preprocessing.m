@@ -1,10 +1,10 @@
-function [ data ] = INFADI_preprocessing( cfg, data )
-% INFADI_PREPROCESSING does the preprocessing of the raw data. 
+function [ data ] = coSMIC_preprocessing( cfg, data )
+% COSMIC_PREPROCESSING does the preprocessing of the raw data. 
 %
 % Use as
-%   [ data ] = INFADI_preprocessing(cfg, data)
+%   [ data ] = coSMIC_preprocessing(cfg, data)
 %
-% where the input data have to be the result from INFADI_IMPORTATASET
+% where the input data have to be the result from COSMIC_IMPORTATASET
 %
 % The configuration options are
 %   cfg.bpfreq            = passband range [begin end] (default: [0.1 48])
@@ -16,7 +16,7 @@ function [ data ] = INFADI_preprocessing( cfg, data )
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_IMPORTDATASET, FT_PREPROCESSING, INFADI_DATASTRUCTURE
+% See also COSMIC_IMPORTDATASET, FT_PREPROCESSING, COSMIC_DATASTRUCTURE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -74,14 +74,14 @@ cfgDS.showcallinfo     = 'no';                                              % pr
 % -------------------------------------------------------------------------
 % Preprocessing
 % -------------------------------------------------------------------------
-fprintf('<strong>Preproc experimenter...</strong>\n');
-orgFs       = data.experimenter.fsample;
-data.experimenter  = bpfilter(cfgBP, data.experimenter);
-data.experimenter  = rereference(cfgReref, data.experimenter);
+fprintf('<strong>Preproc mother...</strong>\n');
+orgFs       = data.mother.fsample;
+data.mother  = bpfilter(cfgBP, data.mother);
+data.mother  = rereference(cfgReref, data.mother);
 if orgFs ~= samplingRate
-  data.experimenter  = downsampling(cfgDS, data.experimenter);
+  data.mother  = downsampling(cfgDS, data.mother);
 else
-  data.experimenter.fsample = orgFs;
+  data.mother.fsample = orgFs;
 end
   
 fprintf('<strong>Preproc child...</strong>\n');
@@ -155,7 +155,7 @@ end
 cfgR = removefields(cfgR, {'calcceogcomp'});
 data_out = ft_preprocessing(cfgR, data_in);
 
-if strcmp(calcceogcomp, 'no')                                                % to have a similar output structure between experimenter and child
+if strcmp(calcceogcomp, 'no')                                                % to have a similar output structure between mother and child
   data_out.label = data_out.label';
   data_out = removefields(data_out, {'hdr', 'fsample'});
   data_out = orderfields(data_out, ...

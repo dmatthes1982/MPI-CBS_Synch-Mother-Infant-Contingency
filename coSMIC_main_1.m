@@ -2,8 +2,8 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '01a_raw/';
-  cfg.filename  = 'INFADI_d01_01a_raw';
-  sessionNum    = INFADI_getSessionNum( cfg );
+  cfg.filename  = 'coSMIC_d01_01a_raw';
+  sessionNum    = coSMIC_getSessionNum( cfg );
   if sessionNum == 0
     sessionNum = 1;
   end
@@ -11,11 +11,11 @@ if ~exist('sessionStr', 'var')
 end
 
 if ~exist('srcPath', 'var')
-  srcPath = '/data/pt_01905/eegData/DualEEG_INFADI_rawData/';               % source path to raw data
+  srcPath = '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/';               % source path to raw data
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in raw data folder
@@ -26,7 +26,7 @@ if ~exist('numOfPart', 'var')                                               % es
   numOfPart     = zeros(1, numOfSources);
 
   for i=1:1:numOfSources
-    numOfPart(i)  = sscanf(sourceList{i}, 'INFADI_%d.vhdr');
+    numOfPart(i)  = sscanf(sourceList{i}, 'coSMIC_all_P%d.vhdr');
   end
 end
 
@@ -35,7 +35,7 @@ end
 % 2. select corrupted channels 
 % 3. repair corrupted channels
 
-cprintf([1,0.4,1], '<strong>[1] - Data import and repairing of bad channels</strong>\n');
+cprintf([0,0.6,0], '<strong>[1] - Data import and repairing of bad channels</strong>\n');
 fprintf('\n');
 
 %% import data from brain vision eeg files %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,12 +49,12 @@ for i = numOfPart
   
   fprintf('<strong>Import data of dyad %d</strong> from: %s ...\n', i, cfg.path);
   ft_info off;
-  data_raw = INFADI_importDataset( cfg );
+  data_raw = coSMIC_importDataset( cfg );
   ft_info on;
 
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01a_raw/');
-  cfg.filename    = sprintf('INFADI_d%02d_01a_raw', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_01a_raw', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -62,7 +62,7 @@ for i = numOfPart
   
   fprintf('The RAW data of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_raw', data_raw);
+  coSMIC_saveData(cfg, 'data_raw', data_raw);
   fprintf('Data stored!\n\n');
   clear data_raw
 end
@@ -78,7 +78,7 @@ if ~(exist(settings_file, 'file') == 2)                                     % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  INFADI_createTbl(cfg);                                                    % create settings file
+  coSMIC_createTbl(cfg);                                                    % create settings file
 end
 
 % Load settings file
@@ -93,27 +93,27 @@ for i = numOfPart
   
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '01a_raw/');
-  cfg.filename    = sprintf('INFADI_d%02d_01a_raw', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_01a_raw', i);
   cfg.sessionStr  = sessionStr;
     
   fprintf('Load raw data...\n');
-  INFADI_loadData( cfg );
+  coSMIC_loadData( cfg );
   
   % Concatenated raw trials to a continuous stream
   cfg = [];
   cfg.part = 'both';
 
-  data_continuous = INFADI_concatData( cfg, data_raw );
+  data_continuous = coSMIC_concatData( cfg, data_raw );
 
   fprintf('\n');
 
   % select corrupted channels
-  data_badchan = INFADI_selectBadChan( data_continuous );
+  data_badchan = coSMIC_selectBadChan( data_continuous );
   
   % export the bad channels in a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01b_badchan/');
-  cfg.filename    = sprintf('INFADI_d%02d_01b_badchan', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_01b_badchan', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -121,15 +121,15 @@ for i = numOfPart
 
   fprintf('Bad channels of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_badchan', data_badchan);
+  coSMIC_saveData(cfg, 'data_badchan', data_badchan);
   fprintf('Data stored!\n\n');
   clear data_continuous
   
   % add bad labels of bad channels to the settings file
-  if isempty(data_badchan.experimenter.badChan)
+  if isempty(data_badchan.mother.badChan)
     badChanPart1 = {'---'};
   else
-    badChanPart1 = {strjoin(data_badchan.experimenter.badChan,',')};
+    badChanPart1 = {strjoin(data_badchan.mother.badChan,',')};
   end
   if isempty(data_badchan.child.badChan)
     badChanPart2 = {'---'};
@@ -142,12 +142,12 @@ for i = numOfPart
   warning on;
   
   % repair corrupted channels
-  data_repaired = INFADI_repairBadChan( data_badchan, data_raw );
+  data_repaired = coSMIC_repairBadChan( data_badchan, data_raw );
   
   % export the bad channels in a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01c_repaired/');
-  cfg.filename    = sprintf('INFADI_d%02d_01c_repaired', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_01c_repaired', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -155,7 +155,7 @@ for i = numOfPart
 
   fprintf('Repaired raw data of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_repaired', data_repaired);
+  coSMIC_saveData(cfg, 'data_repaired', data_repaired);
   fprintf('Data stored!\n\n');
   clear data_repaired data_raw data_badchan 
 end

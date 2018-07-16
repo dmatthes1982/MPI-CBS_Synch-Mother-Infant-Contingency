@@ -1,16 +1,16 @@
-function [ cfgAutoArt ] = INFADI_autoArtifact( cfg, data )
-% INFADI_AUTOARTIFACT marks timeslots as an artifact in which the values of
+function [ cfgAutoArt ] = coSMIC_autoArtifact( cfg, data )
+% COSMIC_AUTOARTIFACT marks timeslots as an artifact in which the values of
 % specified channels exeeds either a min-max level, a defined range, a
 % standard deviation threshold or a defined mutiple of the median absolute
 % deviation.
 %
 % Use as
-%   [ cfgAutoArt ] = INFADI_autoArtifact(cfg, data)
+%   [ cfgAutoArt ] = coSMIC_autoArtifact(cfg, data)
 %
-% where data have to be a result of INFADI_PREPROCESSING or INFADI_CONCATDATA
+% where data have to be a result of COSMIC_PREPROCESSING or COSMIC_CONCATDATA
 %
 % The configuration options are
-%   cfg.part        = participants which shall be processed: experimenter, child or both (default: both)
+%   cfg.part        = participants which shall be processed: mother, child or both (default: both)
 %   cfg.channel     = cell-array with channel labels (default: {'Cz', 'O1', 'O2'}))
 %   cfg.method      = 'minmax', 'range' or 'stddev' (default: 'minmax'
 %   cfg.sliding     = use a sliding window, 'yes' or 'no', (default: 'no')
@@ -24,7 +24,7 @@ function [ cfgAutoArt ] = INFADI_autoArtifact( cfg, data )
 %   cfg.overlap     = amount of window overlapping in percentage (default: 0, permitted values: 0 or 50)
 %
 % Specify at least one of theses thresholds. First value is defined for
-% experimenters, the second one for children
+% mothers, the second one for children
 %   cfg.min         = lower limit in uV (default: [-75 -75])
 %   cfg.max         = upper limit in uV (default: [75 75])
 %   cfg.range       = range in uV (default: [200 200])
@@ -34,8 +34,8 @@ function [ cfgAutoArt ] = INFADI_autoArtifact( cfg, data )
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_GENTRL, INFADI_PREPROCESSING, INFADI_SEGMENTATION, 
-% INFADI_CONCATDATA, FT_ARTIFACT_THRESHOLD
+% See also COSMIC_GENTRL, COSMIC_PREPROCESSING, COSMIC_SEGMENTATION, 
+% COSMIC_CONCATDATA, FT_ARTIFACT_THRESHOLD
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -43,7 +43,7 @@ function [ cfgAutoArt ] = INFADI_autoArtifact( cfg, data )
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
 % -------------------------------------------------------------------------
@@ -54,8 +54,8 @@ chan        = ft_getopt(cfg, 'channel', {'Cz', 'O1', 'O2'});                % ch
 method      = ft_getopt(cfg, 'method', 'minmax');                           % artifact detection method
 sliding     = ft_getopt(cfg, 'sliding', 'no');                              % use a sliding window
 
-if ~ismember(part, {'experimenter', 'child', 'both'})                       % check cfg.part definition
-  error('cfg.part has to either ''experimenter'', ''child'' or ''both''.');
+if ~ismember(part, {'mother', 'child', 'both'})                             % check cfg.part definition
+  error('cfg.part has to either ''mother'', ''child'' or ''both''.');
 end
 
 if ~(strcmp(sliding, 'no') || strcmp(sliding, 'yes'))                       % validate cfg.sliding
@@ -72,9 +72,9 @@ end
 cfgTrl          = [];
 cfgTrl.length   = trllength;
 cfgTrl.overlap  = overlap;
-trl = INFADI_genTrl(cfgTrl, data);                                          % generate subtrial specification
+trl = coSMIC_genTrl(cfgTrl, data);                                          % generate subtrial specification
 
-trllength = trllength * data.experimenter.fsample/1000;                     % convert subtrial length from milliseconds into number of samples
+trllength = trllength * data.mother.fsample/1000;                           % convert subtrial length from milliseconds into number of samples
 
 switch method                                                               % get and check method dependent config input
   case 'minmax'
@@ -157,8 +157,8 @@ end
 % -------------------------------------------------------------------------
 % Estimate artifacts
 % -------------------------------------------------------------------------
-if ismember(part, {'experimenter', 'both'})
-  cfgAutoArt.experimenter = [];                                               % build output structure
+if ismember(part, {'mother', 'both'})
+  cfgAutoArt.mother = [];                                                   % build output structure
   cfgAutoArt.bad1Num = [];
 end
 
@@ -171,20 +171,20 @@ cfgAutoArt.trialsNum = size(trl, 1);
 
 ft_info off;
 
-if ismember(part, {'experimenter', 'both'})
-  fprintf('<strong>Estimate artifacts in experimenter...</strong>\n');      % experimenter
-  cfgAutoArt.experimenter = artifact_detect(cfg, data.experimenter);
-  cfgAutoArt.experimenter = keepfields(cfgAutoArt.experimenter, {'artfctdef', 'showcallinfo'});
-  [cfgAutoArt.experimenter.artfctdef.threshold, cfgAutoArt.bad1Num] = ...   % extend artifacts to subtrial definition
-                  combineArtifacts( overlap, trllength, cfgAutoArt.experimenter.artfctdef.threshold );
+if ismember(part, {'mother', 'both'})
+  fprintf('<strong>Estimate artifacts in mother...</strong>\n');      % mother
+  cfgAutoArt.mother = artifact_detect(cfg, data.mother);
+  cfgAutoArt.mother = keepfields(cfgAutoArt.mother, {'artfctdef', 'showcallinfo'});
+  [cfgAutoArt.mother.artfctdef.threshold, cfgAutoArt.bad1Num] = ...   % extend artifacts to subtrial definition
+                  combineArtifacts( overlap, trllength, cfgAutoArt.mother.artfctdef.threshold );
   fprintf('%d segments with artifacts detected!\n', cfgAutoArt.bad1Num);
 
   if cfgAutoArt.bad1Num == sum(generalDefinitions.trialNum1sec)
     warning('All trials are marked as bad, it is recommended to recheck the channels quality!');
   end
 
-  if isfield(cfgAutoArt.experimenter.artfctdef.threshold, 'artfctmap')
-    artfctmap = cfgAutoArt.experimenter.artfctdef.threshold.artfctmap;
+  if isfield(cfgAutoArt.mother.artfctdef.threshold, 'artfctmap')
+    artfctmap = cfgAutoArt.mother.artfctdef.threshold.artfctmap;
     artfctmap = cellfun(@(x) sum(x, 2), artfctmap, 'UniformOutput', false);
     cfgAutoArt.bad1NumChan = sum(cat(2,artfctmap{:}),2);
   end
@@ -203,7 +203,7 @@ switch method                                                               % ch
 end
 
 if ismember(part, {'child', 'both'})
-  fprintf('<strong>Estimate artifacts in child...</strong>\n');     % child
+  fprintf('<strong>Estimate artifacts in child...</strong>\n');             % child
   cfgAutoArt.child = artifact_detect(cfg, data.child);
   cfgAutoArt.child = keepfields(cfgAutoArt.child, {'artfctdef', 'showcallinfo'});
   [cfgAutoArt.child.artfctdef.threshold, cfgAutoArt.bad2Num] = ...          % extend artifacts to subtrial definition

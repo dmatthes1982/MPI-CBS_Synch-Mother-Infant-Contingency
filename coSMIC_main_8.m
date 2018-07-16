@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subfolder = '04b_eyecor';
-  cfg.filename  = 'INFADI_d01_04b_eyecor';
-  sessionStr    = sprintf('%03d', INFADI_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'coSMIC_d01_04b_eyecor';
+  sessionStr    = sprintf('%03d', coSMIC_getSessionNum( cfg ));             % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in eyecor data folder
@@ -20,21 +20,21 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('INFADI_d%d_04b_eyecor_', sessionStr, '.mat'));
+                    strcat('coSMIC_d%d_04b_eyecor_', sessionStr, '.mat'));
   end
 end
 
 %% part 8
 % Calculate TFRs of the EOG-artifact corrected data
 
-cprintf([1,0.4,1], '<strong>[8] - Power analysis (TFR, pWelch)</strong>\n');
+cprintf([0,0.6,0], '<strong>[8] - Power analysis (TFR, pWelch)</strong>\n');
 fprintf('\n');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Calculation of time-frequency response (TFR)
 choise = false;
 while choise == false
-  cprintf([1,0.4,1], 'Should the time-frequency response calculated?\n');
+  cprintf([0,0.6,0], 'Should the time-frequency response calculated?\n');
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
     choise = true;
@@ -55,21 +55,21 @@ if tfr == true
     cfg             = [];                                                   % load EOG-artifact corrected data
     cfg.srcFolder   = strcat(desPath, '04b_eyecor/');
     cfg.sessionStr  = sessionStr;
-    cfg.filename    = sprintf('INFADI_d%02d_04b_eyecor', i);
+    cfg.filename    = sprintf('coSMIC_d%02d_04b_eyecor', i);
 
     fprintf('Load eye-artifact corrected data...\n\n');
-    INFADI_loadData( cfg );
+    coSMIC_loadData( cfg );
 
     cfg         = [];
     cfg.foi     = 2:1:50;                                                   % frequency of interest
     cfg.toi     = 4:0.5:176;                                                % time of interest
 
-    data_tfr = INFADI_timeFreqanalysis( cfg, data_eyecor );
+    data_tfr = coSMIC_timeFreqanalysis( cfg, data_eyecor );
 
     % export TFR data into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '08a_tfr/');
-    cfg.filename    = sprintf('INFADI_d%02d_08a_tfr', i);
+    cfg.filename    = sprintf('coSMIC_d%02d_08a_tfr', i);
     cfg.sessionStr  = sessionStr;
 
     file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -77,7 +77,7 @@ if tfr == true
 
     fprintf('Time-frequency response data of dyad %d will be saved in:\n', i); 
     fprintf('%s ...\n', file_path);
-    INFADI_saveData(cfg, 'data_tfr', data_tfr);
+    coSMIC_saveData(cfg, 'data_tfr', data_tfr);
     fprintf('Data stored!\n\n');
     clear data_tfr data_eyecor
   end
@@ -87,7 +87,7 @@ end
 %% Calculation of power spectral density using Welch's method (pWelch)
 choise = false;
 while choise == false
-  cprintf([1,0.4,1], 'Should the power spectral density by using Welch''s method be calculated?\n');
+  cprintf([0,0.6,0], 'Should the power spectral density by using Welch''s method be calculated?\n');
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
     choise = true;
@@ -104,7 +104,7 @@ fprintf('\n');
 if pwelch == true
   choise = false;
   while choise == false
-    cprintf([1,0.4,1], 'Should rejection of detected artifacts be applied before PSD estimation?\n');
+    cprintf([0,0.6,0], 'Should rejection of detected artifacts be applied before PSD estimation?\n');
     x = input('Select [y/n]: ','s');
     if strcmp('y', x)
       choise = true;
@@ -126,7 +126,7 @@ if pwelch == true
     cfg.type        = 'settings';
     cfg.sessionStr  = sessionStr;
   
-    INFADI_createTbl(cfg);                                                  % create settings file
+    coSMIC_createTbl(cfg);                                                  % create settings file
   end
 
   T = readtable(file_path);                                                 % update settings table
@@ -142,11 +142,11 @@ if pwelch == true
     % Load eye-artifact corrected data
     cfg             = [];
     cfg.srcFolder   = strcat(desPath, '04b_eyecor/');
-    cfg.filename    = sprintf('INFADI_d%02d_04b_eyecor', i);
+    cfg.filename    = sprintf('coSMIC_d%02d_04b_eyecor', i);
     cfg.sessionStr  = sessionStr;
 
     fprintf('Load eye-artifact corrected data...\n\n');
-    INFADI_loadData( cfg );
+    coSMIC_loadData( cfg );
     
     % Segmentation of conditions in segments of one second with 75 percent
     % overlapping
@@ -155,7 +155,7 @@ if pwelch == true
     cfg.overlap  = 0.75;                                                    % 75 percent overlap
     
     fprintf('<strong>Segmentation of eye-artifact corrected data.</strong>\n');
-    data_eyecor = INFADI_segmentation( cfg, data_eyecor );
+    data_eyecor = coSMIC_segmentation( cfg, data_eyecor );
 
     fprintf('\n');
     
@@ -163,14 +163,14 @@ if pwelch == true
     if artifactRejection == true
       cfg             = [];
       cfg.srcFolder   = strcat(desPath, '05b_allart/');
-      cfg.filename    = sprintf('INFADI_d%02d_05b_allart', i);
+      cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
       cfg.sessionStr  = sessionStr;
 
       file_path = strcat(cfg.srcFolder, cfg.filename, '_', cfg.sessionStr, ...
                        '.mat');
       if ~isempty(dir(file_path))
         fprintf('Loading %s ...\n', file_path);
-        INFADI_loadData( cfg );                                                  
+        coSMIC_loadData( cfg );                                                  
         artifactAvailable = true;     
       else
         fprintf('File %s is not existent,\n', file_path);
@@ -189,7 +189,7 @@ if pwelch == true
         cfg.target    = 'single';
 
         fprintf('<strong>Artifact Rejection with eye-artifact corrected data.</strong>\n');
-        data_eyecor = INFADI_rejectArtifacts(cfg, data_eyecor);
+        data_eyecor = coSMIC_rejectArtifacts(cfg, data_eyecor);
         fprintf('\n');
       end
       
@@ -200,14 +200,14 @@ if pwelch == true
     cfg         = [];
     cfg.foi     = 1:1:50;                                                   % frequency of interest
       
-    data_eyecor = INFADI_pWelch( cfg, data_eyecor );                        % calculate power spectral density using Welch's method
+    data_eyecor = coSMIC_pWelch( cfg, data_eyecor );                        % calculate power spectral density using Welch's method
     data_pwelch = data_eyecor;                                              % to save need of RAM
     clear data_eyecor
     
     % export PSD data into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '08b_pwelch/');
-    cfg.filename    = sprintf('INFADI_d%02d_08b_pwelch', i);
+    cfg.filename    = sprintf('coSMIC_d%02d_08b_pwelch', i);
     cfg.sessionStr  = sessionStr;
 
     file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -215,7 +215,7 @@ if pwelch == true
 
     fprintf('Power spectral density data of dyad %d will be saved in:\n', i); 
     fprintf('%s ...\n', file_path);
-    INFADI_saveData(cfg, 'data_pwelch', data_pwelch);
+    coSMIC_saveData(cfg, 'data_pwelch', data_pwelch);
     fprintf('Data stored!\n\n');
     clear data_pwelch
   end

@@ -1,16 +1,16 @@
-function INFADI_easyTFRplot(cfg, data)
-% INFADI_EASYTFRPLOT is a function, which makes it easier to plot a
+function coSMIC_easyTFRplot(cfg, data)
+% COSMIC_EASYTFRPLOT is a function, which makes it easier to plot a
 % time-frequency-spectrum of a specific condition and trial from the 
-% INFADI_DATASTRUCTURE.
+% COSMIC_DATASTRUCTURE.
 %
 % Use as
-%   INFADI_easyTFRPlot(cfg, data)
+%   coSMIC_easyTFRPlot(cfg, data)
 %
-% where the input data is a results from INFADI_TIMEFREQANALYSIS.
+% where the input data is a results from coSMIC_TIMEFREQANALYSIS.
 %
 % The configuration options are 
-%   cfg.part        = participant identifier, options: 'experimenter' or 'child' (default: 'experimenter')
-%   cfg.condition   = condition (default: 4 or 'Baseline', see INFADI_DATASTRUCTURE)
+%   cfg.part        = participant identifier, options: 'mother' or 'child' (default: 'mother')
+%   cfg.condition   = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = number of trial (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 50])
@@ -18,27 +18,27 @@ function INFADI_easyTFRplot(cfg, data)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also FT_SINGLEPLOTTFR, INFADI_TIMEFREQANALYSIS, INFADI_DATASTRUCTURE
+% See also FT_SINGLEPLOTTFR, COSMIC_TIMEFREQANALYSIS, COSMIC_DATASTRUCTURE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part    = ft_getopt(cfg, 'part', 'experimenter');
+part    = ft_getopt(cfg, 'part', 'mother');
 cond    = ft_getopt(cfg, 'condition', 4);
 elec    = ft_getopt(cfg, 'electrode', 'Cz');
 trl     = ft_getopt(cfg, 'trial', 1);
 freqlim = ft_getopt(cfg, 'freqlimits', [2 50]);
 timelim = ft_getopt(cfg, 'timelimits', [4 116]);
 
-if ~ismember(part, {'experimenter', 'child'})                               % check cfg.part definition
-  error('cfg.part has to either ''experimenter'' or ''child''.');
+if ~ismember(part, {'mother', 'child'})                                     % check cfg.part definition
+  error('cfg.part has to either ''mother'' or ''child''.');
 end
 
 switch part                                                                 % extract selected participant
-    case 'experimenter'
-    data = data.experimenter;
+    case 'mother'
+    data = data.mother;
   case 'child'
     data = data.child;
 end
@@ -49,7 +49,7 @@ label     = data.label;                                                     % ge
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond    = INFADI_checkCondition( cond );                                    % check cfg.condition definition    
+cond    = coSMIC_checkCondition( cond );                                    % check cfg.condition definition    
 trials  = find(trialinfo == cond);
 if isempty(trials)
   error('The selected dataset contains no condition %d.', cond);

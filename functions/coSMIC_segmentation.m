@@ -1,12 +1,12 @@
-function [ data ] = INFADI_segmentation(cfg, data )
-% INFADI_SEGMENTATION segments the data of each condition into segments with a
+function [ data ] = coSMIC_segmentation(cfg, data )
+% COSMIC_SEGMENTATION segments the data of each condition into segments with a
 % certain length
 %
 % Use as
-%   [ data ] = INFADI_segmentation( cfg, data )
+%   [ data ] = coSMIC_segmentation( cfg, data )
 %
-% where the input data can be the result from INFADI_IMPORTDATASET, 
-% INFADI_PREPROCESSING, INFADI_BPFILTERING or INFADI_HILBERTPHASE
+% where the input data can be the result from COSMIC_IMPORTDATASET, 
+% COSMIC_PREPROCESSING, COSMIC_BPFILTERING or COSMIC_HILBERTPHASE
 %
 % The configuration options are
 %   cfg.length    = length of segments (excepted values: 0.2, 1, 5, 10 seconds, default: 1)
@@ -14,8 +14,8 @@ function [ data ] = INFADI_segmentation(cfg, data )
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_IMPORTDATASET, INFADI_PREPROCESSING, FT_REDEFINETRIAL,
-% INFADI_DATASTRUCTURE, INFADI_BPFILTERING, INFADI_HILBERTPHASE
+% See also COSMIC_IMPORTDATASET, COSMIC_PREPROCESSING, FT_REDEFINETRIAL,
+% COSMIC_DATASTRUCTURE, COSMIC_BPFILTERING, COSMIC_HILBERTPHASE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -44,11 +44,11 @@ cfg.overlap         = overlap;
 % -------------------------------------------------------------------------
 % Segmentation
 % -------------------------------------------------------------------------
-fprintf('<strong>Segment data of experimenter in segments of %d sec...</strong>\n', ...
+fprintf('<strong>Segment data of mother in segments of %d sec...</strong>\n', ...
         segLength);
 ft_info off;
 ft_warning off;
-data.experimenter = ft_redefinetrial(cfg, data.experimenter);
+data.mother = ft_redefinetrial(cfg, data.mother);
     
 fprintf('<strong>Segment data of child in segments of %d sec...</strong>\n', ...
         segLength);

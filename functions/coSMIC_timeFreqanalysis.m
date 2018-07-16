@@ -1,11 +1,11 @@
-function [ data ] = INFADI_timeFreqanalysis( cfg, data )
-% INFADI_TIMEFREQANALYSIS performs a time frequency analysis.
+function [ data ] = coSMIC_timeFreqanalysis( cfg, data )
+% COSMIC_TIMEFREQANALYSIS performs a time frequency analysis.
 %
 % Use as
-%   [ data ] = INFADI_timeFreqanalysis(cfg, data)
+%   [ data ] = coSMIC_timeFreqanalysis(cfg, data)
 %
-% where the input data has to be the result from INFADI_IMPORTDATASET,
-% INFADI_PREPROCESSING or INFADI_SEGMENTATION
+% where the input data has to be the result from COSMIC_IMPORTDATASET,
+% COSMIC_PREPROCESSING or COSMIC_SEGMENTATION
 %
 % The configuration options are
 %   config.foi = frequency of interest - begin:resolution:end (default: 2:1:50)
@@ -13,8 +13,8 @@ function [ data ] = INFADI_timeFreqanalysis( cfg, data )
 %   
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_IMPORTDATASET, INFADI_PREPROCESSING, INFADI_SEGMENTATION, 
-% INFADI_DATASTRUCTURE
+% See also COSMIC_IMPORTDATASET, COSMIC_PREPROCESSING, COSMIC_SEGMENTATION, 
+% COSMIC_DATASTRUCTURE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -45,9 +45,9 @@ cfg.showcallinfo    = 'no';                                                 % su
 % -------------------------------------------------------------------------
 % Time-Frequency Response (Analysis)
 % -------------------------------------------------------------------------
-fprintf('<strong>Calc TFRs of experimenters data...</strong>\n');
+fprintf('<strong>Calc TFRs of mothers data...</strong>\n');
 ft_warning off;
-data.experimenter = ft_freqanalysis(cfg, data.experimenter);
+data.mother = ft_freqanalysis(cfg, data.mother);
   
 fprintf('<strong>Calc TFRs of childs data...</strong>\n');
 ft_warning off;

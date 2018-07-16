@@ -1,11 +1,11 @@
-function [ data ] = INFADI_hilbertPhase( data )
-% INFADI_HILBERTPHASE estimates the Hilbert phase of every channel in every 
-% trial in the INFADI_DATASTRUCTURE
+function [ data ] = coSMIC_hilbertPhase( data )
+% COSMIC_HILBERTPHASE estimates the Hilbert phase of every channel in every 
+% trial in the COSMIC_DATASTRUCTURE
 %
 % Use as
-%   [ data ] = INFADI_hilbertPhase( data )
+%   [ data ] = coSMIC_hilbertPhase( data )
 %
-% where the input data have to be the result from INFADI_BPFILTERING
+% where the input data have to be the result from COSMIC_BPFILTERING
 %
 % This functions calculates also the Hilbert average ratio as described in
 % the Paper of M. Chavez (2005). This value could be used to check the
@@ -17,7 +17,7 @@ function [ data ] = INFADI_hilbertPhase( data )
 %   [Chavez2005]    "Towards a proper extimation of phase synchronization
 %                   from time series"
 %
-% See also INFADI_DATASTRUCTURE, INFADI_BPFILTERING, FT_PREPROCESSING
+% See also COSMIC_DATASTRUCTURE, COSMIC_BPFILTERING, FT_PREPROCESSING
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -32,9 +32,9 @@ cfg.showcallinfo    = 'no';
 % -------------------------------------------------------------------------
 % Calculate Hilbert phase
 % -------------------------------------------------------------------------
-fprintf('<strong>Calc Hilbert phase of experimenters data at %g Hz...</strong>\n', ...           
+fprintf('<strong>Calc Hilbert phase of mothers data at %g Hz...</strong>\n', ...           
          data.centerFreq);
-data.experimenter   = hilbertTransform(cfg, data.experimenter);        
+data.mother   = hilbertTransform(cfg, data.mother);        
           
 fprintf('<strong>Calc Hilbert phase of childs data at %g Hz...</strong>\n', ...           
          data.centerFreq);

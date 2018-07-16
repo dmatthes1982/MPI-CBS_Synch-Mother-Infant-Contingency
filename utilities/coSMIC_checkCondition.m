@@ -1,8 +1,8 @@
-function [ num ] = INFADI_checkCondition( condition )
-% INFADI_CHECKCONDITION - This functions checks the defined condition. 
+function [ num ] = coSMIC_checkCondition( condition )
+% COSMIC_CHECKCONDITION - This functions checks the defined condition. 
 %
 % Use as
-%   [ num ] = INFADI_checkCondition( condition )
+%   [ num ] = coSMIC_checkCondition( condition )
 %
 % If condition is a number the function checks, if this number is equal to 
 % one of the default values and return this number in case of confirmity. 
@@ -10,9 +10,9 @@ function [ num ] = INFADI_checkCondition( condition )
 % the given string is valid. Otherwise the function throws an error.
 %
 % All available condition strings and numbers are defined in
-% INFADI_DATASTRUCTURE
+% COSMIC_DATASTRUCTURE
 %
-% SEE also INFADI_DATASTRUCTURE
+% SEE also COSMIC_DATASTRUCTURE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -20,7 +20,7 @@ function [ num ] = INFADI_checkCondition( condition )
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
 condNum = generalDefinitions.condNum;

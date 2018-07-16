@@ -1,17 +1,17 @@
-function [ data ] = INFADI_rejectArtifacts( cfg, data )
-% INFADI_REJECTARTIFACTS is a function which removes trials containing 
+function [ data ] = coSMIC_rejectArtifacts( cfg, data )
+% COSMIC_REJECTARTIFACTS is a function which removes trials containing 
 % artifacts. It returns clean data.
 %
 % Use as
-%   [ data ] = INFADI_rejectartifacts( cfg, data )
+%   [ data ] = coSMIC_rejectartifacts( cfg, data )
 %
-% where data can be a result of INFADI_SEGMENTATION, INFADI_BPFILTERING,
-% INFADI_CONCATDATA or INFADI_HILBERTPHASE
+% where data can be a result of COSMIC_SEGMENTATION, COSMIC_BPFILTERING,
+% COSMIC_CONCATDATA or COSMIC_HILBERTPHASE
 %
 % The configuration options are
-%   cfg.part      = participants which shall be processed: experimenter, child or both (default: both)
-%   cfg.artifact  = output of INFADI_manArtifact or INFADI_manArtifact 
-%                   (see file INFADI_pxx_05_autoArt_yyy.mat, INFADI_pxx_06_allArt_yyy.mat)
+%   cfg.part      = participants which shall be processed: mother, child or both (default: both)
+%   cfg.artifact  = output of COSMIC_MANARTIFACT or COSMIC_AUTOARTIFACT 
+%                   (see file coSMIC_pxx_05_autoArt_yyy.mat, coSMIC_pxx_06_allArt_yyy.mat)
 %   cfg.reject    = 'none', 'partial','nan', or 'complete' (default = 'complete')
 %   cfg.target    = type of rejection, options: 'single' or 'dual' (default: 'single');
 %                   'single' = trials of a certain participant will be 
@@ -24,8 +24,8 @@ function [ data ] = INFADI_rejectArtifacts( cfg, data )
 %
 % This function requires the fieldtrip toolbox.
 %
-% See also INFADI_SEGMENTATION, INFADI_BPFILTERING, INFADI_HILBERTPHASE, 
-% INFADI_MANARTIFACT and INFADI_AUTOARTIFACT 
+% See also COSMIC_SEGMENTATION, COSMIC_BPFILTERING, COSMIC_HILBERTPHASE, 
+% COSMIC_MANARTIFACT and COSMIC_AUTOARTIFACT 
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -37,8 +37,8 @@ artifact  = ft_getopt(cfg, 'artifact', []);
 reject    = ft_getopt(cfg, 'reject', 'complete');
 target    = ft_getopt(cfg, 'target', 'single');
 
-if ~ismember(part, {'experimenter', 'child', 'both'})                       % check cfg.part definition
-  error('cfg.part has to either ''experimenter'', ''child'' or ''both''.');
+if ~ismember(part, {'mother', 'child', 'both'})                             % check cfg.part definition
+  error('cfg.part has to either ''mother'', ''child'' or ''both''.');
 end
 
 if isempty(artifact)
@@ -50,9 +50,9 @@ if ~strcmp(target, 'single') && ~strcmp(target, 'dual')
 end
 
 if ~strcmp(reject, 'complete')
-  if ismember(part, {'experimenter', 'both'})
-    artifact.experimenter.artfctdef.reject = reject;
-    artifact.experimenter.artfctdef.minaccepttim = 0.2;
+  if ismember(part, {'mother', 'both'})
+    artifact.mother.artfctdef.reject = reject;
+    artifact.mother.artfctdef.minaccepttim = 0.2;
   end
 
   if ismember(part, {'child', 'both'})
@@ -65,13 +65,13 @@ end
 % -------------------------------------------------------------------------
 % Clean Data
 % -------------------------------------------------------------------------
-if ismember(part, {'experimenter', 'both'})
-  fprintf('\n<strong>Cleaning data of experimenter...</strong>\n');
+if ismember(part, {'mother', 'both'})
+  fprintf('\n<strong>Cleaning data of mother...</strong>\n');
   ft_warning off;
-  dataTmp.experimenter = ft_rejectartifact(artifact.experimenter, data.experimenter);
+  dataTmp.mother = ft_rejectartifact(artifact.mother, data.mother);
   if strcmp(target, 'dual')
     ft_warning off;
-    dataTmp.experimenter = ft_rejectartifact(artifact.child, data.experimenter);
+    dataTmp.mother = ft_rejectartifact(artifact.child, data.mother);
   end
 end
 
@@ -81,7 +81,7 @@ if ismember(part, {'child', 'both'})
   dataTmp.child = ft_rejectartifact(artifact.child, data.child);
   if strcmp(target, 'dual')
     ft_warning off;
-    dataTmp.child = ft_rejectartifact(artifact.experimenter, data.child);
+    dataTmp.child = ft_rejectartifact(artifact.mother, data.child);
   end
 end
   

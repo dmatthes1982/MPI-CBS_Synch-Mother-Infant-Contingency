@@ -2,18 +2,18 @@
 % Add directory and subfolders to path
 % -------------------------------------------------------------------------
 clc;
-INFADI_init;
+coSMIC_init;
 
-cprintf([1,0.4,1], '<strong>------------------------------------------------</strong>\n');
-cprintf([1,0.4,1], '<strong>Infant adult imitation project</strong>\n');
-cprintf([1,0.4,1], '<strong>Export number of segments with artifacts</strong>\n');
-cprintf([1,0.4,1], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
-cprintf([1,0.4,1], '<strong>------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>Synchronization in Mother Infant Contingency project</strong>\n');
+cprintf([0,0.6,0], '<strong>Export number of segments with artifacts</strong>\n');
+cprintf([0,0.6,0], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-path = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';
+path = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
 
 fprintf('\nThe default path is: %s\n', path);
 
@@ -42,7 +42,7 @@ end
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '05a_autoart/');
 
-fileList     = dir([tmpPath, 'INFADI_d*_05a_autoart_*.mat']);
+fileList     = dir([tmpPath, 'coSMIC_d*_05a_autoart_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -111,13 +111,13 @@ T = cell2table(num2cell(zeros(1,63)));
 T.Properties.VariableNames = [{'dyad', 'ArtifactsPart1', ...
                                 'ArtifactsPart2'} label_1 label_2];         % create empty table with variable names
 
-fileList     = dir([tmpPath, ['INFADI_d*_05a_autoart_' sessionStr '.mat']]);
+fileList     = dir([tmpPath, ['coSMIC_d*_05a_autoart_' sessionStr '.mat']]);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles  = length(fileList);
 numOfPart   = zeros(1, numOfFiles);
 for i = 1:1:numOfFiles
-  numOfPart(i) = sscanf(fileList{i}, strcat('INFADI_d%d*', sessionStr, '.mat'));
+  numOfPart(i) = sscanf(fileList{i}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
 end
 
 for i = 1:1:length(fileList)

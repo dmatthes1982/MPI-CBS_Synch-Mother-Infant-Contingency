@@ -1,18 +1,18 @@
-function [ data_badchan ] = INFADI_selectBadChan( data_raw )
-% INFADI_SELECTBADCHAN can be used for selecting bad channels visually. The
+function [ data_badchan ] = coSMIC_selectBadChan( data_raw )
+% COSMIC_SELECTBADCHAN can be used for selecting bad channels visually. The
 % data will be presented in the fieldtrip databrowser view and the bad
-% channels will be marked in the INFADI_CHANNELCHECKBOX gui. The function
+% channels will be marked in the COSMIC_CHANNELCHECKBOX gui. The function
 % returns a fieldtrip-like datastructure which includes only a cell array 
 % for each participant with the selected bad channels.
 %
 % Use as
-%   [ data_badchan ] = INFADI_selectBadChan( data_raw )
+%   [ data_badchan ] = coSMIC_selectBadChan( data_raw )
 %
 % where the input has to be raw data
 %
 % The function requires the fieldtrip toolbox
 %
-% SEE also INFADI_DATABROWSER and INFADI_CHANNELCHECKBOX
+% SEE also COSMIC_DATABROWSER and COSMIC_CHANNELCHECKBOX
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -28,9 +28,9 @@ cfg.plotevents  = 'no';
 % -------------------------------------------------------------------------
 % Selection of bad channels
 % -------------------------------------------------------------------------
-fprintf('<strong>Select bad channels of experimenter...</strong>\n');
-INFADI_databrowser( cfg, data_raw );
-badLabel = INFADI_channelCheckbox();
+fprintf('<strong>Select bad channels of mother...</strong>\n');
+coSMIC_databrowser( cfg, data_raw );
+badLabel = coSMIC_channelCheckbox();
 close(gcf);                                                                 % close also databrowser view when the channelCheckbox will be closed
 if any(strcmp(badLabel, 'TP10'))
   warning backtrace off;
@@ -51,17 +51,17 @@ end
 fprintf('\n');
   
 if ~isempty(badLabel)
-  data_badchan.experimenter.badChan = data_raw.experimenter.label(...
-                          ismember(data_raw.experimenter.label, badLabel));
+  data_badchan.mother.badChan = data_raw.mother.label(...
+                          ismember(data_raw.mother.label, badLabel));
 else
-  data_badchan.experimenter.badChan = [];
+  data_badchan.mother.badChan = [];
 end
 
 cfg.part      = 2;
   
 fprintf('<strong>Select bad channels of child...</strong>\n');
-INFADI_databrowser( cfg, data_raw );
-badLabel = INFADI_channelCheckbox();
+coSMIC_databrowser( cfg, data_raw );
+badLabel = coSMIC_channelCheckbox();
 close(gcf);                                                                 % close also databrowser view when the channelCheckbox will be closed
 if any(strcmp(badLabel, 'TP10'))
   warning backtrace off;

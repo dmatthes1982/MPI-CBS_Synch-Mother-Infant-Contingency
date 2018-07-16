@@ -1,12 +1,12 @@
-function [ data ] = INFADI_phaseLockVal( cfg, data )
-% INFADI_PHASELOCKVAL estimates phase locking values between the
+function [ data ] = coSMIC_phaseLockVal( cfg, data )
+% COSMIC_PHASELOCKVAL estimates phase locking values between the
 % participants of one dyads for all conditions and trials in the
-% INFADI_DATASTRUCTURE
+% COSMIC_DATASTRUCTURE
 %
 % Use as
-%   [ data ] = INFADI_phaseLockVal( cfg, data )
+%   [ data ] = coSMIC_phaseLockVal( cfg, data )
 %
-% where the input data have to be the result from INFADI_HILBERTPHASE
+% where the input data have to be the result from COSMIC_HILBERTPHASE
 %
 % The configuration options are
 %   cfg.winlen    = length of window over which the PLV will be calculated. (default: 1 sec)
@@ -28,7 +28,7 @@ function [ data ] = INFADI_phaseLockVal( cfg, data )
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_DATASTRUCTURE, INFADI_HILBERTPHASE
+% See also COSMIC_DATASTRUCTURE, COSMIC_HILBERTPHASE
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS 
 
@@ -45,7 +45,7 @@ dataTmp.dyad = [];
 
 fprintf('<strong>Calc PLVs with a center frequency of %g Hz...</strong>\n', ...           
          data.centerFreq);
-dataTmp.dyad  = phaseLockingValue(cfg, data.experimenter, data.child);
+dataTmp.dyad  = phaseLockingValue(cfg, data.mother, data.child);
 dataTmp.centerFreq = data.centerFreq;
 dataTmp.bpFreq = data.bpFreq;
 
@@ -57,7 +57,7 @@ function [data_out] = phaseLockingValue(cfgPLV, dataPart1, dataPart2)
 % Load general definitions
 % -------------------------------------------------------------------------
 filepath = fileparts(mfilename('fullpath'));
-load(sprintf('%s/../general/INFADI_generalDefinitions.mat', filepath), ...
+load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
      'generalDefinitions');
 
 %--------------------------------------------------------------------------

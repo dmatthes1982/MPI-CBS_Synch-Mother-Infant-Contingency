@@ -1,5 +1,5 @@
-function INFADI_easyArtfctmapPlot(cfg, cfg_autoart)
-% INFADI_EASYARTFCTMAPPLOT generates a multiplot of artifact maps for all 
+function coSMIC_easyArtfctmapPlot(cfg, cfg_autoart)
+% COSMIC_EASYARTFCTMAPPLOT generates a multiplot of artifact maps for all 
 % existing trials. A single map contains a artifact map for a specific 
 % condition from which one could determine which electrode exceeds the 
 % artifact detection threshold in which time segment. Artifact free 
@@ -7,16 +7,16 @@ function INFADI_easyArtfctmapPlot(cfg, cfg_autoart)
 % threshold are colored in red.
 %
 % Use as
-%   INFADI_easyArtfctmapPlot(cfg, cfg_autoart)
+%   coSMIC_easyArtfctmapPlot(cfg, cfg_autoart)
 %
-% where cfg_autoart has to be a result from INFADI_AUTOARTIFACT.
+% where cfg_autoart has to be a result from COSMIC_AUTOARTIFACT.
 %
 % The configuration options are 
-%   cfg.part = participant identifier, options: 'experimenter' or 'child' (default: 'experimenter')
+%   cfg.part = participant identifier, options: 'mother' or 'child' (default: 'mother')
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_AUTOARTIFACT
+% See also COSMIC_AUTOARTIFACT
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
 
@@ -24,13 +24,13 @@ function INFADI_easyArtfctmapPlot(cfg, cfg_autoart)
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part = ft_getopt(cfg, 'part', 'experimenter');                              % get participant identifier
+part = ft_getopt(cfg, 'part', 'mother');                                    % get participant identifier
 
 label = cfg_autoart.label;                                                  % get labels which were used for artifact detection
 
-if strcmp(part, 'experimenter')
+if strcmp(part, 'mother')
   badNumChan  = cfg_autoart.bad1NumChan;
-  cfg_autoart = cfg_autoart.experimenter;
+  cfg_autoart = cfg_autoart.mother;
 elseif strcmp(part, 'child')
   badNumChan  = cfg_autoart.bad2NumChan;
   cfg_autoart = cfg_autoart.child;
@@ -41,7 +41,7 @@ end
 % -------------------------------------------------------------------------
 % Define colormap
 % -------------------------------------------------------------------------
-cmap = [1 0.71 0.8; 0.55 0.23 0.38];                                        % colormap with two colors, light pink tone for good segments, hot pink tone for bad once
+cmap = [0.6 0.8 0.4; 1 0.2 0.2];                                            % colormap with two colors, light pink tone for good segments, hot pink tone for bad once
 
 % -------------------------------------------------------------------------
 % Plot artifact map

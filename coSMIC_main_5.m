@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '04b_eyecor/';
-  cfg.filename  = 'INFADI_d01_04b_eyecor';
-  sessionStr    = sprintf('%03d', INFADI_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'coSMIC_d01_04b_eyecor';
+  sessionStr    = sprintf('%03d', coSMIC_getSessionNum( cfg ));             % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in eyecor data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('INFADI_d%d_04b_eyecor_', sessionStr, '.mat'));
+                    strcat('coSMIC_d%d_04b_eyecor_', sessionStr, '.mat'));
   end
 end
 
@@ -28,7 +28,7 @@ end
 % 1. auto artifact detection (threshold and method is selectable - default: 'minmax', +-75 uV)
 % 2. manual artifact detection (verification)
 
-cprintf([1,0.4,1], '<strong>[5] - Automatic and manual artifact detection</strong>\n');
+cprintf([0,0.6,0], '<strong>[5] - Automatic and manual artifact detection</strong>\n');
 fprintf('\n');
 
 default_threshold = [75, 75;  ...                                           % default for method 'minmax'
@@ -43,7 +43,7 @@ threshold_range   = [50, 200; ...                                           % ra
 % method selectiom
 selection = false;
 while selection == false
-  cprintf([1,0.4,1], 'Please select an artifact detection method:\n');
+  cprintf([0,0.6,0], 'Please select an artifact detection method:\n');
   fprintf('[1] - minmax threshold\n');
   fprintf('[2] - range threshold within 200us, sliding window\n');
   fprintf('[3] - stddev threshold within 200us, sliding window\n');
@@ -81,11 +81,11 @@ fprintf('\n');
 selection = false;
 while selection == false
   if x ~= 4
-    cprintf([1,0.4,1], ['Do you want to use the default thresholds ' ...
+    cprintf([0,0.6,0], ['Do you want to use the default thresholds ' ...
                         '(exp.: %d µV - child: %d uV)  for automatic ' ...
                         'artifact detection?\n'], default_threshold(x,:));
   else
-    cprintf([1,0.4,1], ['Do you want to use the default thresholds ' ...
+    cprintf([0,0.6,0], ['Do you want to use the default thresholds ' ...
                          '(exp.: %d µV - child: %d times of mad) for ' ...
                          'automatic artifact detection?\n'], ...
                          default_threshold(x,:));
@@ -105,20 +105,20 @@ fprintf('\n');
 
 % use alternative settings
 if isempty(threshold)
-  identifier = {'experimenters', 'children'};
-  for i = 1:1:2                                                             % specify a independent for experimenter and child 
+  identifier = {'mothers', 'children'};
+  for i = 1:1:2                                                             % specify a independent threshold for mother and child 
     selection = false;
     while selection == false
       if x ~= 4
-        cprintf([1,0.4,1], ['Define the threshold for %s (in uV) with ' ...
+        cprintf([0,0.6,0], ['Define the threshold for %s (in uV) with ' ...
                             'a value from the range between %d and ' ...
                             '%d!\n'], identifier{i}, threshold_range(x,:));
         if x == 1
-          cprintf([1,0.4,1], ['Note: i.e. value 100 means threshold '...
+          cprintf([0,0.6,0], ['Note: i.e. value 100 means threshold '...
                               'limits are +-100uV\n']);
         end
       else
-        cprintf([1,0.4,1], ['Define the threshold for %s (in mutiples ' ...
+        cprintf([0,0.6,0], ['Define the threshold for %s (in mutiples ' ...
                             'of mad) for %s with a value from the ' ...
                             'range between %d and %d!\n'], ...
                             identifier{i}, threshold_range(x,:));
@@ -149,7 +149,7 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  INFADI_createTbl(cfg);                                                    % create settings file
+  coSMIC_createTbl(cfg);                                                    % create settings file
 end
 
 T = readtable(file_path);                                                   % update settings table
@@ -164,12 +164,12 @@ writetable(T, file_path);
 for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '04b_eyecor/');
-  cfg.filename    = sprintf('INFADI_d%02d_04b_eyecor', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_04b_eyecor', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('<strong>Dyad %d</strong>\n', i);
   fprintf('Load eye-artifact corrected data...\n');
-  INFADI_loadData( cfg );
+  coSMIC_loadData( cfg );
   
   % automatic artifact detection
   cfg             = [];
@@ -187,19 +187,19 @@ for i = numOfPart
   cfg.stddev      = threshold;                                              % stddev: threshold uV
   cfg.mad         = threshold;                                              % mad: multiples of median absolute deviation
 
-  cfg_autoart     = INFADI_autoArtifact(cfg, data_eyecor);
+  cfg_autoart     = coSMIC_autoArtifact(cfg, data_eyecor);
   
   % verify automatic detected artifacts / manual artifact detection
   cfg           = [];
   cfg.artifact  = cfg_autoart;
   cfg.dyad      = i;
   
-  cfg_allart    = INFADI_manArtifact(cfg, data_eyecor);                           
+  cfg_allart    = coSMIC_manArtifact(cfg, data_eyecor);                           
   
   % export the automatic selected artifacts into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05a_autoart/');
-  cfg.filename    = sprintf('INFADI_d%02d_05a_autoart', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_05a_autoart', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -207,14 +207,14 @@ for i = numOfPart
                    
   fprintf('\nThe automatic selected artifacts of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'cfg_autoart', cfg_autoart);
+  coSMIC_saveData(cfg, 'cfg_autoart', cfg_autoart);
   fprintf('Data stored!\n');
   clear cfg_autoart data_eyecor trl
   
   % export the verified and the additional artifacts into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05b_allart/');
-  cfg.filename    = sprintf('INFADI_d%02d_05b_allart', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -222,7 +222,7 @@ for i = numOfPart
                    
   fprintf('The visual verified artifacts of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'cfg_allart', cfg_allart);
+  coSMIC_saveData(cfg, 'cfg_allart', cfg_allart);
   fprintf('Data stored!\n\n');
   clear cfg_allart
   

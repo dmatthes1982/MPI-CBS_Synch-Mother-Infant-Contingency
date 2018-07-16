@@ -1,19 +1,19 @@
-function [ data ] = INFADI_removeEOGArt( cfg, data_eogcomp, data )
-% INFADI_REMOVEEOGART is a function which removes eye artifacts from data
+function [ data ] = coSMIC_removeEOGArt( cfg, data_eogcomp, data )
+% COSMIC_REMOVEEOGART is a function which removes eye artifacts from data
 % using in advance estimated ica components
 %
 % Use as
-%   [ data ] = INFADI_removeEOGArt( data_eogcomp, data )
+%   [ data ] = coSMIC_removeEOGArt( data_eogcomp, data )
 %
-% where data_eogcomp has to be the result of INFADI_VERIFYCOMP or 
-% INFADI_CORRCOMP and data has to be the result of INFADI_PREPROCESSING
+% where data_eogcomp has to be the result of COSMIC_VERIFYCOMP or 
+% COSMIC_CORRCOMP and data has to be the result of COSMIC_PREPROCESSING
 %
 % The configuration options are
-%   cfg.part        = participants which shall be processed: experimenter, child or both (default: both)
+%   cfg.part        = participants which shall be processed: mother, child or both (default: both)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also INFADI_VERIFYCOMP, INFADI_CORRCOMP, INFADI_PREPROCESSING,
+% See also COSMIC_VERIFYCOMP, COSMIC_CORRCOMP, COSMIC_PREPROCESSING,
 % FT_COMPONENTANALYSIS and FT_REJECTCOMPONENT
 
 % Copyright (C) 2018, Daniel Matthes, MPI CBS
@@ -23,16 +23,16 @@ function [ data ] = INFADI_removeEOGArt( cfg, data_eogcomp, data )
 % -------------------------------------------------------------------------
 part        = ft_getopt(cfg, 'part', 'both');
 
-if ~ismember(part, {'experimenter', 'child', 'both'})                       % check cfg.part definition
-  error('cfg.part has to either ''experimenter'', ''child'' or ''both''.');
+if ~ismember(part, {'mother', 'child', 'both'})                             % check cfg.part definition
+  error('cfg.part has to either ''mother'', ''child'' or ''both''.');
 end
 
 % -------------------------------------------------------------------------
 % Remove EOG artifacts
 % -------------------------------------------------------------------------
-if ismember(part, {'experimenter', 'both'})
-  fprintf('<strong>Cleanig data of experimenter from eye-artifacts...</strong>\n');
-  data.experimenter = removeArtifacts(data_eogcomp.experimenter, data.experimenter);
+if ismember(part, {'mother', 'both'})
+  fprintf('<strong>Cleanig data of mother from eye-artifacts...</strong>\n');
+  data.mother = removeArtifacts(data_eogcomp.mother, data.mother);
 end
 
 if ismember(part, {'child', 'both'})

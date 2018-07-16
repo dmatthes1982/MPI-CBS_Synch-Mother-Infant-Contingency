@@ -2,18 +2,18 @@
 % Add directory and subfolders to path
 % -------------------------------------------------------------------------
 clc;
-INFADI_init;
+coSMIC_init;
 
-cprintf([1,0.4,1], '<strong>------------------------------------------------</strong>\n');
-cprintf([1,0.4,1], '<strong>Infant adult imitation project</strong>\n');
-cprintf([1,0.4,1], '<strong>Data processing status</strong>\n');
-cprintf([1,0.4,1], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
-cprintf([1,0.4,1], '<strong>------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
+cprintf([0,0.6,0], '<strong>Synchronization in Mother Infant Contingency project</strong>\n');
+cprintf([0,0.6,0], '<strong>Data processing status</strong>\n');
+cprintf([0,0.6,0], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
 % Path settings
 % -------------------------------------------------------------------------
-path = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';
+path = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';
 
 fprintf('\nThe default path is: %s\n', path);
 
@@ -44,7 +44,7 @@ clear newPaths
 % -------------------------------------------------------------------------
 tmpPath = strcat(path, '01a_raw/');
 
-fileList     = dir([tmpPath, 'INFADI_d*_01a_raw_*.mat']);
+fileList     = dir([tmpPath, 'coSMIC_d*_01a_raw_*.mat']);
 fileList     = struct2cell(fileList);
 fileList     = fileList(1,:);
 numOfFiles   = length(fileList);
@@ -137,13 +137,13 @@ for i = 1:1:length(parts)
   fprintf('\n%s\n', parts{i});
   tmpPath = strcat(path, folders{i}, '/');
   
-  fileList    = dir([tmpPath, ['INFADI_d*' sessionStr '.mat']]);
+  fileList    = dir([tmpPath, ['coSMIC_d*' sessionStr '.mat']]);
   fileList    = struct2cell(fileList);
   fileList    = fileList(1,:);
   numOfFiles  = length(fileList);
   numOfPart   = zeros(1, numOfFiles);
   for j = 1:1:numOfFiles
-    numOfPart(j) = sscanf(fileList{j}, strcat('INFADI_d%d*', sessionStr, '.mat'));
+    numOfPart(j) = sscanf(fileList{j}, strcat('coSMIC_d%d*', sessionStr, '.mat'));
   end
   
   numOfPart = unique(numOfPart);

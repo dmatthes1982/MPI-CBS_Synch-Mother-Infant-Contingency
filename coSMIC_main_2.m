@@ -2,12 +2,12 @@
 if ~exist('sessionStr', 'var')
   cfg           = [];
   cfg.subFolder = '01c_repaired/';
-  cfg.filename  = 'INFADI_d01_01c_repaired';
-  sessionStr    = sprintf('%03d', INFADI_getSessionNum( cfg ));             % estimate current session number
+  cfg.filename  = 'coSMIC_d01_01c_repaired';
+  sessionStr    = sprintf('%03d', coSMIC_getSessionNum( cfg ));             % estimate current session number
 end
 
 if ~exist('desPath', 'var')
-  desPath = '/data/pt_01905/eegData/DualEEG_INFADI_processedData/';         % destination path for processed data  
+  desPath = '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/';         % destination path for processed data  
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in segmented data folder
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('INFADI_d%d_01c_repaired_', sessionStr, '.mat'));
+                    strcat('coSMIC_d%d_01c_repaired_', sessionStr, '.mat'));
   end
 end
 
@@ -28,12 +28,12 @@ end
 % preprocess the raw data
 % export the preprocessed data into a *.mat file
 
-cprintf([1,0.4,1], '<strong>[2] - Preprocessing, filtering, re-referencing</strong>\n');
+cprintf([0,0.6,0], '<strong>[2] - Preprocessing, filtering, re-referencing</strong>\n');
 fprintf('\n');
 
 selection = false;
 while selection == false
-  cprintf([1,0.4,1], 'Please select sampling rate for preprocessing:\n');
+  cprintf([0,0.6,0], 'Please select sampling rate for preprocessing:\n');
   fprintf('[1] - 500 Hz (original sampling rate)\n');
   fprintf('[2] - 250 Hz (downsampling factor 2)\n');
   fprintf('[3] - 125 Hz (downsampling factor 4)\n');
@@ -57,7 +57,7 @@ fprintf('\n');
 
 selection = false;
 while selection == false
-  cprintf([1,0.4,1], 'Please select favoured reference:\n');
+  cprintf([0,0.6,0], 'Please select favoured reference:\n');
   fprintf('[1] - Linked mastoid (''TP9'', ''TP10'')\n');
   fprintf('[2] - Common average reference\n');
   x = input('Option: ');
@@ -85,7 +85,7 @@ if ~(exist(file_path, 'file') == 2)                                         % ch
   cfg.type        = 'settings';
   cfg.sessionStr  = sessionStr;
   
-  INFADI_createTbl(cfg);                                                    % create settings file
+  coSMIC_createTbl(cfg);                                                    % create settings file
 end
 
 T = readtable(file_path);                                                   % update settings table
@@ -99,12 +99,12 @@ writetable(T, file_path);
 for i = numOfPart
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '01c_repaired/');
-  cfg.filename    = sprintf('INFADI_d%02d_01c_repaired', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_01c_repaired', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('<strong>Dyad %d</strong>\n', i);
   fprintf('Load repaired raw data...\n');
-  INFADI_loadData( cfg );
+  coSMIC_loadData( cfg );
   
   cfg                   = [];
   cfg.bpfreq            = [1 48];                                           % passband from 1 to 48 Hz
@@ -114,12 +114,12 @@ for i = numOfPart
   cfg.refchannel        = refchannel;
   
   ft_info off;
-  data_preproc = INFADI_preprocessing( cfg, data_repaired);
+  data_preproc = coSMIC_preprocessing( cfg, data_repaired);
   ft_info on;
   
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '02_preproc/');
-  cfg.filename    = sprintf('INFADI_d%02d_02_preproc', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_02_preproc', i);
   cfg.sessionStr  = sessionStr;
   
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
@@ -127,7 +127,7 @@ for i = numOfPart
 
   fprintf('The preprocessed data of dyad %d will be saved in:\n', i); 
   fprintf('%s ...\n', file_path);
-  INFADI_saveData(cfg, 'data_preproc', data_preproc);
+  coSMIC_saveData(cfg, 'data_preproc', data_preproc);
   fprintf('Data stored!\n\n');
   clear data_preproc data_repaired
 end

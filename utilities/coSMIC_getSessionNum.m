@@ -1,14 +1,14 @@
-function [ num ] = INFADI_getSessionNum( cfg )
-% INFADI_GETSESSIONNUM determines the highest session number of a specific 
+function [ num ] = coSMIC_getSessionNum( cfg )
+% COSMIC_GETSESSIONNUM determines the highest session number of a specific 
 % data file 
 %
 % Use as
-%   [ num ] = INFADI_getSessionNum( cfg )
+%   [ num ] = coSMIC_getSessionNum( cfg )
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01905/eegData/DualEEG_INFADI_processedData/')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/')
 %   cfg.subFolder   = name of subfolder (default: '01_raw/')
-%   cfg.filename    = filename (default: 'INFADI_d01_01_raw')
+%   cfg.filename    = filename (default: 'coSMIC_d01_01_raw')
 %
 % This function requires the fieldtrip toolbox.
 
@@ -17,9 +17,9 @@ function [ num ] = INFADI_getSessionNum( cfg )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01905/eegData/DualEEG_INFADI_processedData/');
+desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/');
 subFolder   = ft_getopt(cfg, 'subFolder', '01_raw/');
-filename    = ft_getopt(cfg, 'filename', 'INFADI_d01_01_raw');
+filename    = ft_getopt(cfg, 'filename', 'coSMIC_d01_01_raw');
 
 % -------------------------------------------------------------------------
 % Estimate highest session number
