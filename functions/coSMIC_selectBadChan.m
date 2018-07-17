@@ -22,7 +22,7 @@ function [ data_badchan ] = coSMIC_selectBadChan( data_raw )
 cfg             = [];
 cfg.ylim        = [-200 200];
 cfg.blocksize   = 120;
-cfg.part        = 1;
+cfg.part        = 'mother';
 cfg.plotevents  = 'no';
 
 % -------------------------------------------------------------------------
@@ -57,7 +57,7 @@ else
   data_badchan.mother.badChan = [];
 end
 
-cfg.part      = 2;
+cfg.part      = 'child';
   
 fprintf('<strong>Select bad channels of child...</strong>\n');
 coSMIC_databrowser( cfg, data_raw );

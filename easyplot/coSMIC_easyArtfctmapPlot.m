@@ -26,6 +26,10 @@ function coSMIC_easyArtfctmapPlot(cfg, cfg_autoart)
 % -------------------------------------------------------------------------
 part = ft_getopt(cfg, 'part', 'mother');                                    % get participant identifier
 
+if ~ismember(part, {'mother', 'child'})                                     % check cfg.part definition
+  error('cfg.part has to either ''mother'' or ''child''.');
+end
+
 label = cfg_autoart.label;                                                  % get labels which were used for artifact detection
 
 if strcmp(part, 'mother')
@@ -34,8 +38,6 @@ if strcmp(part, 'mother')
 elseif strcmp(part, 'child')
   badNumChan  = cfg_autoart.bad2NumChan;
   cfg_autoart = cfg_autoart.child;
-else                                                                        % check validity of cfg.part
-  error('Input structure seems to be no cfg_autoart element including participants fields');
 end
 
 % -------------------------------------------------------------------------

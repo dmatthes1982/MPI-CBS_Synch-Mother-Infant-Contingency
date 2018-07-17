@@ -39,7 +39,7 @@ cfgAllArt.child = [];
 % -------------------------------------------------------------------------
 
 fprintf('\n<strong>Search for artifacts with mother...</strong>\n');
-cfg.part = 1;
+cfg.part = 'mother';
 cfg.artifact = artifact.mother.artfctdef.threshold.artifact;
 ft_warning off;
 coSMIC_easyArtfctmapPlot(cfg, artifact);                                    % plot artifact map
@@ -50,7 +50,7 @@ close all;                                                                  % fi
 cfgAllArt.mother = keepfields(cfgAllArt.mother, {'artfctdef', 'showcallinfo'});
   
 fprintf('\n<strong>Search for artifacts with child...</strong>\n');
-cfg.part = 2;
+cfg.part = 'child';
 cfg.artifact = artifact.child.artfctdef.threshold.artifact;
 ft_warning off;
 coSMIC_easyArtfctmapPlot(cfg, artifact);                                    % plot artifact map

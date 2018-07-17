@@ -53,7 +53,7 @@ end
 cfgView           = [];
 cfgView.ylim      = [-200 200];
 cfgView.blocksize = 120;
-cfgView.part      = 1;
+cfgView.part      = 'mother';
   
 fprintf('\n<strong>Verification view for mother...</strong>\n');
 coSMIC_databrowser( cfgView, data_repaired );
@@ -80,7 +80,7 @@ end
 cfgView           = [];
 cfgView.ylim      = [-200 200];
 cfgView.blocksize = 120;
-cfgView.part      = 2;
+cfgView.part      = 'child';
   
 fprintf('\n<strong>Verification view for child...</strong>\n');
 coSMIC_databrowser( cfgView, data_repaired );

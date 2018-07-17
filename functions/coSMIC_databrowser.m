@@ -10,7 +10,7 @@ function [ cfgArtifacts ] = coSMIC_databrowser( cfg, data )
 %
 % The configuration options are
 %   cfg.dyad        = number of dyad (no default value)
-%   cfg.part        = number of participant, 1 = mother, 2 = child (default: 1)
+%   cfg.part        = identifier of participant, 'mother' or 'child' (default: 'mother')
 %   cfg.artifact    = Nx2 matrix with artifact segments (default: [])
 %   cfg.channel     = channels of interest (default: 'all')
 %   cfg.ylim        = vertical scaling (default: [-100 100]);
@@ -30,7 +30,7 @@ function [ cfgArtifacts ] = coSMIC_databrowser( cfg, data )
 % Get and check config options
 % -------------------------------------------------------------------------
 dyad        = ft_getopt(cfg, 'dyad', []);
-part        = ft_getopt(cfg, 'part', 1);
+part        = ft_getopt(cfg, 'part', 'mother');
 artifact    = ft_getopt(cfg, 'artifact', []);
 channel     = ft_getopt(cfg, 'channel', 'all');
 ylim        = ft_getopt(cfg, 'ylim', [-100 100]);
@@ -40,7 +40,7 @@ plotevents  = ft_getopt(cfg, 'plotevents', 'yes');
 if isempty(dyad)                                                            % if dyad number is not specified
   event = [];                                                               % the associated markers cannot be loaded and displayed
 else                                                                        % else, load the stimulus markers 
-  source = '/data/pt_01905/eegData/DualEEG_coSMIC_rawData/';
+  source = '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/';
   filename = sprintf('coSMIC_all_P%02d.vhdr', dyad);
   path = strcat(source, filename);
   event = ft_read_event(path);                                              % read stimulus markers
@@ -62,8 +62,8 @@ else                                                                        % el
   end
 end
 
-if ~ismember(part, [1,2])                                                   % check cfg.part definition
-  error('cfg.part has to either 1 or 2, 1 = mother, 2 = child');
+if ~ismember(part, {'mother', 'child'})                                     % check cfg.part definition
+  error('cfg.part has to either ''mother'' or ''child''.');
 end
 
 % -------------------------------------------------------------------------
@@ -80,17 +80,17 @@ cfg.plotevents                    = plotevents;
 cfg.event                         = event;
 cfg.showcallinfo                  = 'no';
 
-fprintf('Databrowser - Participant: %d\n', part);
+fprintf('Databrowser - Participant: %s\n', part);
 
 switch part
-  case 1
+  case 'mother'
     if nargout > 0
       cfgArtifacts = ft_databrowser(cfg, data.mother);
     else
       ft_databrowser(cfg, data.mother);
     end
     
-  case 2
+  case 'child'
     if nargout > 0
       cfgArtifacts = ft_databrowser(cfg, data.child);
     else
