@@ -11,7 +11,7 @@ function coSMIC_easyMPLVplot( cfg, data )
 %
 % The configuration options are
 %   cfg.condition = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
-%   cfg.elecorder = describes the order of electrodes (use 'default' or specific order i.e.: 'infadi_01')
+%   cfg.elecorder = describes the order of electrodes (use 'default' or specific order i.e.: 'cosmic_01')
 %                   default value: 'default'
 %
 % This function requires the fieldtrip toolbox.
