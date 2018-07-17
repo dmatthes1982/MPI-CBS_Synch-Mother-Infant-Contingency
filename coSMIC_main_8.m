@@ -62,7 +62,7 @@ if tfr == true
 
     cfg         = [];
     cfg.foi     = 2:1:50;                                                   % frequency of interest
-    cfg.toi     = 4:0.5:176;                                                % time of interest
+    cfg.toi     = 4:0.5:146;                                                % time of interest
 
     data_tfr = coSMIC_timeFreqanalysis( cfg, data_eyecor );
 

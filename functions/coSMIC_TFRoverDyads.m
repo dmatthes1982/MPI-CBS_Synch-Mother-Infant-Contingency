@@ -1,6 +1,6 @@
 function  [ data_tfrod ] = coSMIC_TFRoverDyads( cfg )
 % COSMIC_TFROVERDYADS estimates the mean of the time frequency responses
-% over dyads for all conditions seperately for experimenters and children.
+% over dyads for all conditions seperately for mothers and children.
 %
 % Use as
 %   [ data_tfrod ] = coSMIC_TFRoverDyads( cfg )
@@ -62,13 +62,13 @@ fprintf('\n');
 % -------------------------------------------------------------------------
 % Load, organize and summarize data
 % -------------------------------------------------------------------------
-data_out.experimenter.trialinfo = generalDefinitions.condNum';
-data_out.child.trialinfo        = generalDefinitions.condNum';
+data_out.mother.trialinfo = generalDefinitions.condNum';
+data_out.child.trialinfo  = generalDefinitions.condNum';
 
-numOfTrialsExp    = zeros(1, length(data_out.experimenter.trialinfo));
+numOfTrialsMother = zeros(1, length(data_out.mother.trialinfo));
 numOfTrialsChild  = zeros(1, length(data_out.child.trialinfo));
-tfrExp{length(data_out.experimenter.trialinfo)} = [];
-tfrChild{length(data_out.child.trialinfo)}      = [];
+tfrMother{length(data_out.mother.trialinfo)}   = [];
+tfrChild{length(data_out.child.trialinfo)}  = [];
 
 for i=1:1:numOfDyads
   filename = sprintf('coSMIC_d%02d_08a_tfr_%03d.mat', listOfDyads(i), ...
@@ -76,22 +76,22 @@ for i=1:1:numOfDyads
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
   load(file, 'data_tfr');
-  tfr1   = data_tfr.experimenter.powspctrm;
+  tfr1   = data_tfr.mother.powspctrm;
   tfr2   = data_tfr.child.powspctrm;
-  trialinfo_tmp = data_tfr.experimenter.trialinfo;
+  trialinfo_tmp = data_tfr.mother.trialinfo;
   if i == 1
-    data_out.experimenter.label   = data_tfr.experimenter.label;
-    data_out.child.label          = data_tfr.child.label;
-    data_out.experimenter.dimord  = data_tfr.experimenter.dimord;
-    data_out.child.dimord         = data_tfr.child.dimord;
-    data_out.experimenter.freq    = data_tfr.experimenter.freq;
-    data_out.child.freq           = data_tfr.child.freq;
-    data_out.experimenter.time    = data_tfr.experimenter.time;
-    data_out.child.time           = data_tfr.child.time;
-    tfrExp(:)   = {zeros(length(data_out.experimenter.label), ...
-                    length(data_out.experimenter.freq), ...
-                    length(data_out.experimenter.time))};
-    tfrChild(:) = {zeros(length(data_out.child.label), ...
+    data_out.mother.label   = data_tfr.mother.label;
+    data_out.child.label    = data_tfr.child.label;
+    data_out.mother.dimord  = data_tfr.mother.dimord;
+    data_out.child.dimord   = data_tfr.child.dimord;
+    data_out.mother.freq    = data_tfr.mother.freq;
+    data_out.child.freq     = data_tfr.child.freq;
+    data_out.mother.time    = data_tfr.mother.time;
+    data_out.child.time     = data_tfr.child.time;
+    tfrMother(:)  = {zeros(length(data_out.mother.label), ...
+                    length(data_out.mother.freq), ...
+                    length(data_out.mother.time))};
+    tfrChild(:)   = {zeros(length(data_out.child.label), ...
                     length(data_out.child.freq), ...
                     length(data_out.child.time))};
   end
@@ -107,27 +107,27 @@ for i=1:1:numOfDyads
   [tfr2, trialSpec2] = fixTrialOrder( tfr2, trialinfo_tmp, ...
                                       generalDefinitions.condNum, i, 2);
   
-  tfrExp    = cellfun(@(x,y) x+y, tfrExp, tfr1, 'UniformOutput', false);
-  numOfTrialsExp    = numOfTrialsExp + trialSpec1;
+  tfrMother = cellfun(@(x,y) x+y, tfrMother, tfr1, 'UniformOutput', false);
+  numOfTrialsMother = numOfTrialsMother + trialSpec1;
 
   tfrChild  = cellfun(@(x,y) x+y, tfrChild, tfr2, 'UniformOutput', false);
   numOfTrialsChild  = numOfTrialsChild + trialSpec2;
 end
 
-numOfTrialsExp    = num2cell(numOfTrialsExp);
+numOfTrialsMother = num2cell(numOfTrialsMother);
 numOfTrialsChild  = num2cell(numOfTrialsChild);
 
-tfrExp = cellfun(@(x,y) x/y, tfrExp, numOfTrialsExp, 'UniformOutput', false);
-tfrExp = cat(4, tfrExp{:});
-tfrExp = shiftdim(tfrExp, 3);
+tfrMother = cellfun(@(x,y) x/y, tfrMother, numOfTrialsMother, 'UniformOutput', false);
+tfrMother = cat(4, tfrMother{:});
+tfrMother = shiftdim(tfrMother, 3);
 
 tfrChild = cellfun(@(x,y) x/y, tfrChild, numOfTrialsChild, 'UniformOutput', false);
 tfrChild = cat(4, tfrChild{:});
 tfrChild = shiftdim(tfrChild, 3);
 
-data_out.experimenter.powspctrm   = tfrExp;
-data_out.child.powspctrm          = tfrChild;
-data_out.dyads                    = listOfDyads;
+data_out.mother.powspctrm   = tfrMother;
+data_out.child.powspctrm    = tfrChild;
+data_out.dyads              = listOfDyads;
 
 data_tfrod = data_out;
 
@@ -140,7 +140,8 @@ end
 function [dataTmp, NoT] = fixTrialOrder( dataTmp, trInf, trInfOrg, ...
                                         dyadNum, part )
 
-emptyMatrix = zeros(35, 49, 345);                                           % empty matrix
+emptyMatrix = zeros(size(dataTmp{1}, 1), size(dataTmp{1}, 2), ...           % empty matrix
+                    size(dataTmp{1}, 3));
 fixed = false;
 NoT = ones(1, length(trInfOrg));
 

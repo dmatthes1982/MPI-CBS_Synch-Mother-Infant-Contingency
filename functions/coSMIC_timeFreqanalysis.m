@@ -9,7 +9,7 @@ function [ data ] = coSMIC_timeFreqanalysis( cfg, data )
 %
 % The configuration options are
 %   config.foi = frequency of interest - begin:resolution:end (default: 2:1:50)
-%   config.toi = time of interest - begin:resolution:end (default: 4:0.5:176)
+%   config.toi = time of interest - begin:resolution:end (default: 4:0.5:146)
 %   
 % This function requires the fieldtrip toolbox.
 %
@@ -22,7 +22,7 @@ function [ data ] = coSMIC_timeFreqanalysis( cfg, data )
 % Get and check config options
 % -------------------------------------------------------------------------
 foi       = ft_getopt(cfg, 'foi', 2:1:50);
-toi       = ft_getopt(cfg, 'toi', 4:0.5:176);
+toi       = ft_getopt(cfg, 'toi', 4:0.5:146);
 
 % -------------------------------------------------------------------------
 % TFR settings
