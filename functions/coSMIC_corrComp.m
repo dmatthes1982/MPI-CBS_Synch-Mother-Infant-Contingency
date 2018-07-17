@@ -9,7 +9,7 @@ function [ data_eogcomp ] = coSMIC_corrComp( cfg, data_icacomp, data_sensor )
 % data_sensor the results of COSMIC_SELECTDATA
 %
 % The configuration options are
-%   cfg.part        = participants which shall be processed: experimenter, child or both (default: both)
+%   cfg.part        = participants which shall be processed: mother, child or both (default: both)
 %   cfg.threshold = correlation threshold for marking eog-like components (range: 0...1, default: [0.8 0.8])
 %                    one value for each participant
 %
@@ -25,8 +25,8 @@ function [ data_eogcomp ] = coSMIC_corrComp( cfg, data_icacomp, data_sensor )
 part        = ft_getopt(cfg, 'part', 'both');
 threshold  = ft_getopt(cfg, 'threshold', [0.8 0.8]);
 
-if ~ismember(part, {'experimenter', 'child', 'both'})                       % check cfg.part definition
-  error('cfg.part has to either ''experimenter'', ''child'' or ''both''.');
+if ~ismember(part, {'mother', 'child', 'both'})                             % check cfg.part definition
+  error('cfg.part has to either ''mother'', ''child'' or ''both''.');
 end
 
 if (any(threshold < 0) || any(threshold > 1) )
@@ -36,9 +36,9 @@ end
 % -------------------------------------------------------------------------
 % Estimate correlating components
 % -------------------------------------------------------------------------
-if ismember(part, {'experimenter', 'both'})
-  fprintf('<strong>Estimate EOG-correlating components at experimenter...</strong>\n');
-  data_eogcomp.experimenter = corrComp(data_icacomp.experimenter, data_sensor.experimenter, threshold(1));
+if ismember(part, {'mother', 'both'})
+  fprintf('<strong>Estimate EOG-correlating components at mother...</strong>\n');
+  data_eogcomp.mother = corrComp(data_icacomp.mother, data_sensor.mother, threshold(1));
 end
 
 if ismember(part, {'child', 'both'})

@@ -9,7 +9,7 @@ function [ data_eogcomp ] = coSMIC_verifyComp( cfg, data_eogcomp, data_icacomp )
 % data_icacomp the result of COSMIC_ICA
 %
 % The configuration options are
-%   cfg.part        = participants which shall be processed: experimenter, child or both (default: both)
+%   cfg.part        = participants which shall be processed: mother, child or both (default: both)
 %
 % This function requires the fieldtrip toolbox
 %
@@ -23,15 +23,15 @@ function [ data_eogcomp ] = coSMIC_verifyComp( cfg, data_eogcomp, data_icacomp )
 part        = ft_getopt(cfg, 'part', 'both');
 
 if ~ismember(part, {'mother', 'child', 'both'})                             % check cfg.part definition
-  error('cfg.part has to either ''experimenter'', ''child'' or ''both''.');
+  error('cfg.part has to either ''mother'', ''child'' or ''both''.');
 end
 
 % -------------------------------------------------------------------------
 % Verify correlating components
 % -------------------------------------------------------------------------
-if ismember(part, {'experimenter', 'both'})
+if ismember(part, {'mother', 'both'})
   fprintf('<strong>Verify EOG-correlating components at experinmenter...</strong>\n');
-  data_eogcomp.experimenter = corrComp(data_eogcomp.experimenter, data_icacomp.experimenter);
+  data_eogcomp.mother = corrComp(data_eogcomp.mother, data_icacomp.mother);
 end
 
 fprintf('\n');
