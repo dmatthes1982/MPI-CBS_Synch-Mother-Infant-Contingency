@@ -45,6 +45,14 @@ for i = numOfPart
   
   filtCoeffDiv = 500 / data_eyecor.mother.fsample;                          % estimate sample frequency dependent divisor of filter length
 
+  % select only dual conditions
+  cfg = [];
+  cfg.part    = 'both';
+  cfg.channel = 'all';
+  cfg.trials  = [11,13,20,21,22,23];
+
+  data_eyecor = coSMIC_selectdata(cfg, data_eyecor);
+
   % bandpass filter data at theta (4-7 Hz)
   cfg           = [];
   cfg.bpfreq    = [4 7];

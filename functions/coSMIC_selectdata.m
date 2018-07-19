@@ -1,5 +1,6 @@
 function [ data ] = coSMIC_selectdata( cfg, data )
-% COSMIC_SELECTDATA extracts specified channels from a dataset
+% COSMIC_SELECTDATA extracts specified channels and/or specified trials
+% from a dataset.
 %
 % Use as
 %   [ data  ] = coSMIC_selectdata( cfg, data )
@@ -7,7 +8,7 @@ function [ data ] = coSMIC_selectdata( cfg, data )
 % where input data can be nearly every sensor space data
 %
 % The configuration options are
-%   cfg.part    = participants which shall be processed: mother, child or both (default: both)
+%   cfg.part    = participants which shall be processed: 'mother', 'child' or 'both' (default: 'both')
 %   cfg.channel = 1xN cell-array with selection of channels (default = 'all')
 %   cfg.trials  = 1xN vector of condition numbers or 'all' (default = 'all')
 %
@@ -56,14 +57,18 @@ cfg.showcallinfo = 'no';
 
 if ismember(part, {'mother', 'both'})
   cfg.trials = trialsPart1;
-  dataTmp.mother = ft_selectdata(cfg, data.mother);
+  data.mother = ft_selectdata(cfg, data.mother);
 end
 
 if ismember(part, {'child', 'both'})
   cfg.trials = trialsPart2;
-  dataTmp.child = ft_selectdata(cfg, data.child);
+  data.child = ft_selectdata(cfg, data.child);
 end
 
-data = dataTmp;
+if strcmp(part, 'mother')
+  data = removefields(data, 'child');
+elseif strcmp(part, 'child')
+  data = removefields(data, 'mother');
+end
 
 end

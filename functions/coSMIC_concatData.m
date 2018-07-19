@@ -31,15 +31,19 @@ end
 % -------------------------------------------------------------------------
 if ismember(part, {'mother', 'both'})
   fprintf('Concatenate trials of mother...\n');
-  dataTmp.mother = concatenate(data.mother);
+  data.mother = concatenate(data.mother);
 end
 
 if ismember(part, {'child', 'both'})
   fprintf('Concatenate trials of child...\n');
-  dataTmp.child = concatenate(data.child);
+  data.child = concatenate(data.child);
 end
 
-data = dataTmp;
+if strcmp(part, 'mother')
+  data = removefields(data, 'child');
+elseif strcmp(part, 'child')
+  data = removefields(data, 'mother');
+end
 
 end
 

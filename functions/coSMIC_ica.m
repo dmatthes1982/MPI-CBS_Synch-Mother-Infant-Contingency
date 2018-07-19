@@ -43,14 +43,18 @@ cfg.showcallinfo  = 'no';
 
 if ismember(part, {'mother', 'both'})
   fprintf('\n<strong>ICA decomposition for mother...</strong>\n\n');
-  dataTmp.mother = ft_componentanalysis(cfg, data.mother);
+  data.mother = ft_componentanalysis(cfg, data.mother);
 end
 
 if ismember(part, {'child', 'both'})
   fprintf('\n<strong>ICA decomposition for child...</strong>\n\n');
-  dataTmp.child = ft_componentanalysis(cfg, data.child);
+  data.child = ft_componentanalysis(cfg, data.child);
 end
 
-data = dataTmp;
+if strcmp(part, 'mother')
+  data = removefields(data, 'child');
+elseif strcmp(part, 'child')
+  data = removefields(data, 'mother');
+end
 
 end

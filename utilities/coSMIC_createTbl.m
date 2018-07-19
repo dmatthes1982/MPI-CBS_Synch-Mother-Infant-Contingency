@@ -67,9 +67,9 @@ switch type
     writetable(T, filepath);
   case 'plv'
     A(1) = {1};
-    A(2:length(generalDefinitions.condNum)+1) = {0};
+    A(2:length(generalDefinitions.condNumDual)+1) = {0};
     T = cell2table(A);
-    B = num2cell(generalDefinitions.condNum);
+    B = num2cell(generalDefinitions.condNumDual);
     C = cellfun(@(x) sprintf('S%d', x), B, 'UniformOutput', 0);                            
     VarNames = [{'dyad'} C];
     T.Properties.VariableNames = VarNames;

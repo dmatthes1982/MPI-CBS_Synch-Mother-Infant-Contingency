@@ -61,17 +61,17 @@ load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------
 if strcmp(type, 'plv')
   trialinfo = data.dyad.trialinfo';
-  [~, loc] = ismember(generalDefinitions.condNum, trialinfo);
+  [~, loc] = ismember(generalDefinitions.condNumDual, trialinfo);
   if any(loc == 0)
     emptyCond = (loc == 0);
-    emptyCond = generalDefinitions.condNum(emptyCond);
+    emptyCond = generalDefinitions.condNumDual(emptyCond);
     str = vec2str(emptyCond, [], [], 0);
     warning backtrace off;
     warning(['The following trials are completely rejected: ' str]);
     warning backtrace on;
   end
-  goodtrials = zeros(1, length(generalDefinitions.condNum));
-  for i = 1:1:length(generalDefinitions.condNum)
+  goodtrials = zeros(1, length(generalDefinitions.condNumDual));
+  for i = 1:1:length(generalDefinitions.condNumDual)
     if loc(i) ~= 0
       goodtrials(i) = data.dyad.goodtrials(loc(i));
     end

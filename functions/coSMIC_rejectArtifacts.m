@@ -68,25 +68,29 @@ end
 if ismember(part, {'mother', 'both'})
   fprintf('\n<strong>Cleaning data of mother...</strong>\n');
   ft_warning off;
-  dataTmp.mother = ft_rejectartifact(artifact.mother, data.mother);
+  data.mother = ft_rejectartifact(artifact.mother, data.mother);
   if strcmp(target, 'dual')
     ft_warning off;
-    dataTmp.mother = ft_rejectartifact(artifact.child, data.mother);
+    data.mother = ft_rejectartifact(artifact.child, data.mother);
   end
 end
 
 if ismember(part, {'child', 'both'})
   fprintf('\n<strong>Cleaning data of child...</strong>\n');
   ft_warning off;
-  dataTmp.child = ft_rejectartifact(artifact.child, data.child);
+  data.child = ft_rejectartifact(artifact.child, data.child);
   if strcmp(target, 'dual')
     ft_warning off;
-    dataTmp.child = ft_rejectartifact(artifact.mother, data.child);
+    data.child = ft_rejectartifact(artifact.mother, data.child);
   end
 end
   
 ft_warning on;
 
-data = dataTmp;
+if strcmp(part, 'mother')
+  data = removefields(data, 'child');
+elseif strcmp(part, 'child')
+  data = removefields(data, 'mother');
+end
 
 end

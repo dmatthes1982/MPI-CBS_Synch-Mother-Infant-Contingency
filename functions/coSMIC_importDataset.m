@@ -123,4 +123,14 @@ for i=1:1:length(dataTmp.trial)
   data.child.trial{i} = dataTmp.trial{i}(1:30,:);                           % as a result both will be removed from the childs dataset  
 end
 
+dataTmp = data.child;
+
+cfg = [];
+cfg.part    = 'mother';
+cfg.channel = 'all';
+cfg.trials  = [11,13,20,21,22,23];                                          % keep only the dual conditions
+
+data = coSMIC_selectdata(cfg, data);                                        % remove all trials from the mothers dataset in which only the childs data is of interest
+data.child = dataTmp;
+
 end
