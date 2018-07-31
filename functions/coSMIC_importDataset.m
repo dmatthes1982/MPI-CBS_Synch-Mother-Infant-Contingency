@@ -1,9 +1,9 @@
-function [ data ] = coSMIC_importDataset(cfg)
+function [ data, cfg_manart ] = coSMIC_importDataset(cfg)
 % COSMIC_IMPORTDATASET imports one specific dataset recorded with a device 
 % from brain vision.
 %
 % Use as
-%   [ data ] = coSMIC_importDataset(cfg)
+%   [ data, cfg_manart ] = coSMIC_importDataset(cfg)
 %
 % The configuration options are
 %   cfg.path          = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_rawData/')
@@ -11,6 +11,9 @@ function [ data ] = coSMIC_importDataset(cfg)
 %   cfg.continuous    = 'yes' or 'no' (default: 'no')
 %   cfg.prestim       = define pre-Stimulus offset in seconds (default: 0)
 %   cfg.rejectoverlap = reject first of two overlapping trials, 'yes' or 'no' (default: 'yes')
+%
+% The second output variable holds the manual during testing defined
+% artifacts.
 %
 % You can use relativ path specifications (i.e. '../../MATLAB/data/') or 
 % absolute path specifications like in the example. Please be aware that 
@@ -54,6 +57,7 @@ if strcmp(continuous, 'no')
   % on is the original one and the second one handles the 'video trigger 
   % bug'
   eventvalues = generalDefinitions.condMark;
+  artfctvalues = generalDefinitions.artfctMark;
   samplingRate = 500;
   dur = (generalDefinitions.duration + prestim) * samplingRate;
               
@@ -80,12 +84,88 @@ if strcmp(continuous, 'no')
     cfg.trl(i, 2) = dur(element) + cfg.trl(i, 1) - 1;
   end
 
-  for i = size(cfg.trl):-1:2                                                % reject duplicates
-    if cfg.trl(i,4) == cfg.trl(i-1,4)
-      cfg.trl(i-1,:) = [];
-    end
+  % -----------------------------------------------------------------------
+  % Extract artifacts
+  % -----------------------------------------------------------------------
+  cfgArtfct                     = [];
+  cfgArtfct.dataset             = headerfile;
+  cfgArtfct.trialfun            = 'ft_trialfun_general';
+  cfgArtfct.trialdef.eventtype  = 'Stimulus';
+  cfgArtfct.showcallinfo        = 'no';
+  cfgArtfct.feedback            = 'error';
+  cfgArtfct.trialdef.eventvalue = artfctvalues;
+
+  try
+    cfgArtfct = ft_definetrial(cfgArtfct);                                  % extract manual artifact markers
+  catch
+    cfgArtfct = [];
   end
-  
+
+  if ~isempty(cfgArtfct)
+    hdr = ft_read_header(headerfile);                                       % read header file
+
+    artifact     = cfgArtfct.trl;
+    numOfArtfct = size(artifact, 1);
+
+    if mod(numOfArtfct, 2)                                                  % if the last artStop marker is missing, add one at the last data sample
+      artifact(numOfArtfct + 1, :) = [hdr.nSamples hdr.nSamples 0 7];
+      numOfArtfct = numOfArtfct + 1;
+    end
+
+    locStart = ismember(artifact(:,4), 6);                                  % check if every artStart marker has one corresponding artStop marker
+    locStop = ismember(artifact(:,4), 7);
+    if ~all(locStart == circshift(locStop,1))
+      error(['Problems with manual artifact markers! Not every ' ...
+              '''S  6'' has a corresponding ''S  7''.']);
+    end
+
+    artifact(locStart, 2) = artifact(locStop, 1);
+    artifact = artifact(locStart, :);
+    numOfArtfct = numOfArtfct/2;
+    artifact(:,3) = artifact(:,2) - artifact(:,1) + 1;
+
+    % ---------------------------------------------------------------------
+    % Adapt trial size
+    % ---------------------------------------------------------------------
+    for i = 1:1:numOfArtfct
+      locArt = (artifact(i,1) >= cfg.trl(:,1) & ...
+                artifact(i,1) <= cfg.trl(:,2)   );
+      cfg.trl(locArt, 2) = cfg.trl(locArt,2) + artifact(i,3);
+      if(sum(locArt) > 1)
+        error(['Something weird happend! One manual artifact could ' ...
+                'not be assigned to only one particular trial']);
+      end
+      if cfg.trl(locArt,2) > hdr.nSamples
+        cfg.trl(locArt,2) = hdr.nSamples;
+      end
+    end
+
+    % ---------------------------------------------------------------------
+    % Generate artifact config
+    % ---------------------------------------------------------------------
+    cfg_manart = [];
+    cfg_manart.experimenter.artfctdef.xxx.artifact = artifact(:,1:2);
+    cfg_manart.child.artfctdef.xxx.artifact = artifact(:,1:2);
+  else
+    % ---------------------------------------------------------------------
+    % Adapt trial size, if recording was aborted
+    % ---------------------------------------------------------------------
+    hdr = ft_read_header(headerfile);                                       % read header file
+    if cfg.trl(end,2) > hdr.nSamples
+      cfg.trl(end,2) = hdr.nSamples;
+    end
+
+    % ---------------------------------------------------------------------
+    % Generate artifact config
+    % ---------------------------------------------------------------------
+    cfg_manart = [];
+    cfg_manart.experimenter.artfctdef.xxx.artifact = [];
+    cfg_manart.child.artfctdef.xxx.artifact = [];
+  end
+
+  % -----------------------------------------------------------------------
+  % Reject overlapping trials
+  % -----------------------------------------------------------------------
   if strcmp(rejectoverlap, 'yes')                                           % if overlapping trials should be rejected
     overlapping = find(cfg.trl(1:end-1,2) > cfg.trl(2:end, 1));             % in case of overlapping trials, remove the first of theses trials
     if ~isempty(overlapping)
@@ -109,18 +189,22 @@ end
 % -------------------------------------------------------------------------
 % Data import
 % -------------------------------------------------------------------------
+cfg.channel = {'all', '-T7_1', '-T7_2', '-T8_1', '-T8_2', ...               % exclude all general bad channels
+               '-PO9_1', '-PO9_2', '-PO10_1','-PO10_2', ...
+               '-P7_1', '-P7_2', '-P8_1', '-P8_2', ...
+               '-TP10_1', '-TP10_2', '-V1_1', '-V2_1'};                     % V1 and V2 are not connected with children
 dataTmp = ft_preprocessing(cfg);                                            % import data
 
 data.mother = dataTmp;                                                      % split dataset into two datasets, one for each participant
-data.mother.label = strrep(dataTmp.label(33:64), '_2', '');
+data.mother.label = strrep(dataTmp.label(24:48), '_2', '');
 for i=1:1:length(dataTmp.trial)
-  data.mother.trial{i} = dataTmp.trial{i}(33:64,:);
+  data.mother.trial{i} = dataTmp.trial{i}(24:48,:);
 end
 
 data.child = dataTmp;
-data.child.label = strrep(dataTmp.label(1:30), '_1', '');                   % V2 is not used with childs, hence V1 has no meaning
+data.child.label = strrep(dataTmp.label(1:23), '_1', '');                   % V2 is not used with childs, hence V1 has no meaning
 for i=1:1:length(dataTmp.trial)                                           
-  data.child.trial{i} = dataTmp.trial{i}(1:30,:);                           % as a result both will be removed from the childs dataset  
+  data.child.trial{i} = dataTmp.trial{i}(1:23,:);                           % as a result both will be removed from the childs dataset  
 end
 
 dataTmp = data.child;

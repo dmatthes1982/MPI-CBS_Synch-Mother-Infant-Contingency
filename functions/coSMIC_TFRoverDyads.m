@@ -101,13 +101,13 @@ for i=1:1:numOfDyads
   tfr1 = cellfun(@(x) squeeze(x), tfr1, 'UniformOutput', false);
   [tfr1,trialSpec1] = fixTrialOrder( tfr1, trialinfo_tmp, ...
                                       generalDefinitions.condNum, ...
-                                      listOfDyads(i), 1);
+                                      listOfDyads(i), 'Mother');
   
   tfr2 = num2cell(tfr2, [2,3,4])';
   tfr2 = cellfun(@(x) squeeze(x), tfr2, 'UniformOutput', false);
   [tfr2, trialSpec2] = fixTrialOrder( tfr2, trialinfo_tmp, ...
                                       generalDefinitions.condNum, ...
-                                      listOfDyads(i), 2);
+                                      listOfDyads(i), 'Child');
   
   tfrMother = cellfun(@(x,y) x+y, tfrMother, tfr1, 'UniformOutput', false);
   numOfTrialsMother = numOfTrialsMother + trialSpec1;
@@ -115,6 +115,7 @@ for i=1:1:numOfDyads
   tfrChild  = cellfun(@(x,y) x+y, tfrChild, tfr2, 'UniformOutput', false);
   numOfTrialsChild  = numOfTrialsChild + trialSpec2;
 end
+fprintf('\n');
 
 numOfTrialsMother = num2cell(numOfTrialsMother);
 numOfTrialsChild  = num2cell(numOfTrialsChild);
@@ -144,7 +145,6 @@ function [dataTmp, NoT] = fixTrialOrder( dataTmp, trInf, trInfOrg, ...
 
 emptyMatrix = zeros(size(dataTmp{1}, 1), size(dataTmp{1}, 2), ...           % empty matrix
                     size(dataTmp{1}, 3));
-fixed = false;
 NoT = ones(1, length(trInfOrg));
 
 if ~isequal(trInf, trInfOrg')
@@ -155,7 +155,6 @@ if ~isequal(trInf, trInfOrg')
     cprintf([0,0.6,0], ...
           sprintf('Dyad %d/%d: Phase(s) %s missing. Empty matrix(matrices) with zeros created.\n', ...
           dyadNum, part, missingPhases));
-    fixed = true;
   end
   [~, loc] = ismember(trInfOrg, trInf);
   tmpBuffer = [];
@@ -169,10 +168,6 @@ if ~isequal(trInf, trInfOrg')
     end
   end
   dataTmp = tmpBuffer;
-end
-
-if fixed == true
-  fprintf('\n');
 end
 
 end
