@@ -127,7 +127,7 @@ for i = numOfPart
   % export the bad channels in a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01c_badchan/');
-  cfg.filename    = sprintf('coSMIC_d%02c_01b_badchan', i);
+  cfg.filename    = sprintf('coSMIC_d%02d_01b_badchan', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

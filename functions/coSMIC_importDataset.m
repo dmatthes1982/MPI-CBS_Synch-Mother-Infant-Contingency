@@ -103,24 +103,31 @@ if strcmp(continuous, 'no')
 
   if ~isempty(cfgArtfct)
     hdr = ft_read_header(headerfile);                                       % read header file
+    maxSamples = hdr.nSamples;
 
     artifact     = cfgArtfct.trl;
+    locStop = ismember(artifact(:,4), 3);                                   % check if dataset has one presStop marker
+    if any(locStop)
+      maxSamples = artifact(locStop, 1);                                    % define location of presStop marker as last valid sample
+      artifact = artifact(~locStop, :);                                     % remove presStop marker
+    end
+
     numOfArtfct = size(artifact, 1);
 
-    if mod(numOfArtfct, 2)                                                  % if the last artStop marker is missing, add one at the last data sample
-      artifact(numOfArtfct + 1, :) = [hdr.nSamples hdr.nSamples 0 7];
+    if mod(numOfArtfct, 2)                                                  % if the last presResume marker is missing, add one at the last data sample
+      artifact(numOfArtfct + 1, :) = [maxSamples maxSamples 0 5];
       numOfArtfct = numOfArtfct + 1;
     end
 
-    locStart = ismember(artifact(:,4), 6);                                  % check if every artStart marker has one corresponding artStop marker
-    locStop = ismember(artifact(:,4), 7);
-    if ~all(locStart == circshift(locStop,1))
+    locPause = ismember(artifact(:,4), 4);                                  % check if every presPause marker has one corresponding presResume marker
+    locResume = ismember(artifact(:,4), 5);
+    if ~all(locPause == circshift(locResume,1))
       error(['Problems with manual artifact markers! Not every ' ...
-              '''S  6'' has a corresponding ''S  7''.']);
+              '''S  4'' has a corresponding ''S  5''.']);
     end
 
-    artifact(locStart, 2) = artifact(locStop, 1);
-    artifact = artifact(locStart, :);
+    artifact(locPause, 2) = artifact(locResume, 1);
+    artifact = artifact(locPause, :);
     numOfArtfct = numOfArtfct/2;
     artifact(:,3) = artifact(:,2) - artifact(:,1) + 1;
 
@@ -135,9 +142,13 @@ if strcmp(continuous, 'no')
         error(['Something weird happend! One manual artifact could ' ...
                 'not be assigned to only one particular trial']);
       end
-      if cfg.trl(locArt,2) > hdr.nSamples
-        cfg.trl(locArt,2) = hdr.nSamples;
+      if cfg.trl(locArt,2) > maxSamples
+        cfg.trl(locArt,2) = maxSamples;
       end
+    end
+
+    if cfg.trl(end,2) > maxSamples
+      cfg.trl(end,2) = maxSamples;
     end
 
     % ---------------------------------------------------------------------
