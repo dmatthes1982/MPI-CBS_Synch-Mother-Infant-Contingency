@@ -155,7 +155,7 @@ if strcmp(continuous, 'no')
     % Generate artifact config
     % ---------------------------------------------------------------------
     cfg_manart = [];
-    cfg_manart.experimenter.artfctdef.xxx.artifact = artifact(:,1:2);
+    cfg_manart.mother.artfctdef.xxx.artifact = artifact(:,1:2);
     cfg_manart.child.artfctdef.xxx.artifact = artifact(:,1:2);
   else
     % ---------------------------------------------------------------------
@@ -170,7 +170,7 @@ if strcmp(continuous, 'no')
     % Generate artifact config
     % ---------------------------------------------------------------------
     cfg_manart = [];
-    cfg_manart.experimenter.artfctdef.xxx.artifact = [];
+    cfg_manart.mother.artfctdef.xxx.artifact = [];
     cfg_manart.child.artfctdef.xxx.artifact = [];
   end
 
