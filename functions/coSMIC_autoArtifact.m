@@ -71,9 +71,13 @@ if ~(overlap ==0 || overlap == 50)                                          % on
 end
 
 cfgTrl          = [];
+cfgTrl.part     = 'mother';
 cfgTrl.length   = trllength;
 cfgTrl.overlap  = overlap;
-trl = coSMIC_genTrl(cfgTrl, data);                                          % generate subtrial specification
+trlM = coSMIC_genTrl(cfgTrl, data);                                         % generate subtrial specification for the mother's data
+
+cfgTrl.part     = 'child';
+trlC = coSMIC_genTrl(cfgTrl, data);                                         % generate subtrial specification for the mother's data
 
 trllength = trllength * data.mother.fsample/1000;                           % convert subtrial length from milliseconds into number of samples
 
@@ -145,28 +149,23 @@ switch method                                                               % se
     cfg.artfctdef.threshold.max     = maxVal(1);                            % maximum threshold
     if strcmp(sliding, 'no')
       cfg.continuous = continuous;
-      cfg.trl        = trl;
     end
   case 'range'
     cfg.artfctdef.threshold.range   = range(1);                             % range
     if strcmp(sliding, 'yes')
       cfg.artfctdef.threshold.winsize = winsize;
-      cfg.artfctdef.threshold.trl = trl;
     else
       cfg.continuous = continuous;
-      cfg.trl        = trl;
     end
   case 'stddev'
     cfg.artfctdef.threshold.stddev  = stddev(1);                            % stddev
     if strcmp(sliding, 'yes')
       cfg.artfctdef.threshold.winsize = winsize;
-      cfg.artfctdef.threshold.trl = trl;
     end
   case 'mad'
     cfg.artfctdef.threshold.mad  = mad(1);                                  % mad
     if strcmp(sliding, 'yes')
       cfg.artfctdef.threshold.winsize = winsize;
-      cfg.artfctdef.threshold.trl = trl;
     end
 end
 
@@ -183,15 +182,21 @@ if ismember(part, {'child', 'both'})
   cfgAutoArt.bad2Num = [];
 end
 
-cfgAutoArt.trialsNum = size(trl, 1);
+cfgAutoArt.trials1Num = size(trlM, 1);
+cfgAutoArt.trials2Num = size(trlC, 1);
 
 ft_info off;
 
 if ismember(part, {'mother', 'both'})
-  fprintf('<strong>Estimate artifacts in mother...</strong>\n');      % mother
+  fprintf('<strong>Estimate artifacts in mother...</strong>\n');            % mother
+  if strcmp(sliding, 'yes')
+    cfg.artfctdef.threshold.trl = trlM;
+  else
+    cfg.trl = trlM;
+  end
   cfgAutoArt.mother = artifact_detect(cfg, data.mother);
   cfgAutoArt.mother = keepfields(cfgAutoArt.mother, {'artfctdef', 'showcallinfo'});
-  [cfgAutoArt.mother.artfctdef.threshold, cfgAutoArt.bad1Num] = ...   % extend artifacts to subtrial definition
+  [cfgAutoArt.mother.artfctdef.threshold, cfgAutoArt.bad1Num] = ...         % extend artifacts to subtrial definition
                   combineArtifacts( overlap, trllength, cfgAutoArt.mother.artfctdef.threshold );
   fprintf('%d segments with artifacts detected!\n', cfgAutoArt.bad1Num);
 
@@ -220,6 +225,11 @@ if ismember(part, {'child', 'both'})
   end
 
   fprintf('<strong>Estimate artifacts in child...</strong>\n');             % child
+  if strcmp(sliding, 'yes')
+    cfg.artfctdef.threshold.trl = trlC;
+  else
+    cfg.trl = trlC;
+  end
   cfgAutoArt.child = artifact_detect(cfg, data.child);
   cfgAutoArt.child = keepfields(cfgAutoArt.child, {'artfctdef', 'showcallinfo'});
   [cfgAutoArt.child.artfctdef.threshold, cfgAutoArt.bad2Num] = ...          % extend artifacts to subtrial definition

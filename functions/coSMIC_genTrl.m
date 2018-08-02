@@ -12,6 +12,7 @@ function [ trl ] = coSMIC_genTrl( cfg, data )
 % The configuration options are 
 %   cfg.length  = trial length in milliseconds (default: 200, choose even number)
 %   cfg.overlap = amount of overlapping in percentage (default: 0, permitted values: 0 or 50)
+%   cfg.part    = participants which shall be used: mother or child (default: []).
 %
 % This function requires the fieldtrip toolbox
 %
@@ -22,19 +23,35 @@ function [ trl ] = coSMIC_genTrl( cfg, data )
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
+part          = ft_getopt(cfg, 'part', []);
 trlDuration   = ft_getopt(cfg, 'length', 200);
 overlap       = ft_getopt(cfg, 'overlap', 0);
 
-if mod(trlDuration, 2)
-  error('Choose even number for trial leght!');
-else
-  trlLength = data.mother.fsample * trlDuration / 1000;
-end
+if strcmp(part,'mother')
+  if mod(trlDuration, 2)
+    error('Choose even number for trial leght!');
+  else
+    trlLength = data.mother.fsample * trlDuration / 1000;
+  end
 
-numOfOrgTrials  = size(data.mother.trialinfo, 1);
-numOfTrials     = zeros(1, numOfOrgTrials);
-trialinfo       = data.mother.trialinfo;
-sampleinfo      = data.mother.sampleinfo;
+  numOfOrgTrials  = size(data.mother.trialinfo, 1);
+  numOfTrials     = zeros(1, numOfOrgTrials);
+  trialinfo       = data.mother.trialinfo;
+  sampleinfo      = data.mother.sampleinfo;
+elseif strcmp(part,'child')
+  if mod(trlDuration, 2)
+    error('Choose even number for trial leght!');
+  else
+    trlLength = data.child.fsample * trlDuration / 1000;
+  end
+
+  numOfOrgTrials  = size(data.child.trialinfo, 1);
+  numOfTrials     = zeros(1, numOfOrgTrials);
+  trialinfo       = data.child.trialinfo;
+  sampleinfo      = data.child.sampleinfo;
+else
+  error('cfg.part has to be either ''mother'' or ''child''.');
+end
 
 switch overlap
   case 0

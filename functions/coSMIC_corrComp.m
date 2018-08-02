@@ -9,7 +9,7 @@ function [ data_eogcomp ] = coSMIC_corrComp( cfg, data_icacomp, data_sensor )
 % data_sensor the results of COSMIC_SELECTDATA
 %
 % The configuration options are
-%   cfg.part        = participants which shall be processed: mother, child or both (default: both)
+%   cfg.part      = participants which shall be processed: mother, child or both (default: both)
 %   cfg.threshold = correlation threshold for marking eog-like components (range: 0...1, default: [0.8 0.8])
 %                    one value for each participant
 %
