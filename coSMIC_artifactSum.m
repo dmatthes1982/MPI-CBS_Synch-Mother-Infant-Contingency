@@ -114,6 +114,7 @@ end
 file_path = strcat(tmpPath, fileList{i});
 load(file_path, 'cfg_autoart');
 
+label = cfg_autoart.label;
 label_1 = cellfun(@(x) strcat(x, '_1'), label, 'UniformOutput', false)';
 label_2 = cellfun(@(x) strcat(x, '_2'), label, 'UniformOutput', false)';
 
