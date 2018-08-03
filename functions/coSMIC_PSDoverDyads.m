@@ -66,7 +66,7 @@ fprintf('\n');
 data_out.mother.trialinfo = generalDefinitions.condNum';
 data_out.child.trialinfo        = generalDefinitions.condNum';
 
-dataExp{1, numOfDyads}        = [];
+dataMother{1, numOfDyads}        = [];
 dataChild{1, numOfDyads}      = [];
 trialinfoExp{1, numOfDyads}   = [];
 trialinfoChild{1, numOfDyads} = [];
@@ -77,39 +77,39 @@ for i=1:1:numOfDyads
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
   load(file, 'data_pwelch');
-  dataExp{i}        = data_pwelch.mother.powspctrm;
+  dataMother{i}        = data_pwelch.mother.powspctrm;
   dataChild{i}      = data_pwelch.child.powspctrm;
   trialinfoExp{i}   = data_pwelch.mother.trialinfo;
   trialinfoChild{i} = data_pwelch.child.trialinfo;
   if i == 1
     data_out.mother.label   = data_pwelch.mother.label;
-    data_out.child.label          = data_pwelch.child.label;
+    data_out.child.label    = data_pwelch.child.label;
     data_out.mother.dimord  = data_pwelch.mother.dimord;
-    data_out.child.dimord         = data_pwelch.child.dimord;
+    data_out.child.dimord   = data_pwelch.child.dimord;
     data_out.mother.freq    = data_pwelch.mother.freq;
-    data_out.child.freq           = data_pwelch.child.freq;
+    data_out.child.freq     = data_pwelch.child.freq;
   end
   clear data_pwelch
 end
 
-dataExp   = cellfun(@(x) num2cell(x, [2,3])', dataExp, 'UniformOutput', false);
-dataChild = cellfun(@(x) num2cell(x, [2,3])', dataChild, 'UniformOutput', false);
+dataMother  = cellfun(@(x) num2cell(x, [2,3])', dataMother, 'UniformOutput', false);
+dataChild   = cellfun(@(x) num2cell(x, [2,3])', dataChild, 'UniformOutput', false);
 
 for i=1:1:numOfDyads
-  dataExp{i}    = cellfun(@(x) squeeze(x), dataExp{i}, 'UniformOutput', false);
+  dataMother{i} = cellfun(@(x) squeeze(x), dataMother{i}, 'UniformOutput', false);
   dataChild{i}  = cellfun(@(x) squeeze(x), dataChild{i}, 'UniformOutput', false);
 end
 
-dataExp   = fixTrialOrder( dataExp, trialinfoExp, generalDefinitions.condNum, ...
-                      listOfDyads, 'Experimenter' );
+dataMother   = fixTrialOrder( dataMother, trialinfoExp, generalDefinitions.condNumDual, ...
+                      listOfDyads, 'Mother' );
 dataChild = fixTrialOrder( dataChild, trialinfoChild, generalDefinitions.condNum, ...
                       listOfDyads, 'Child' );
 
 fprintf('\n');
 
-dataExp = cellfun(@(x) cat(3, x{:}), dataExp, 'UniformOutput', false);
-dataExp = cellfun(@(x) shiftdim(x, 2), dataExp, 'UniformOutput', false);
-dataExp = cat(4, dataExp{:});
+dataMother = cellfun(@(x) cat(3, x{:}), dataMother, 'UniformOutput', false);
+dataMother = cellfun(@(x) shiftdim(x, 2), dataMother, 'UniformOutput', false);
+dataMother = cat(4, dataMother{:});
 
 dataChild = cellfun(@(x) cat(3, x{:}), dataChild, 'UniformOutput', false);
 dataChild = cellfun(@(x) shiftdim(x, 2), dataChild, 'UniformOutput', false);
@@ -118,12 +118,12 @@ dataChild = cat(4, dataChild{:});
 % -------------------------------------------------------------------------
 % Estimate averaged power spectral density (over dyads)
 % -------------------------------------------------------------------------
-dataExp   = nanmean(dataExp, 4);
-dataChild = nanmean(dataChild, 4);
+dataMother  = nanmean(dataMother, 4);
+dataChild   = nanmean(dataChild, 4);
 
-data_out.mother.powspctrm = dataExp;
-data_out.child.powspctrm        = dataChild;
-data_out.dyads                  = listOfDyads;
+data_out.mother.powspctrm = dataMother;
+data_out.child.powspctrm  = dataChild;
+data_out.dyads            = listOfDyads;
 
 data_pwelchod = data_out;
 

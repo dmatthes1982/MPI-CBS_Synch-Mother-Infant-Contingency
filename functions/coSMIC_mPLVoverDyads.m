@@ -100,7 +100,7 @@ for i=1:1:length(listOfDyads)
   clear data_mplv_in
 end
 
-data = fixTrialOrder( data, trialinfo, generalDefinitions.condNum, ...
+data = fixTrialOrder( data, trialinfo, generalDefinitions.condNumDual, ...
                       listOfDyads );
 fprintf('\n');
 

@@ -62,7 +62,7 @@ fprintf('\n');
 % -------------------------------------------------------------------------
 % Load, organize and summarize data
 % -------------------------------------------------------------------------
-data_out.mother.trialinfo = generalDefinitions.condNum';
+data_out.mother.trialinfo = generalDefinitions.condNumDual';
 data_out.child.trialinfo  = generalDefinitions.condNum';
 
 numOfTrialsMother = zeros(1, length(data_out.mother.trialinfo));
@@ -78,7 +78,8 @@ for i=1:1:numOfDyads
   load(file, 'data_tfr');
   tfr1   = data_tfr.mother.powspctrm;
   tfr2   = data_tfr.child.powspctrm;
-  trialinfo_tmp = data_tfr.mother.trialinfo;
+  trialinfo_mother = data_tfr.mother.trialinfo;
+  trialinfo_child = data_tfr.child.trialinfo;
   if i == 1
     data_out.mother.label   = data_tfr.mother.label;
     data_out.child.label    = data_tfr.child.label;
@@ -99,13 +100,13 @@ for i=1:1:numOfDyads
   
   tfr1 = num2cell(tfr1, [2,3,4])';
   tfr1 = cellfun(@(x) squeeze(x), tfr1, 'UniformOutput', false);
-  [tfr1,trialSpec1] = fixTrialOrder( tfr1, trialinfo_tmp, ...
-                                      generalDefinitions.condNum, ...
+  [tfr1,trialSpec1] = fixTrialOrder( tfr1, trialinfo_mother, ...
+                                      generalDefinitions.condNumDual, ...
                                       listOfDyads(i), 'Mother');
   
   tfr2 = num2cell(tfr2, [2,3,4])';
   tfr2 = cellfun(@(x) squeeze(x), tfr2, 'UniformOutput', false);
-  [tfr2, trialSpec2] = fixTrialOrder( tfr2, trialinfo_tmp, ...
+  [tfr2, trialSpec2] = fixTrialOrder( tfr2, trialinfo_child, ...
                                       generalDefinitions.condNum, ...
                                       listOfDyads(i), 'Child');
   
@@ -153,7 +154,7 @@ if ~isequal(trInf, trInfOrg')
   if ~isempty(missingPhases)
     missingPhases = vec2str(missingPhases, [], [], 0);
     cprintf([0,0.6,0], ...
-          sprintf('Dyad %d/%d: Phase(s) %s missing. Empty matrix(matrices) with zeros created.\n', ...
+          sprintf('Dyad %d - %s: Phase(s) %s missing. Empty matrix(matrices) with zeros created.\n', ...
           dyadNum, part, missingPhases));
   end
   [~, loc] = ismember(trInfOrg, trInf);
