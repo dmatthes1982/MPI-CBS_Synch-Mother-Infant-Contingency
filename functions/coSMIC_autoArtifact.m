@@ -71,13 +71,17 @@ if ~(overlap ==0 || overlap == 50)                                          % on
 end
 
 cfgTrl          = [];
-cfgTrl.part     = 'mother';
 cfgTrl.length   = trllength;
 cfgTrl.overlap  = overlap;
-trlM = coSMIC_genTrl(cfgTrl, data);                                         % generate subtrial specification for the mother's data
 
-cfgTrl.part     = 'child';
-trlC = coSMIC_genTrl(cfgTrl, data);                                         % generate subtrial specification for the mother's data
+if ismember(part, {'mother', 'both'})
+  cfgTrl.part     = 'mother';
+  trlM = coSMIC_genTrl(cfgTrl, data);                                       % generate subtrial specification for the mother's data
+end
+if ismember(part, {'child', 'both'})
+  cfgTrl.part     = 'child';
+  trlC = coSMIC_genTrl(cfgTrl, data);                                       % generate subtrial specification for the mother's data
+end
 
 trllength = trllength * data.mother.fsample/1000;                           % convert subtrial length from milliseconds into number of samples
 
@@ -175,15 +179,14 @@ end
 if ismember(part, {'mother', 'both'})
   cfgAutoArt.mother = [];                                                   % build output structure
   cfgAutoArt.bad1Num = [];
+  cfgAutoArt.trials1Num = size(trlM, 1);
 end
 
 if ismember(part, {'child', 'both'})
   cfgAutoArt.child = [];
   cfgAutoArt.bad2Num = [];
+  cfgAutoArt.trials2Num = size(trlC, 1);
 end
-
-cfgAutoArt.trials1Num = size(trlM, 1);
-cfgAutoArt.trials2Num = size(trlC, 1);
 
 ft_info off;
 
