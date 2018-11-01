@@ -155,8 +155,8 @@ end
 T = readtable(file_path);                                                   % update settings table
 warning off;
 T.artMethod(numOfPart) = {method};
-T.artTholdExp(numOfPart) = threshold(1);
-T.artTholdChild(numOfPart) = threshold(2);
+T.artTholdMother(numOfPart) = threshold(1);
+T.artTholdChild(numOfPart)  = threshold(2);
 warning on;
 delete(file_path);
 writetable(T, file_path);

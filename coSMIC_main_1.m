@@ -141,18 +141,18 @@ for i = numOfPart
   
   % add bad labels of bad channels to the settings file
   if isempty(data_badchan.mother.badChan)
-    badChanPart1 = {'---'};
+    badChanMother = {'---'};
   else
-    badChanPart1 = {strjoin(data_badchan.mother.badChan,',')};
+    badChanMother = {strjoin(data_badchan.mother.badChan,',')};
   end
   if isempty(data_badchan.child.badChan)
-    badChanPart2 = {'---'};
+    badChanChild = {'---'};
   else
-    badChanPart2 = {strjoin(data_badchan.child.badChan,',')};
+    badChanChild = {strjoin(data_badchan.child.badChan,',')};
   end
   warning off;
-  T.badChanPart1(i) = badChanPart1;
-  T.badChanPart2(i) = badChanPart2;
+  T.badChanMother(i) = badChanMother;
+  T.badChanChild(i) = badChanChild;
   warning on;
   
   % repair corrupted channels
@@ -179,5 +179,5 @@ delete(settings_file);
 writetable(T, settings_file);
 
 %% clear workspace
-clear file_path cfg sourceList numOfSources i T badChanPart1 ...
-      badChanPart2 settings_file
+clear file_path cfg sourceList numOfSources i T badChanMother ...
+      badChanChild settings_file
