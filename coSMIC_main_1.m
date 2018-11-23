@@ -113,7 +113,7 @@ for i = numOfPart
   fprintf('Load raw data...\n');
   coSMIC_loadData( cfg );
   
-  % Concatenated raw trials to a continuous stream
+  % concatenated raw trials to a continuous stream
   cfg = [];
   cfg.part = 'both';
 
@@ -121,9 +121,15 @@ for i = numOfPart
 
   fprintf('\n');
 
+  % detect noisy channels automatically
+  data_noisy = coSMIC_estNoisyChan( data_continuous );
+
+  fprintf('\n');
+
   % select corrupted channels
-  data_badchan = coSMIC_selectBadChan( data_continuous );
-  
+  data_badchan = coSMIC_selectBadChan( data_continuous, data_noisy );
+  clear data_noisy
+
   % export the bad channels in a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '01c_badchan/');
