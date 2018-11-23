@@ -9,7 +9,7 @@ function [ data_badchan ] = coSMIC_selectBadChan( data_raw, data_noisy )
 %   [ data_badchan ] = coSMIC_selectBadChan( data_raw, data_noisy )
 %
 % where the first input has to be concatenated raw data and second one has
-% to be the rsult of COSMIC_ESTNOISYCHAN.
+% to be the result of COSMIC_ESTNOISYCHAN.
 %
 % The function requires the fieldtrip toolbox
 %
@@ -26,7 +26,7 @@ if numel(data_raw.mother.trialinfo) ~= 1 || numel(data_raw.child.trialinfo) ~= 1
 end
 
 if ~isfield(data_noisy.mother, 'totalpow')
-  error('Second dataset has to be the result of JAI_ESTNOISYCHAN!');
+  error('Second dataset has to be the result of COSMIC_ESTNOISYCHAN!');
 end
 
 % -------------------------------------------------------------------------

@@ -74,7 +74,7 @@ for i = 1:1:2
                                         'trialinfo', 'cfg', 'powspctrm'});
   
   if i == 1
-    data_out.mother = data;                                                  % reassign result to participant 1
+    data_out.mother = data;                                                 % reassign result to participant 1
   elseif i == 2
     data_out.child = data;                                                  % reassign result to participant 2
   end
