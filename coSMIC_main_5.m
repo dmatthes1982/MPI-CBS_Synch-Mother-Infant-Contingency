@@ -243,7 +243,9 @@ for i = numOfPart
       if strcmp('y', x)
         selection = true;
       elseif strcmp('n', x)
-        clear file_path numOfSources sourceList cfg i x selection
+        clear file_path numOfSources sourceList cfg i x y selection ...
+              T threshold method winsize sliding default_threshold ...
+              threshold_range identifier
         return;
       else
         selection = false;
