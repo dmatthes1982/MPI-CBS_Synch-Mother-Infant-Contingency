@@ -5,7 +5,7 @@ function coSMIC_loadData( cfg )
 %   coSMIC_loadData( cfg )
 %
 % The configuration options are
-%   cfg.srcFolder   = source folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/01_raw/')
+%   cfg.srcFolder   = source folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedDataOld/01_raw/')
 %   cfg.filename    = filename (default: 'coSMIC_d01_01_raw')
 %   cfg.sessionStr  = number of session, format: %03d, i.e.: '003' (default: '001')
 %
@@ -18,7 +18,7 @@ function coSMIC_loadData( cfg )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-srcFolder   = ft_getopt(cfg, 'srcFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/01_raw/');
+srcFolder   = ft_getopt(cfg, 'srcFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedDataOld/01_raw/');
 filename    = ft_getopt(cfg, 'filename', 'coSMIC_d01_01_raw');
 sessionStr  = ft_getopt(cfg, 'sessionStr', '001');
 

@@ -6,7 +6,7 @@ function [ num ] = coSMIC_getSessionNum( cfg )
 %   [ num ] = coSMIC_getSessionNum( cfg )
 %
 % The configuration options are
-%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/')
+%   cfg.desFolder   = destination folder (default: '/data/pt_01888/eegData/DualEEG_coSMIC_processedDataOld/')
 %   cfg.subFolder   = name of subfolder (default: '01_raw/')
 %   cfg.filename    = filename (default: 'coSMIC_d01_01_raw')
 %
@@ -17,7 +17,7 @@ function [ num ] = coSMIC_getSessionNum( cfg )
 % -------------------------------------------------------------------------
 % Get config options
 % -------------------------------------------------------------------------
-desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/');
+desFolder   = ft_getopt(cfg, 'desFolder', '/data/pt_01888/eegData/DualEEG_coSMIC_processedDataOld/');
 subFolder   = ft_getopt(cfg, 'subFolder', '01_raw/');
 filename    = ft_getopt(cfg, 'filename', 'coSMIC_d01_01_raw');
 
