@@ -44,7 +44,7 @@ clear newPaths
 % Session selection
 % -------------------------------------------------------------------------
 fprintf('\n<strong>Session selection...</strong>\n');
-srcPath = [path 'DualEEG_coSMIC_processedDataOld/'];
+srcPath = [path 'DualEEG_coSMIC_processedData/'];
 srcPath = [srcPath  '08b_pwelch/'];
 
 fileList     = dir([srcPath, 'coSMIC_d*_08b_pwelch_*.mat']);                % determine all avaible sessions
