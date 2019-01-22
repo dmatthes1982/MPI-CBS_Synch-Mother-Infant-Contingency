@@ -5,13 +5,13 @@ function [ data ] = coSMIC_calcMeanPLV( data )
 % Use as
 %   [ data ] = coSMIC_calcMeanPLV( data )
 %
-%  where the input data have to be the result from COSMIC_PHASELOCKVAL
+% where the input data has to be the result of COSMIC_PHASELOCKVAL
 %
 % This function requires the fieldtrip toolbox
 % 
 % See also COSMIC_DATASTRUCTURE, COSMIC_PHASELOCKVAL
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS 
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Estimate mean Phase Locking Value (mPLV)

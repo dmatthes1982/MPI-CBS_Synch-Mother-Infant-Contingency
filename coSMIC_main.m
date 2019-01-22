@@ -58,14 +58,11 @@ end
 if ~exist(strcat(desPath, '01b_manart'), 'dir')
   mkdir(strcat(desPath, '01b_manart'));
 end
-if ~exist(strcat(desPath, '01c_badchan'), 'dir')
-  mkdir(strcat(desPath, '01c_badchan'));
+if ~exist(strcat(desPath, '02a_badchan'), 'dir')
+  mkdir(strcat(desPath, '02a_badchan'));
 end
-if ~exist(strcat(desPath, '01d_repaired'), 'dir')
-  mkdir(strcat(desPath, '01d_repaired'));
-end
-if ~exist(strcat(desPath, '02_preproc'), 'dir')
-  mkdir(strcat(desPath, '02_preproc'));
+if ~exist(strcat(desPath, '02b_preproc1'), 'dir')
+  mkdir(strcat(desPath, '02b_preproc1'));
 end
 if ~exist(strcat(desPath, '03a_icacomp'), 'dir')
   mkdir(strcat(desPath, '03a_icacomp'));
@@ -78,6 +75,9 @@ if ~exist(strcat(desPath, '04a_eogcomp'), 'dir')
 end
 if ~exist(strcat(desPath, '04b_eyecor'), 'dir')
   mkdir(strcat(desPath, '04b_eyecor'));
+end
+if ~exist(strcat(desPath, '04c_preproc2'), 'dir')
+  mkdir(strcat(desPath, '04c_preproc2'));
 end
 if ~exist(strcat(desPath, '05a_autoart'), 'dir')
   mkdir(strcat(desPath, '05a_autoart'));
@@ -229,10 +229,10 @@ if session == 0
 else
   while selection == false
     fprintf('\nPlease select what you want to do with the selected dyads:\n');
-    fprintf('[1]  - Data import and repairing of bad channels\n');
-    fprintf('[2]  - Preprocessing, filtering, re-referencing\n');
+    fprintf('[1]  - Data import\n');
+    fprintf('[2]  - Preproc I: bad channel detection, filtering\n');
     fprintf('[3]  - ICA decomposition\n');
-    fprintf('[4]  - Estimation and correction of eye artifacts\n');
+    fprintf('[4]  - Preproc II: eye artifacts correction, bad channel recovery, re-referencing\n');
     fprintf('[5]  - Automatic and manual artifact detection\n');
     fprintf('[6]  - Narrow band filtering and Hilbert transform\n'); 
     fprintf('[7]  - Estimation of Phase Locking Values (PLV)\n');
@@ -300,28 +300,28 @@ switch part
     tmpPath = strcat(desPath, '01a_raw/');
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_01a_raw_', sessionStr, '.mat');
   case 2
-    tmpPath = strcat(desPath, '01d_repaired/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_01d_repaired_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_02_preproc_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '01a_raw/');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_01a_rawd_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '02b_preproc1/');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_02b_preproc1_', sessionStr, '.mat');
   case 3
-    tmpPath = strcat(desPath, '02_preproc/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_02_preproc_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '02b_preproc1/');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_02b_preproc1_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '03b_eogchan/');
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_03b_eogchan_', sessionStr, '.mat');
   case 4
     tmpPath = strcat(desPath, '03b_eogchan/');
     fileNamePre = strcat(tmpPath, 'coSMIC_d*_03b_eogchan_', sessionStr, '.mat');
-    tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePost = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '04c_preproc2/');
+    fileNamePost = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
   case 5
-    tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '04c_preproc2/');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '05b_allart/');
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_05b_allart_', sessionStr, '.mat');
   case 6
-    tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '04c_preproc2/');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '06b_hilbert/');
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_06b_hilbertGamma_', sessionStr, '.mat');
   case 7
@@ -330,8 +330,8 @@ switch part
     tmpPath = strcat(desPath, '07b_mplv/');
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_07b_mplvGamma_', sessionStr, '.mat');
   case 8
-    tmpPath = strcat(desPath, '04b_eyecor/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04b_eyecor_', sessionStr, '.mat');
+    tmpPath = strcat(desPath, '04c_preproc2/');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_04c_preproc2_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '08b_pwelch/');
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_08b_pwelch_', sessionStr, '.mat');
   case 9
@@ -441,7 +441,7 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
-        fprintf('<strong>[2] - Preprocessing, filtering, re-referencing?</strong>\n');
+        fprintf('<strong>[2] - Preproc I: bad channel detection, filtering?</strong>\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;
@@ -477,7 +477,7 @@ while sessionStatus == true
       selection = false;
       while selection == false
         fprintf('<strong>Continue data processing with:</strong>\n');
-        fprintf('<strong>[4] - Estimation and correction of eye artifacts?</strong>\n');
+        fprintf('<strong>[4] - Preproc II: eye artifacts correction, bad channel recovery, re-referencing?</strong>\n');
         x = input('\nSelect [y/n]: ','s');
         if strcmp('y', x)
           selection = true;

@@ -1,8 +1,8 @@
 %% check if basic variables are defined
 if ~exist('sessionStr', 'var')
   cfg           = [];
-  cfg.subFolder = '02_preproc/';
-  cfg.filename  = 'coSMIC_d01_02_preproc';
+  cfg.subFolder = '02b_preproc1/';
+  cfg.filename  = 'coSMIC_d01_02b_preproc1';
   sessionStr    = sprintf('%03d', coSMIC_getSessionNum( cfg ));             % estimate current session number
 end
 
@@ -11,7 +11,7 @@ if ~exist('desPath', 'var')
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in preprocessed data folder
-  sourceList    = dir([strcat(desPath, '02_preproc/'), ...
+  sourceList    = dir([strcat(desPath, '02b_preproc1/'), ...
                        strcat('*_', sessionStr, '.mat')]);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_02_preproc_', sessionStr, '.mat'));
+                    strcat('coSMIC_d%d_02b_preproc1_', sessionStr, '.mat'));
   end
 end
 
@@ -39,8 +39,8 @@ fprintf('\n');
 
 for i = numOfPart
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '02_preproc/');
-  cfg.filename    = sprintf('coSMIC_d%02d_02_preproc', i);
+  cfg.srcFolder   = strcat(desPath, '02b_preproc1/');
+  cfg.filename    = sprintf('coSMIC_d%02d_02b_preproc1', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('<strong>Dyad %d</strong>\n', i);
@@ -51,24 +51,41 @@ for i = numOfPart
   cfg             = [];
   cfg.part        = 'mother';
   
-  data_continuous = coSMIC_concatData( cfg, data_preproc );
+  data_continuous = coSMIC_concatData( cfg, data_preproc1 );
   
-  clear data_preproc
+  clear data_preproc1
   fprintf('\n');
   
   % Detect and reject transient artifacts (200uV delta within 200 ms. 
   % The window is shifted with 100 ms, what means 50 % overlapping.)
+  fprintf('<strong>Search for artifacts in all electrodes except F9, F10, V1 and V2...\n</strong>');
   cfg             = [];
-  cfg.part        = 'mother';
-  cfg.channel     = {'all', '-EOGV', '-EOGH', '-REF'};                      % use all channels for transient artifact detection expect EOGV, EOGH and REF
+  cfg.channel     = {'all', '-F9', '-F10', '-V1' '-V2', '-EOGV', ...        % use all channels for transient artifact detection expect EOGV, EOGH and REF
+                      '-EOGH', '-REF'};
   cfg.method      = 'range';
   cfg.sliding     = 'no';
   cfg.continuous  = 'yes';
   cfg.trllength   = 200;                                                    % minimal subtrial length: 200 msec
   cfg.overlap     = 50;                                                     % 50 % overlapping
-  cfg.range       = 200;                                                    % 200 uV
-   
-  cfg_autoart     = coSMIC_autoArtifact(cfg, data_continuous);
+  cfg.range       = 200;                                                    % 200 µV
+
+  cfg_autoart1    = coSMIC_autoArtifact(cfg, data_continuous);
+
+  fprintf('\n<strong>Search for artifacts in F9, F10, V1 and V2...\n</strong>');
+  cfg             = [];
+  cfg.channel     = {'V1', 'V2', 'F9', 'F10'};                              % use only F9, F10, V1 and V2
+  cfg.method      = 'range';
+  cfg.sliding     = 'no';
+  cfg.continuous  = 'yes';
+  cfg.trllength   = 200;                                                    % minimal subtrial length: 200 msec
+  cfg.overlap     = 50;                                                     % 50 % overlapping
+  cfg.range       = 400;                                                    % 200 µV
+
+  cfg_autoart2    = coSMIC_autoArtifact(cfg, data_continuous);
+
+  fprintf('\n<strong>Merge estimated artifacts...\n</strong>');
+  cfg_autoart     = coSMIC_mergeThArtResults(cfg_autoart1, cfg_autoart2);
+  clear cfg_autoart1 cfg_autoart2
    
   cfg           = [];
   cfg.part      = 'mother';

@@ -1,8 +1,8 @@
 %% check if basic variables are defined
 if ~exist('sessionStr', 'var')
   cfg           = [];
-  cfg.subFolder = '04b_eyecor/';
-  cfg.filename  = 'coSMIC_d01_04b_eyecor';
+  cfg.subFolder = '04c_preproc2/';
+  cfg.filename  = 'coSMIC_d01_04c_preproc2';
   sessionStr    = sprintf('%03d', coSMIC_getSessionNum( cfg ));             % estimate current session number
 end
 
@@ -11,7 +11,7 @@ if ~exist('desPath', 'var')
 end
 
 if ~exist('numOfPart', 'var')                                               % estimate number of participants in eyecor data folder
-  sourceList    = dir([strcat(desPath, '04b_eyecor/'), ...
+  sourceList    = dir([strcat(desPath, '04c_preproc2/'), ...
                        strcat('*_', sessionStr, '.mat')]);
   sourceList    = struct2cell(sourceList);
   sourceList    = sourceList(1,:);
@@ -20,7 +20,7 @@ if ~exist('numOfPart', 'var')                                               % es
 
   for i=1:1:numOfSources
     numOfPart(i)  = sscanf(sourceList{i}, ...
-                    strcat('coSMIC_d%d_04b_eyecor_', sessionStr, '.mat'));
+                    strcat('coSMIC_d%d_04c_preproc2_', sessionStr, '.mat'));
   end
 end
 
@@ -163,12 +163,12 @@ writetable(T, file_path);
 
 for i = numOfPart
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '04b_eyecor/');
-  cfg.filename    = sprintf('coSMIC_d%02d_04b_eyecor', i);
+  cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
+  cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', i);
   cfg.sessionStr  = sessionStr;
   
   fprintf('<strong>Dyad %d</strong>\n', i);
-  fprintf('Load eye-artifact corrected data...\n');
+  fprintf('Load preprocessed data...\n');
   coSMIC_loadData( cfg );
 
   cfg             = [];
@@ -195,7 +195,7 @@ for i = numOfPart
   cfg.stddev      = threshold;                                              % stddev: threshold uV
   cfg.mad         = threshold;                                              % mad: multiples of median absolute deviation
 
-  cfg_autoart     = coSMIC_autoArtifact(cfg, data_eyecor);
+  cfg_autoart     = coSMIC_autoArtifact(cfg, data_preproc2);
   
   % verify automatic detected artifacts / manual artifact detection
   cfg           = [];
@@ -203,7 +203,7 @@ for i = numOfPart
   cfg.manArt    = cfg_manart;
   cfg.dyad      = i;
   
-  cfg_allart    = coSMIC_manArtifact(cfg, data_eyecor);                           
+  cfg_allart    = coSMIC_manArtifact(cfg, data_preproc2);
   
   % export the automatic selected artifacts into a *.mat file
   cfg             = [];
@@ -218,7 +218,7 @@ for i = numOfPart
   fprintf('%s ...\n', file_path);
   coSMIC_saveData(cfg, 'cfg_autoart', cfg_autoart);
   fprintf('Data stored!\n');
-  clear clear cfg_autoart cfg_manart data_eyecor trl
+  clear clear cfg_autoart cfg_manart data_preproc2 trl
   
   % export the verified and the additional artifacts into a *.mat file
   cfg             = [];

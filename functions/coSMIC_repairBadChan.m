@@ -1,14 +1,12 @@
-function [ data_repaired ] = coSMIC_repairBadChan( data_badchan, data_raw )
+function [ data ] = coSMIC_repairBadChan( data_badchan, data )
 % COSMIC_REPAIRBADCHAN can be used for repairing previously selected bad
 % channels. For repairing this function uses the weighted neighbour
-% approach. After the repairing operation, the result will be displayed in
-% the fieldtrip databrowser for verification purpose.
+% approach.
 %
 % Use as
-%   [ data_repaired ] = coSMIC_repairBadChan( data_badchan, data_raw )
+%   [ data ] = coSMIC_repairBadChan( data_badchan, data_raw )
 %
-% where data_raw has to be raw data and data_badchan the result of
-% COSMIC_SELECTBADCHAN.
+% where data_badchan has to be the result of COSMIC_SELECTBADCHAN.
 %
 % Used layout and neighbour definitions:
 %   mpi_customized_acticap32.mat
@@ -16,9 +14,9 @@ function [ data_repaired ] = coSMIC_repairBadChan( data_badchan, data_raw )
 %
 % The function requires the fieldtrip toolbox
 %
-% SEE also COSMIC_DATABROWSER and FT_CHANNELREPAIR
+% SEE also FT_CHANNELREPAIR
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Load layout and neighbour definitions
@@ -39,55 +37,46 @@ cfg.showcallinfo  = 'no';
 % -------------------------------------------------------------------------
 % Repairing bad channels
 % -------------------------------------------------------------------------
-cfg.badchannel    = data_badchan.mother.badChan;
+cfg.missingchannel = data_badchan.mother.badChan;
 
 fprintf('<strong>Repairing bad channels of mother...</strong>\n');
-if isempty(cfg.badchannel)
+if isempty(cfg.missingchannel)
   fprintf('All channels are good, no repairing operation required!\n');
-  data_repaired.mother = data_raw.mother;
 else
-  data_repaired.mother = ft_channelrepair(cfg, data_raw.mother);
-  data_repaired.mother = removefields(data_repaired.mother, {'elec'});
+  ft_warning off;
+  data.mother = ft_channelrepair(cfg, data.mother);
+  ft_warning on;
+  data.mother = removefields(data.mother, {'elec'});
+  fprintf('\n');
 end
+label = [lay.label; {'REF'; 'EOGV'; 'EOGH'}];
+data.mother = correctChanOrder( data.mother, label);
 
-cfgView           = [];
-cfgView.ylim      = [-200 200];
-cfgView.blocksize = 120;
-cfgView.part      = 'mother';
-  
-fprintf('\n<strong>Verification view for mother...</strong>\n');
-coSMIC_databrowser( cfgView, data_repaired );
-commandwindow;                                                              % set focus to commandwindow
-input('Press enter to continue!:');
-close(gcf);
-
-fprintf('\n');
-
-cfg.badchannel    = data_badchan.child.badChan;
+cfg.missingchannel = data_badchan.child.badChan;
 
 fprintf('<strong>Repairing bad channels of child...</strong>\n');
 if isempty(cfg.badchannel)
   fprintf('All channels are good, no repairing operation required!\n');
-  data_repaired.child = data_raw.child;
 else
-  data_repaired.child = ft_channelrepair(cfg, data_raw.child);
-  data_repaired.child = removefields(data_repaired.child, {'elec'});
+  ft_warning off;
+  data.child = ft_channelrepair(cfg, data.child);
+  ft_warning on;
+  data.child = removefields(data.child, {'elec'});
+  fprintf('\n');
+end
+data.part2 = correctChanOrder( data.part2, label);
+
 end
 
 % -------------------------------------------------------------------------
-% Visual verification
+% Local function - move corrected channel to original position
 % -------------------------------------------------------------------------
-cfgView           = [];
-cfgView.ylim      = [-200 200];
-cfgView.blocksize = 120;
-cfgView.part      = 'child';
-  
-fprintf('\n<strong>Verification view for child...</strong>\n');
-coSMIC_databrowser( cfgView, data_repaired );
-commandwindow;                                                              % set focus to commandwindow
-input('Press enter to continue!:');
-close(gcf);
+function [ dataTmp ] = correctChanOrder( dataTmp, label )
 
-fprintf('\n');
+[~, pos]  = ismember(label, dataTmp.label);
+pos       = pos(~ismember(pos, 0));
+
+dataTmp.label = dataTmp.label(pos);
+dataTmp.trial = cellfun(@(x) x(pos, :), dataTmp.trial, 'UniformOutput', false);
 
 end

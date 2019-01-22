@@ -31,10 +31,36 @@ end
 %    confirmity)
 % 2. Verify the estimated components by using the ft_databrowser function
 % 3. Remove eye artifacts
+% 4. Recovery of bad channels
+% 5. Re-referencing
 
-cprintf([0,0.6,0], '<strong>[4] - Estimation and correction of eye artifacts</strong>\n');
+cprintf([0,0.6,0], '<strong>[4] - Preproc II: eye artifacts correction, bad channel recovery, re-referencing</strong>\n');
 fprintf('\n');
 
+% favoured reference
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Please select favoured reference:\n');
+% fprintf('[1] - Linked mastoid (''TP9'', ''TP10'')\n');
+  fprintf('[1] - Common average reference\n');
+  x = input('Option: ');
+
+  switch x
+%   case 1
+%     selection = true;
+%     refchannel = 'TP10';
+%     reference = {'LM'};
+    case 1
+      selection = true;
+      refchannel = {'all', '-V1', '-V2'};
+      reference = {'CAR'};
+    otherwise
+      cprintf([1,0.5,0], 'Wrong input!\n');
+  end
+end
+fprintf('\n');
+
+% correlation threshold
 selection = false;
 while selection == false
   cprintf([0,0.6,0], 'Do you want to use the default threshold (0.8) for EOG-artifact estimation with mother data?\n');
@@ -72,9 +98,9 @@ if isempty(threshold)
 fprintf('\n');  
 end
 
-% Write selected settings to settings file
+% Create settings file if not existing
 settings_file = [desPath '00_settings/' ...
-                          sprintf('settings_%s', sessionStr) '.xls'];
+                  sprintf('settings_%s', sessionStr) '.xls'];
 if ~(exist(settings_file, 'file') == 2)                                     % check if settings file already exist
   cfg = [];
   cfg.desFolder   = [desPath '00_settings/'];
@@ -86,16 +112,21 @@ end
 
 T = readtable(settings_file);                                               % update settings table
 warning off;
+T.reference(numOfPart) = reference;
 T.ICAcorrValMother(numOfPart) = threshold;
 warning on;
 
 for i = numOfPart
+  fprintf('<strong>Dyad %d</strong>\n', i);
+
+  %% Eye artifact correction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  fprintf('<strong>Eye artifact correction</strong>\n\n');
+
   cfg             = [];
   cfg.srcFolder   = strcat(desPath, '03a_icacomp/');
   cfg.filename    = sprintf('coSMIC_d%02d_03a_icacomp', i);
   cfg.sessionStr  = sessionStr;
   
-  fprintf('<strong>Dyad %d</strong>\n', i);
   fprintf('Load ICA result...\n');
   coSMIC_loadData( cfg );
   
@@ -149,22 +180,25 @@ for i = numOfPart
   T.EOGcompMother(i) = EOGcompMother;
   warning on;
 
-  % load preprocessed data
+  delete(settings_file);
+  writetable(T, settings_file);
+
+  % load basic bandpass filtered data
   cfg             = [];
-  cfg.srcFolder   = strcat(desPath, '02_preproc/');
-  cfg.filename    = sprintf('coSMIC_d%02d_02_preproc', i);
+  cfg.srcFolder   = strcat(desPath, '02b_preproc1/');
+  cfg.filename    = sprintf('coSMIC_d%02d_02b_preproc1', i);
   cfg.sessionStr  = sessionStr;
   
-  fprintf('Load preprocessed data...\n');
+  fprintf('Load bandpass filtered data...\n');
   coSMIC_loadData( cfg );
   
   % remove eye artifacts
   cfg           = [];
   cfg.part      = 'mother';
 
-  data_eyecor = coSMIC_removeEOGArt(cfg, data_eogcomp, data_preproc);
+  data_eyecor = coSMIC_removeEOGArt(cfg, data_eogcomp, data_preproc1);
   
-  clear data_eogcomp data_preproc
+  clear data_eogcomp data_preproc1
   fprintf('\n');
 
   % export the reviced data in a *.mat file
@@ -180,13 +214,47 @@ for i = numOfPart
   fprintf('%s ...\n', file_path);
   coSMIC_saveData(cfg, 'data_eyecor', data_eyecor);
   fprintf('Data stored!\n\n');
-  clear data_eyecor
-end
 
-% store settings table
-delete(settings_file);
-writetable(T, settings_file);
+  %% Recovery of bad channels %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  fprintf('<strong>Bad channel recovery</strong>\n\n');
+
+  cfg             = [];
+  cfg.srcFolder   = strcat(desPath, '02a_badchan/');
+  cfg.filename    = sprintf('coSMIC_d%02d_02a_badchan', i);
+  cfg.sessionStr  = sessionStr;
+
+  fprintf('Load bad channels specification...\n');
+  coSMIC_loadData( cfg );
+
+  data_eyecor = coSMIC_repairBadChan( data_badchan, data_eyecor );
+  clear data_badchan
+
+  %% re-referencing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  fprintf('<strong>Rereferencing</strong>\n');
+
+  cfg                   = [];
+  cfg.refchannel        = refchannel;
+
+  ft_info off;
+  data_preproc2 = coSMIC_reref( cfg, data_eyecor);
+  ft_info on;
+
+  % export the bad channels in a *.mat file
+  cfg             = [];
+  cfg.desFolder   = strcat(desPath, '04c_preproc2/');
+  cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', i);
+  cfg.sessionStr  = sessionStr;
+
+  file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
+                     '.mat');
+
+  fprintf('The clean and re-referenced data of dyad %d will be saved in:\n', i);
+  fprintf('%s ...\n', file_path);
+  coSMIC_saveData(cfg, 'data_preproc2', data_preproc2);
+  fprintf('Data stored!\n\n');
+  clear data_preproc2 data_eyecor data_badchan
+end
 
 %% clear workspace
 clear file_path cfg sourceList numOfSources i threshold selection x T ...
-      settings_file EOGcompMother
+      settings_file EOGcompMother reference refchannel
