@@ -114,6 +114,7 @@ cfg              = [];
 cfg.showcallinfo = 'no';
 ft_info off;
 data_out         = ft_appenddata(cfg, data_in, eogv, eogh);
+data_out.fsample = data_in.fsample;
 ft_info on;
 
 end

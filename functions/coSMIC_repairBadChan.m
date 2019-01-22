@@ -55,7 +55,7 @@ data.mother = correctChanOrder( data.mother, label);
 cfg.missingchannel = data_badchan.child.badChan;
 
 fprintf('<strong>Repairing bad channels of child...</strong>\n');
-if isempty(cfg.badchannel)
+if isempty(cfg.missingchannel)
   fprintf('All channels are good, no repairing operation required!\n');
 else
   ft_warning off;
@@ -64,7 +64,7 @@ else
   data.child = removefields(data.child, {'elec'});
   fprintf('\n');
 end
-data.part2 = correctChanOrder( data.part2, label);
+data.child = correctChanOrder( data.child, label);
 
 end
 

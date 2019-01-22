@@ -28,7 +28,7 @@ end
 % 1. select bad/noisy channels
 % 2. filter the good channels (basic bandpass filtering)
 
-cprintf([0,0.6,0], '<strong>[2] - PPreproc I: bad channel detection, filtering</strong>\n');
+cprintf([0,0.6,0], '<strong>[2] - Preproc I: bad channel detection, filtering</strong>\n');
 fprintf('\n');
 
 % Create settings file if not existing
@@ -44,7 +44,7 @@ if ~(exist(settings_file, 'file') == 2)                                     % ch
 end
 
 % Load settings file
-T = readtable(file_path);                                                   % update settings table
+T = readtable(settings_file);                                               % update settings table
 warning off;
 T.dyad(numOfPart) = numOfPart;
 warning on;
@@ -82,8 +82,8 @@ for i = numOfPart
 
   % export the bad channels in a *.mat file
   cfg             = [];
-  cfg.desFolder   = strcat(desPath, '01c_badchan/');
-  cfg.filename    = sprintf('coSMIC_d%02d_01b_badchan', i);
+  cfg.desFolder   = strcat(desPath, '02a_badchan/');
+  cfg.filename    = sprintf('coSMIC_d%02d_02a_badchan', i);
   cfg.sessionStr  = sessionStr;
 
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...

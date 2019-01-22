@@ -301,7 +301,7 @@ switch part
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_01a_raw_', sessionStr, '.mat');
   case 2
     tmpPath = strcat(desPath, '01a_raw/');
-    fileNamePre = strcat(tmpPath, 'coSMIC_d*_01a_rawd_', sessionStr, '.mat');
+    fileNamePre = strcat(tmpPath, 'coSMIC_d*_01a_raw_', sessionStr, '.mat');
     tmpPath = strcat(desPath, '02b_preproc1/');
     fileNamePost = strcat(tmpPath, 'coSMIC_d*_02b_preproc1_', sessionStr, '.mat');
   case 3

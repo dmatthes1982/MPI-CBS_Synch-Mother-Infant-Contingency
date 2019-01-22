@@ -60,6 +60,7 @@ for i = numOfPart
   % The window is shifted with 100 ms, what means 50 % overlapping.)
   fprintf('<strong>Search for artifacts in all electrodes except F9, F10, V1 and V2...\n</strong>');
   cfg             = [];
+  cfg.part        = 'mother';
   cfg.channel     = {'all', '-F9', '-F10', '-V1' '-V2', '-EOGV', ...        % use all channels for transient artifact detection expect EOGV, EOGH and REF
                       '-EOGH', '-REF'};
   cfg.method      = 'range';
@@ -73,13 +74,14 @@ for i = numOfPart
 
   fprintf('\n<strong>Search for artifacts in F9, F10, V1 and V2...\n</strong>');
   cfg             = [];
+  cfg.part        = 'mother';
   cfg.channel     = {'V1', 'V2', 'F9', 'F10'};                              % use only F9, F10, V1 and V2
   cfg.method      = 'range';
   cfg.sliding     = 'no';
   cfg.continuous  = 'yes';
   cfg.trllength   = 200;                                                    % minimal subtrial length: 200 msec
   cfg.overlap     = 50;                                                     % 50 % overlapping
-  cfg.range       = 400;                                                    % 200 µV
+  cfg.range       = 400;                                                    % 400 µV
 
   cfg_autoart2    = coSMIC_autoArtifact(cfg, data_continuous);
 
