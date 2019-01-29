@@ -1,9 +1,9 @@
 function [ data_eogcomp ] = coSMIC_detEOGComp( cfg, data_icacomp, data_sensor )
-% COSMIC_CORRCOMP estimates components which have a high correlation
-% (> 80%) with the EOGV and EOGH components of the original data
+% COSMIC_DETEOGCOMP determines components with a high correlation (> 80%)
+% in respect of EOGV and EOGH components of the original data.
 %
 % Use as
-%   [ data_eogcomp ] = COSMIC_corrComp( data_icacomp, data_sensor )
+%   [ data_eogcomp ] = coSMIC_detEOGComp( data_icacomp, data_sensor )
 %
 % where input data_icacomp has to be the results of COSMIC_ICA and 
 % data_sensor the results of COSMIC_SELECTDATA
@@ -17,7 +17,7 @@ function [ data_eogcomp ] = coSMIC_detEOGComp( cfg, data_icacomp, data_sensor )
 %
 % See also COSMIC_ICA and COSMIC_SELECTDATA
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -37,12 +37,12 @@ end
 % Estimate correlating components
 % -------------------------------------------------------------------------
 if ismember(part, {'mother', 'both'})
-  fprintf('<strong>Estimate EOG-correlating components at mother...</strong>\n');
+  fprintf('<strong>Determine EOG-correlating components at mother...</strong>\n');
   data_eogcomp.mother = corrComp(data_icacomp.mother, data_sensor.mother, threshold(1));
 end
 
 if ismember(part, {'child', 'both'})
-  fprintf('<strong>Estimate EOG-correlating components at child...</strong>\n');
+  fprintf('<strong>Determine EOG-correlating components at child...</strong>\n');
   data_eogcomp.child = corrComp(data_icacomp.child, data_sensor.child, threshold(2));
 end
 
@@ -87,4 +87,3 @@ dataEOGComp.unmixing   = dataICAComp.unmixing;
 dataEOGComp.elements   = dataICAComp.label(eogvCorr | eoghCorr);
 
 end
-

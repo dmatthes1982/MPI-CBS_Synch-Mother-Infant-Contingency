@@ -1,22 +1,22 @@
 function [ data ] = coSMIC_correctSignals( cfg, data_eogcomp, data )
-% COSMIC_REMOVEEOGART is a function which removes eye artifacts from data
-% using in advance estimated ica components
+% COSMIC_CORRECTSIGNALS is a function which removes artifacts from data
+% using previously estimated ica components
 %
 % Use as
-%   [ data ] = coSMIC_removeEOGArt( data_eogcomp, data )
+%   [ data ] = coSMIC_correctSignals( data_eogcomp, data )
 %
-% where data_eogcomp has to be the result of COSMIC_VERIFYCOMP or 
-% COSMIC_CORRCOMP and data has to be the result of COSMIC_PREPROCESSING
+% where data_eogcomp has to be the result of COSMIC_SELECTBADCOMP or
+% COSMIC_DETEOGCOMP and data has to be the result of COSMIC_PREPROCESSING
 %
 % The configuration options are
 %   cfg.part        = participants which shall be processed: mother, child or both (default: both)
 %
 % This function requires the fieldtrip toolbox
 %
-% See also COSMIC_VERIFYCOMP, COSMIC_CORRCOMP, COSMIC_PREPROCESSING,
+% See also COSMIC_SELECTBADCOMP, COSMIC_DETEOGCOMP, COSMIC_PREPROCESSING,
 % FT_COMPONENTANALYSIS and FT_REJECTCOMPONENT
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -31,12 +31,12 @@ end
 % Remove EOG artifacts
 % -------------------------------------------------------------------------
 if ismember(part, {'mother', 'both'})
-  fprintf('<strong>Cleanig data of mother from eye-artifacts...</strong>\n');
+  fprintf('<strong>Artifact correction with data of mother...</strong>\n');
   data.mother = removeArtifacts(data_eogcomp.mother, data.mother);
 end
 
 if ismember(part, {'child', 'both'})
-  fprintf('<strong>Cleanig data of child from eye-artifacts...</strong>\n');
+  fprintf('<strong>Artifact correction with data of child...</strong>\n');
   data.child = removeArtifacts(data_eogcomp.child, data.child);
 end
 
@@ -54,7 +54,7 @@ cfg.demean        = 'no';
 cfg.showcallinfo  = 'no';
 
 ft_info off;
-dataComp = ft_componentanalysis(cfg, dataOfPart);                           % estimate components with the in previous part 3 calculated unmixing matrix
+dataComp = ft_componentanalysis(cfg, dataOfPart);                           % estimate components by using the in previous part 3 calculated unmixing matrix
 ft_info on;
 
 for i=1:length(dataEOG.elements)
