@@ -142,7 +142,7 @@ for i = numOfPart
   cfg.part      = 'mother';
   cfg.threshold = threshold;
   
-  data_eogcomp  = coSMIC_corrComp(cfg, data_icacomp, data_eogchan);
+  data_eogcomp  = coSMIC_detEOGComp(cfg, data_icacomp, data_eogchan);
   
   clear data_eogchan
   fprintf('\n');
@@ -151,7 +151,7 @@ for i = numOfPart
   cfg           = [];
   cfg.part      = 'mother';
 
-  data_eogcomp  = coSMIC_verifyComp(cfg, data_eogcomp, data_icacomp);
+  data_eogcomp  = coSMIC_selectBadComp(cfg, data_eogcomp, data_icacomp);
   
   clear data_icacomp
 
@@ -196,7 +196,7 @@ for i = numOfPart
   cfg           = [];
   cfg.part      = 'mother';
 
-  data_eyecor = coSMIC_removeEOGArt(cfg, data_eogcomp, data_preproc1);
+  data_eyecor = coSMIC_correctSignals(cfg, data_eogcomp, data_preproc1);
   
   clear data_eogcomp data_preproc1
   fprintf('\n');

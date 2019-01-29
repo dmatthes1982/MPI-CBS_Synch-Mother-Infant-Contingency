@@ -1,4 +1,4 @@
-function [ data ] = coSMIC_removeEOGArt( cfg, data_eogcomp, data )
+function [ data ] = coSMIC_correctSignals( cfg, data_eogcomp, data )
 % COSMIC_REMOVEEOGART is a function which removes eye artifacts from data
 % using in advance estimated ica components
 %
