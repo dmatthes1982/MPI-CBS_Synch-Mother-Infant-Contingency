@@ -29,8 +29,9 @@ end
 % Processing steps:
 % 1. Find EOG-like ICA Components (Correlation with EOGV and EOGH, 80 %
 %    confirmity)
-% 2. Verify the estimated components by using the ft_databrowser function
-% 3. Remove eye artifacts
+% 2. Verify the estimated components by using the ft_icabrowser function
+%    and add further bad components to the selection
+% 3. Correct EEG data
 % 4. Recovery of bad channels
 % 5. Re-referencing
 
@@ -119,7 +120,7 @@ warning on;
 for i = numOfPart
   fprintf('<strong>Dyad %d</strong>\n', i);
 
-  %% Eye artifact correction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% ICA-based artifact correction %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   fprintf('<strong>ICA-based artifact correction</strong>\n\n');
 
   cfg             = [];
@@ -147,7 +148,8 @@ for i = numOfPart
   clear data_eogchan
   fprintf('\n');
   
-  % Verify the estimated components
+  % Verify EOG-like ICA Components and add further bad components to the
+  % selection
   cfg           = [];
   cfg.part      = 'mother';
 
@@ -155,7 +157,7 @@ for i = numOfPart
   
   clear data_icacomp
 
-  % export the determined eog components and the unmixing matrix into 
+  % export the selected ICA components and the unmixing matrix into
   % a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '04a_eogcomp/');
@@ -170,14 +172,14 @@ for i = numOfPart
   coSMIC_saveData(cfg, 'data_eogcomp', data_eogcomp);
   fprintf('Data stored!\n\n');
 
-  % add eye-artifact related components to the settings file
+  % add selected ICA components to the settings file
   if isempty(data_eogcomp.mother.elements)
-    EOGcompMother = {'---'};
+    ICAcompMother = {'---'};
   else
-    EOGcompMother = {strjoin(data_eogcomp.mother.elements,',')};
+    ICAcompMother = {strjoin(data_eogcomp.mother.elements,',')};
   end
   warning off;
-  T.EOGcompMother(i) = EOGcompMother;
+  T.ICAcompMother(i) = ICAcompMother;
   warning on;
 
   delete(settings_file);
@@ -192,7 +194,7 @@ for i = numOfPart
   fprintf('Load bandpass filtered data...\n');
   coSMIC_loadData( cfg );
   
-  % remove eye artifacts
+  % correct EEG signals
   cfg           = [];
   cfg.part      = 'mother';
 
@@ -257,4 +259,4 @@ end
 
 %% clear workspace
 clear file_path cfg sourceList numOfSources i threshold selection x T ...
-      settings_file EOGcompMother reference refchannel
+      settings_file ICAcompMother reference refchannel
