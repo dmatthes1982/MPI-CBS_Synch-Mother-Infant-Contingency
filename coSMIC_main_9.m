@@ -141,7 +141,7 @@ if avgOverDyads == true
   
   data_tfrod     = coSMIC_TFRoverDyads( cfg );
   
-  % export the averaged PSD values into a *.mat file
+  % export the averaged power values into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '09b_tfrod/');
   cfg.filename    = 'coSMIC_09b_tfrod';
@@ -158,10 +158,10 @@ if avgOverDyads == true
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Averaging PSD over dyads
+%% Averaging power over dyads
 choise = false;
 while choise == false
-  cprintf([0,0.6,0], 'Averaging PSD over dyads?\n');
+  cprintf([0,0.6,0], 'Averaging power over dyads?\n');
   x = input('Select [y/n]: ','s');
   if strcmp('y', x)
     choise = true;
@@ -180,9 +180,9 @@ if avgOverDyads == true
   cfg.path        = strcat(desPath, '08b_pwelch/');
   cfg.session     = str2double(sessionStr);
   
-  data_pwelchod     = coSMIC_PSDoverDyads( cfg );
+  data_pwelchod     = coSMIC_powOverDyads( cfg );
   
-  % export the averaged PSD values into a *.mat file
+  % export averaged power spectrum into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '09c_pwelchod/');
   cfg.filename    = 'coSMIC_09c_pwelchod';
@@ -191,7 +191,7 @@ if avgOverDyads == true
   file_path = strcat(cfg.desFolder, cfg.filename, '_', cfg.sessionStr, ...
                      '.mat');
                    
-  fprintf('Saving PSD values over dyads in:\n'); 
+  fprintf('Saving averaged power spectrum over dyads in:\n'); 
   fprintf('%s ...\n', file_path);
   coSMIC_saveData(cfg, 'data_pwelchod', data_pwelchod);
   fprintf('Data stored!\n');

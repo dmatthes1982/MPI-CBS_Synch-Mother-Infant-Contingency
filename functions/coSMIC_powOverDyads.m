@@ -1,10 +1,9 @@
-function  [ data_pwelchod ] = coSMIC_PSDoverDyads( cfg )
-% COSMIC_PSDOVERDYADS estimates the mean of the power spectral density
-% values over dyads for all conditions separately for mothers and
-% children.
+function  [ data_pwelchod ] = coSMIC_powOverDyads( cfg )
+% COSMIC_POWOVERDYADS estimates the mean of the power activity over dyads
+% for all conditions separately for mothers and children.
 %
 % Use as
-%   [ data_pwelchod ] = coSMIC_PSDoverDyads( cfg )
+%   [ data_pwelchod ] = coSMIC_powOverDyads( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/08b_pwelch/')
@@ -33,7 +32,7 @@ load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
 % -------------------------------------------------------------------------
 % Select dyads
 % -------------------------------------------------------------------------    
-fprintf('<strong>Averaging PSD values over dyads...</strong>\n');
+fprintf('<strong>Averaging power values over dyads...</strong>\n');
 
 dyadsList   = dir([path, sprintf('coSMIC_d*_08b_pwelch_%03d.mat', session)]);
 dyadsList   = struct2cell(dyadsList);
@@ -117,7 +116,7 @@ dataChild = cellfun(@(x) shiftdim(x, 2), dataChild, 'UniformOutput', false);
 dataChild = cat(4, dataChild{:});
 
 % -------------------------------------------------------------------------
-% Estimate averaged power spectral density (over dyads)
+% Estimate averaged power spectrum (over dyads)
 % -------------------------------------------------------------------------
 dataMother  = nanmean(dataMother, 4);
 dataChild   = nanmean(dataChild, 4);
