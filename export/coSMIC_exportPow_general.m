@@ -276,7 +276,7 @@ while selection == false
     cprintf([1,0.5,0], ['Use only letters and or numbers for the file '...
                         'identifier\n']);
   else
-    xlsFile = [desPath 'Power_general_export_' identifier{1} '_' ...          % build filename
+    xlsFile = [desPath 'Power_general_export_' identifier{1} '_' ...        % build filename
               sessionStr '.xls'];
     if exist(xlsFile, 'file')                                               % check if file already exists
       cprintf([1,0.5,0], 'A file with this identifier exists!');

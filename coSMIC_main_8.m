@@ -205,7 +205,7 @@ if pwelch == true
     data_pwelch = data_preproc2;                                            % to save need of RAM
     clear data_preproc2
     
-    % exportpower spectrum into a *.mat file
+    % export power spectrum into a *.mat file
     cfg             = [];
     cfg.desFolder   = strcat(desPath, '08b_pwelch/');
     cfg.filename    = sprintf('coSMIC_d%02d_08b_pwelch', i);

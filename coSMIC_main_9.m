@@ -141,7 +141,7 @@ if avgOverDyads == true
   
   data_tfrod     = coSMIC_TFRoverDyads( cfg );
   
-  % export the averaged power values into a *.mat file
+  % export the averaged TFR values into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '09b_tfrod/');
   cfg.filename    = 'coSMIC_09b_tfrod';
