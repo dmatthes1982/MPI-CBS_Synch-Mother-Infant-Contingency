@@ -11,6 +11,7 @@ function coSMIC_easyMPLVplot( cfg, data )
 %
 % The configuration options are
 %   cfg.condition = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
+%   cfg.electrode = electrodes of interest (e.g. {'C3', 'Cz', 'C4'}, default: 'all')
 %   cfg.elecorder = describes the order of electrodes (use 'default' or specific order i.e.: 'cosmic_01')
 %                   default value: 'default'
 %
@@ -23,7 +24,8 @@ function coSMIC_easyMPLVplot( cfg, data )
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-cond      = ft_getopt(cfg, 'condition', 11);
+condition = ft_getopt(cfg, 'condition', 11);
+electrode = ft_getopt(cfg, 'electrode', 'all');
 elecorder = ft_getopt(cfg, 'elecorder', 'default');
 
 if isfield(data, 'dyad')
@@ -40,10 +42,10 @@ trialinfo = data.trialinfo;                                                 % ge
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond = coSMIC_checkCondition( cond );                                       % check cfg.condition definition and translate it into trl number    
-trl  = find(trialinfo == cond);
+condition = coSMIC_checkCondition( condition );                             % check cfg.condition definition and translate it into trl number
+trl  = find(trialinfo == condition);
 if isempty(trl)
-  error('The selected dataset contains no condition %d.', cond);
+  error('The selected dataset contains no condition %d.', condition);
 end
 
 % -------------------------------------------------------------------------
@@ -59,21 +61,33 @@ end
 % Prepare data
 % ------------------------------------------------------------------------- 
 label = data.label;
-components = 1:1:length(label);
 
 if strcmp(elecorder, 'default')
   mPLV = data.mPLV{trl};
 else
-  [tf, loc]                = ismember(labelAlt, label);                      % bring data into a correct order
-  idx                     = 1:length(labelAlt);
-  idx                     = idx(tf);
-  label                   = labelAlt(idx);
+  [tf, loc] = ismember(labelAlt, label);                                    % bring data into a correct order
+  label     = labelAlt(tf);
   
   mPLV = data.mPLV{trl};
   loc(loc==0) = [];
   mPLV = mPLV(loc, loc);
 end
-  
+
+% -------------------------------------------------------------------------
+% Select only a subset of electrodes
+% -------------------------------------------------------------------------
+if ~isstring(electrode) && iscell(electrode)
+  tf   = ismember(label, electrode);
+  label = label(tf);
+  mPLV = mPLV(tf,tf);
+end
+
+if ~isempty(label)
+  components = 1:1:length(label);
+else
+  error('One have to specify at least one valid channel');
+end
+
 % -------------------------------------------------------------------------
 % Plot mPLV representation
 % -------------------------------------------------------------------------
@@ -82,7 +96,7 @@ imagesc(components, components, mPLV);
 set(gca, 'XTick', components,'XTickLabel', label);                          % use labels instead of numbers for the axis description
 set(gca, 'YTick', components,'YTickLabel', label);
 set(gca,'xaxisLocation','top');                                             % move xlabel to the top
-title(sprintf(' mean Phase Locking Values in Condition: %d', cond));   
+title(sprintf(' mean Phase Locking Values in Condition: %d', condition));
 colorbar;
 
 end
