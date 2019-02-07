@@ -8,7 +8,7 @@ function coSMIC_easyPLVplot( cfg, data )
 % where the input data has to be the result of COSMIC_PHASELOCKVAL
 %
 % The configuration options are
-%   cfg.condition = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
+%   cfg.condition = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
 %   cfg.elecPart1 = number of electrode of mother (default: 'Cz')
 %   cfg.elecPart2 = number of electrode of child (default: 'Cz')
 %
@@ -16,7 +16,7 @@ function coSMIC_easyPLVplot( cfg, data )
 %
 % See also COSMIC_DATASTRUCTURE, PLOT, COSMIC_PHASELOCKVAL
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options

@@ -10,7 +10,7 @@ function coSMIC_easyMPLVplot( cfg, data )
 % COSMIC_MPLVOVERDYADS
 %
 % The configuration options are
-%   cfg.condition = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
+%   cfg.condition = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
 %   cfg.elecorder = describes the order of electrodes (use 'default' or specific order i.e.: 'cosmic_01')
 %                   default value: 'default'
 %
@@ -18,12 +18,12 @@ function coSMIC_easyMPLVplot( cfg, data )
 %
 % See also COSMIC_DATASTRUCTURE, PLOT, COSMIC_CALCMEANPLV, COSMIC_MPLVOVERDYADS
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-cond      = ft_getopt(cfg, 'condition', 4);
+cond      = ft_getopt(cfg, 'condition', 11);
 elecorder = ft_getopt(cfg, 'elecorder', 'default');
 
 if isfield(data, 'dyad')

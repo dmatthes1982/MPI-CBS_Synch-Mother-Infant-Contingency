@@ -10,7 +10,7 @@ function coSMIC_easyMultiTFRplot(cfg, data)
 %
 % The configuration options are 
 %   cfg.part        = participant identifier, options: 'mother' or 'child' (default: 'mother')
-%   cfg.condition   = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
+%   cfg.condition   = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
 %   cfg.trial       = number of trial (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 30])
 %   cfg.timelimits  = [begin end] (default: [4 116])
@@ -19,13 +19,13 @@ function coSMIC_easyMultiTFRplot(cfg, data)
 %
 % See also FT_MULTIPLOTTFR, COSMIC_TIMEFREQANALYSIS
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
 part    = ft_getopt(cfg, 'part', 'mother');
-cond    = ft_getopt(cfg, 'condition', 4);
+cond    = ft_getopt(cfg, 'condition', 11);
 trl     = ft_getopt(cfg, 'trial', 1);
 freqlim = ft_getopt(cfg, 'freqlimits', [2 30]);
 timelim = ft_getopt(cfg, 'timelimits', [4 116]);

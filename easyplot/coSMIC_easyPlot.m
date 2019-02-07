@@ -10,7 +10,7 @@ function coSMIC_easyPlot( cfg, data )
 %
 % The configuration options are
 %   cfg.part      = participant identifier, options: 'mother' or 'child' (default: 'mother')
-%   cfg.condition = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
+%   cfg.condition = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
 %   cfg.electrode = number of electrode (default: 'Cz')
 %   cfg.trial     = number of trial (default: 1)
 %
@@ -18,13 +18,13 @@ function coSMIC_easyPlot( cfg, data )
 %
 % See also COSMIC_DATASTRUCTURE, PLOT
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
 part = ft_getopt(cfg, 'part', 'mother');
-cond = ft_getopt(cfg, 'condition', 4);
+cond = ft_getopt(cfg, 'condition', 11);
 elec = ft_getopt(cfg, 'electrode', 'Cz');
 trl  = ft_getopt(cfg, 'trial', 1);
 

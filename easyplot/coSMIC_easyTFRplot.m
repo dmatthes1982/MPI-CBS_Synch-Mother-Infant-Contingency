@@ -10,7 +10,7 @@ function coSMIC_easyTFRplot(cfg, data)
 %
 % The configuration options are 
 %   cfg.part        = participant identifier, options: 'mother' or 'child' (default: 'mother')
-%   cfg.condition   = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
+%   cfg.condition   = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = number of trial (default: 1)
 %   cfg.freqlimits  = [begin end] (default: [2 50])
@@ -20,7 +20,7 @@ function coSMIC_easyTFRplot(cfg, data)
 %
 % See also FT_SINGLEPLOTTFR, COSMIC_TIMEFREQANALYSIS, COSMIC_DATASTRUCTURE
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options

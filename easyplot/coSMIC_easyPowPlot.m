@@ -9,7 +9,7 @@ function coSMIC_easyPowPlot(cfg, data)
 %
 % The configuration options are 
 %   cfg.part        = participant identifier, options: 'mother' or 'child' (default: 'mother')
-%   cfg.condition   = condition (default: 4 or 'Baseline', see COSMIC_DATASTRUCTURE)
+%   cfg.condition   = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
 %   cfg.electrode   = number of electrodes (default: {'Cz'} repsectively [8])
 %                     examples: {'Cz'}, {'F3', 'Fz', 'F4'}, [8] or [2, 1, 28]
 %   cfg.avgelec     = plot average over selected electrodes, options: 'yes' or 'no' (default: 'no')
