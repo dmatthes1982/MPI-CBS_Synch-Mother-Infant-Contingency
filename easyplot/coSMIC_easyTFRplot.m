@@ -13,8 +13,8 @@ function coSMIC_easyTFRplot(cfg, data)
 %   cfg.condition   = condition (default: 11 or 'DFreePlay', see COSMIC_DATASTRUCTURE)
 %   cfg.electrode   = number of electrode (default: 'Cz')
 %   cfg.trial       = number of trial (default: 1)
-%   cfg.freqlimits  = [begin end] (default: [2 50])
-%   cfg.timelimits  = [begin end] (default: [4 116])
+%   cfg.freqlim     = [begin end] (default: [2 50])
+%   cfg.timelim     = [begin end] (default: [4 116])
 %
 % This function requires the fieldtrip toolbox
 %
@@ -25,12 +25,12 @@ function coSMIC_easyTFRplot(cfg, data)
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
-part    = ft_getopt(cfg, 'part', 'mother');
-cond    = ft_getopt(cfg, 'condition', 4);
-elec    = ft_getopt(cfg, 'electrode', 'Cz');
-trl     = ft_getopt(cfg, 'trial', 1);
-freqlim = ft_getopt(cfg, 'freqlimits', [2 50]);
-timelim = ft_getopt(cfg, 'timelimits', [4 116]);
+part      = ft_getopt(cfg, 'part', 'mother');
+condition = ft_getopt(cfg, 'condition', 11);
+elec      = ft_getopt(cfg, 'electrode', 'Cz');
+trl       = ft_getopt(cfg, 'trial', 1);
+freqlim   = ft_getopt(cfg, 'freqlim', [2 50]);
+timelim   = ft_getopt(cfg, 'timelim', [4 116]);
 
 if ~ismember(part, {'mother', 'child'})                                     % check cfg.part definition
   error('cfg.part has to either ''mother'' or ''child''.');
@@ -49,35 +49,44 @@ label     = data.label;                                                     % ge
 filepath = fileparts(mfilename('fullpath'));
 addpath(sprintf('%s/../utilities', filepath));
 
-cond    = coSMIC_checkCondition( cond );                                    % check cfg.condition definition    
-trials  = find(trialinfo == cond);
+condition    = coSMIC_checkCondition( condition );                          % check cfg.condition definition
+trials  = find(trialinfo == condition);
 if isempty(trials)
-  error('The selected dataset contains no condition %d.', cond);
+  error('The selected dataset contains no condition %d.', condition);
 else
   numTrials = length(trials);
   if numTrials < trl                                                        % check cfg.trial definition
-    error('The selected dataset contains only %d trials.', numTrials);
+    error('The selected dataset contains only %d trials in condition %d.',...
+            numTrials, condition);
   else
     trlInCond = trl;
     trl = trl-1 + trials(1);
   end
 end
 
-if isnumeric(elec)
-  if ~ismember(elec,  1:1:32)
-    error('cfg.elec hast to be a number between 1 and 32 or a existing label like ''Cz''.');
+if isnumeric(elec)                                                          % check cfg.electrode
+  for i=1:length(elec)
+    if elec(i) < 1 || elec(i) > 32
+      error('cfg.elec has to be a numbers between 1 and 32 or a existing labels like {''Cz''}.');
+    end
   end
 else
-  elec = find(strcmp(label, elec));
-  if isempty(elec)
-    error('cfg.elec hast to be a existing label like ''Cz''or a number between 1 and 32.');
+  if ischar(elec)
+    elec = {elec};
   end
+  tmpElec = zeros(1, length(elec));
+  for i=1:length(elec)
+    tmpElec(i) = find(strcmp(label, elec{i}));
+    if isempty(tmpElec(i))
+      error('cfg.elec has to be a cell array of existing labels like ''Cz''or a vector of numbers between 1 and 32.');
+    end
+  end
+  elec = tmpElec;
 end
 
 % -------------------------------------------------------------------------
 % Plot time frequency spectrum
 % -------------------------------------------------------------------------
-
 ft_warning off;
 
 cfg                 = [];                                                       
@@ -93,8 +102,9 @@ cfg.showcallinfo    = 'no';                                                 % su
 colormap jet;                                                               % use the older and more common colormap
 
 ft_singleplotTFR(cfg, data);
+labelString = strjoin(data.label(elec), ',');
 title(sprintf('Part.: %s - Cond.: %d - Elec.: %s - Trial: %d', ...
-      part, cond, strrep(data.label{elec}, '_', '\_'), trlInCond));      
+      part, condition, labelString, trlInCond));
 
 xlabel('time in sec');                                                      % set xlabel
 ylabel('frequency in Hz');                                                  % set ylabel

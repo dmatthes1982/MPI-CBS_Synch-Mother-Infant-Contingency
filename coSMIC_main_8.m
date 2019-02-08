@@ -61,9 +61,13 @@ if tfr == true
     fprintf('Load preprocessed data...\n\n');
     coSMIC_loadData( cfg );
 
+    maxtrll = max(cell2mat(cellfun(@(x) size(x,2), ...
+                  data_preproc2.child.trial, 'UniformOutput', false)));
+    tend    = ceil(maxtrll/2500)*5;
+
     cfg         = [];
     cfg.foi     = 2:1:50;                                                   % frequency of interest
-    cfg.toi     = 4:0.5:146;                                                % time of interest
+    cfg.toi     = 0:0.5:tend;                                               % time of interest
 
     data_tfr = coSMIC_timeFreqanalysis( cfg, data_preproc2 );
 
@@ -80,7 +84,7 @@ if tfr == true
     fprintf('%s ...\n', file_path);
     coSMIC_saveData(cfg, 'data_tfr', data_tfr);
     fprintf('Data stored!\n\n');
-    clear data_tfr data_preproc2
+    clear data_tfr data_preproc2 maxtrll tend
   end
 end
 

@@ -8,8 +8,8 @@ function [ data ] = coSMIC_timeFreqanalysis( cfg, data )
 % COSMIC_PREPROCESSING or COSMIC_SEGMENTATION
 %
 % The configuration options are
-%   config.foi = frequency of interest - begin:resolution:end (default: 2:1:50)
-%   config.toi = time of interest - begin:resolution:end (default: 4:0.5:146)
+%   cfg.foi = frequency of interest - begin:resolution:end (default: 2:1:50)
+%   cfg.toi = time of interest - begin:resolution:end (default: 4:0.5:146)
 %   
 % This function requires the fieldtrip toolbox.
 %
@@ -33,7 +33,7 @@ cfg.output          = 'pow';
 cfg.channel         = 'all';                                                % calculate spectrum for specified channel
 cfg.trials          = 'all';                                                % calculate spectrum for every trial  
 cfg.keeptrials      = 'yes';                                                % do not average over trials
-cfg.pad             = 'maxperlen';                                          % do not use padding
+cfg.pad             = toi(end);                                             % do keep the selected frequency resolution
 cfg.taper           = 'hanning';                                            % hanning taper the segments
 cfg.foi             = foi;                                                  % frequencies of interest
 cfg.width           = 7;                                                    % wavlet specific parameter 1 (default value)
