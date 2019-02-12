@@ -11,8 +11,7 @@ function [ cfgArtifacts ] = coSMIC_databrowser( cfg, data )
 % The configuration options are
 %   cfg.dyad        = number of dyad (no default value)
 %   cfg.part        = identifier of participant, 'mother' or 'child' (default: 'mother')
-%   cfg.threshArt   = Nx2 matrix with threshold artifact segments (default: [])
-%   cfg.manArt      = Nx2 matrix with manual artifact segments (default: [])
+%   cfg.artifact    = structure with artifact specification, e.g. output of FT_ARTIFACT_THRESHOLD (default: [])
 %   cfg.channel     = channels of interest (default: 'all')
 %   cfg.ylim        = vertical scaling (default: [-100 100]);
 %   cfg.blocksize   = duration in seconds for cutting the data up (default: [])
@@ -25,15 +24,14 @@ function [ cfgArtifacts ] = coSMIC_databrowser( cfg, data )
 % See also COSMIC_IMPORTDATASET, COSMIC_PREPROCESSING, COSMIC_SEGMENTATION, 
 % COSMIC_DATASTRUCTURE, FT_DATABROWSER
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
 % -------------------------------------------------------------------------
 dyad        = ft_getopt(cfg, 'dyad', []);
 part        = ft_getopt(cfg, 'part', 'mother');
-threshArt   = ft_getopt(cfg, 'threshArt', []);
-manArt      = ft_getopt(cfg, 'manArt', []);
+artifact    = ft_getopt(cfg, 'artifact', []);
 channel     = ft_getopt(cfg, 'channel', 'all');
 ylim        = ft_getopt(cfg, 'ylim', [-100 100]);
 blocksize   = ft_getopt(cfg, 'blocksize', []);
@@ -75,8 +73,7 @@ cfg                               = [];
 cfg.ylim                          = ylim;
 cfg.blocksize                     = blocksize;
 cfg.viewmode                      = 'vertical';
-cfg.artfctdef.threshold.artifact  = threshArt;
-cfg.artfctdef.xxx.artifact        = manArt;
+cfg.artfctdef                     = artifact;
 cfg.continuous                    = 'no';
 cfg.channel                       = channel;
 cfg.plotevents                    = plotevents;

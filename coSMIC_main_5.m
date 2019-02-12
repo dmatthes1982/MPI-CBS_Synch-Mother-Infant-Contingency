@@ -141,6 +141,23 @@ if isempty(threshold)
   end
 end
 
+% handle existing manual selected artifacts
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Do you want to load existing manual selected artifacts?\n');
+  y = input('Select [y/n]: ','s');
+  if strcmp('y', y)
+    selection = true;
+    importArt = true;
+  elseif strcmp('n', y)
+    selection = true;
+    importArt = false;
+  else
+    selection = false;
+  end
+end
+fprintf('\n');
+
 % Write selected settings to settings file
 file_path = [desPath '00_settings/' sprintf('settings_%s', sessionStr) '.xls'];
 if ~(exist(file_path, 'file') == 2)                                         % check if settings file already exist
@@ -197,15 +214,43 @@ for i = numOfPart
 
   cfg_autoart     = coSMIC_autoArtifact(cfg, data_preproc2);
   
+  % import existing manual selected artifacts
+  if importArt == true
+    cfg             = [];
+    cfg.srcFolder   = strcat(desPath, '05b_allart/');
+    cfg.filename    = sprintf('coSMIC_d%02d_05b_allart', i);
+    cfg.sessionStr  = sessionStr;
+
+    filename = strcat(cfg.srcFolder, cfg.filename, '_', cfg.sessionStr, ...
+                      '.mat');
+
+    if ~exist( filename, 'file')
+      cprintf([1,0.5,0], ['\nThere are no manual defined artifacts existing'...
+                          ' for dyad %d.\n'], i);
+    else
+      fprintf('\nImport existing manual defined artifacts...\n');
+      coSMIC_loadData( cfg );
+      cfg_autoart.mother.artfctdef.visual = cfg_allart.mother.artfctdef.visual;
+      cfg_autoart.child.artfctdef.visual = cfg_allart.child.artfctdef.visual;
+      clear cfg_allart filename
+    end
+  end
+
   % verify automatic detected artifacts / manual artifact detection
-  cfg           = [];
-  cfg.threshArt = cfg_autoart;
-  cfg.manArt    = cfg_manart;
-  cfg.dyad      = i;
+  cfg          = [];
+  cfg.artifact = cfg_autoart;
+  cfg.artifact.mother.artfctdef.xxx = cfg_manart.mother.artfctdef.xxx;
+  cfg.artifact.child.artfctdef.xxx  = cfg_manart.child.artfctdef.xxx;
+  cfg.dyad     = i;
   
   cfg_allart    = coSMIC_manArtifact(cfg, data_preproc2);
-  
+
   % export the automatic selected artifacts into a *.mat file
+  cfg_autoart.mother.artfctdef = removefields(cfg_autoart.mother.artfctdef, ...
+                                          {'visual'});
+  cfg_autoart.child.artfctdef = removefields(cfg_autoart.child.artfctdef, ...
+                                          {'visual'});
+
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05a_autoart/');
   cfg.filename    = sprintf('coSMIC_d%02d_05a_autoart', i);
@@ -219,7 +264,7 @@ for i = numOfPart
   coSMIC_saveData(cfg, 'cfg_autoart', cfg_autoart);
   fprintf('Data stored!\n');
   clear clear cfg_autoart cfg_manart data_preproc2 trl
-  
+
   % export the verified and the additional artifacts into a *.mat file
   cfg             = [];
   cfg.desFolder   = strcat(desPath, '05b_allart/');
@@ -257,4 +302,5 @@ end
 
 %% clear workspace
 clear file_path numOfSources sourceList cfg i x y selection T threshold ...
-      method winsize sliding default_threshold threshold_range identifier
+      method winsize sliding default_threshold threshold_range ...
+      identifier importArt
