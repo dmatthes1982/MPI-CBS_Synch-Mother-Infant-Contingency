@@ -130,6 +130,8 @@ for i = 1:1:length(folderList)
   fileList      = dir(tmpPath);
   fileList      = struct2cell(fileList);
   fileList      = fileList(1,~cell2mat(fileList(5,:)))';
+  tf            = ~startsWith(fileList,'.');
+  fileList      = fileList(tf); 
   fileList      = cellfun(@(x) strsplit(x, '.'), fileList, ...
                           'UniformOutput', false);
   fileList      = cat(1, fileList{:});
@@ -155,4 +157,4 @@ fprintf('\n<strong>Cloning of session %d completed. Session %d created!</strong>
 %% clear workspace
 clear folder folderList i j newSessionNum path selection sessionNum ...
       tmpPath x sessionStr file fileExt fileList homePath sessionFiles ...
-      newSessionStr
+      newSessionStr tf

@@ -141,6 +141,64 @@ if isempty(threshold)
   end
 end
 
+% channel selection (default settings)
+selection = false;
+while selection == false
+  cprintf([0,0.6,0], 'Do you want to include all channels in artifact detection?\n');
+  x = input('Select [y/n]: ','s');
+  if strcmp('y', x)
+    selection = true;
+    selChanMother    = {'all', '-V1', '-V2', '-REF', '-EOGV', '-EOGH'};
+    selChanChild  = {'all', '-V1', '-V2', '-REF', '-EOGV', '-EOGH'};
+    channelsMother   = {'all'};
+    channelsChild = {'all'};
+  elseif strcmp('n', x)
+    selection = true;
+    selChanMother    = [];
+    selChanChild  = [];
+  else
+    selection = false;
+  end
+end
+
+% channel selection (user specification)
+if isempty(selChanMother) && isempty(selChanChild)
+  cprintf([0,0.6,0], '\nAvailable channels will be determined. Please wait...\n');
+  cfg             = [];
+  cfg.srcFolder   = strcat(desPath, '04c_preproc2/');
+  cfg.filename    = sprintf('coSMIC_d%02d_04c_preproc2', numOfPart(1));
+  cfg.sessionStr  = sessionStr;
+
+  coSMIC_loadData( cfg );
+
+  label = data_preproc2.mother.label;
+  label = label(~ismember(label, {'V1', 'V2', 'REF', 'EOGV', 'EOGH'}));     % remove 'V1', 'V2', 'REF', 'EOGV' and 'EOGH'
+  clear data_preproc2
+
+  sel = listdlg('PromptString', ...                                         % open the dialog window --> the user can select the channels of interest for the mother
+              'Select channels of interest for mother...', ...
+              'ListString', label, ...
+              'ListSize', [300, 300] );
+
+  selChanMother  = label(sel);
+  channelsMother = {strjoin(selChanMother,',')};
+
+  fprintf('You have selected the following channels of the mother:\n');
+  fprintf('%s\n', channelsMother{1});
+
+  sel = listdlg('PromptString', ...                                         % open the dialog window --> the user can select the channels of interest for the child
+              'Select channels of interest for child...', ...
+              'ListString', label, ...
+              'ListSize', [300, 300] );
+
+  selChanChild  = label(sel);
+  channelsChild = {strjoin(selChanChild,',')};
+
+  fprintf('You have selected the following channels of the child:\n');
+  fprintf('%s\n', channelsChild{1});
+end
+fprintf('\n');
+
 % handle existing manual selected artifacts
 selection = false;
 while selection == false
@@ -198,8 +256,7 @@ for i = numOfPart
 
   % automatic artifact detection
   cfg             = [];
-  cfg.channel     = {'all', '-V1', '-V2', '-REF', ...
-                     '-EOGV', '-EOGH'};
+  cfg.channel     = {selChanMother, selChanChild};
   cfg.method      = method;                                                 % artifact detection method
   cfg.sliding     = sliding;                                                % use sliding window or not
   cfg.winsize     = winsize;                                                % size of sliding window
@@ -303,4 +360,5 @@ end
 %% clear workspace
 clear file_path numOfSources sourceList cfg i x y selection T threshold ...
       method winsize sliding default_threshold threshold_range ...
-      identifier importArt
+      identifier importArt sel channelsChild channelsMother label ...
+      selChanChild selChanMother

@@ -30,12 +30,12 @@ if ~ismember(part, {'mother', 'child'})                                     % ch
   error('cfg.part has to either ''mother'' or ''child''.');
 end
 
-label = cfg_autoart.label;                                                  % get labels which were used for artifact detection
-
 if strcmp(part, 'mother')
+  label = cfg_autoart.labelMother;                                          % get labels which were used for artifact detection
   badNumChan  = cfg_autoart.bad1NumChan;
   cfg_autoart = cfg_autoart.mother;
 elseif strcmp(part, 'child')
+  label = cfg_autoart.labelChild;                                           % get labels which were used for artifact detection
   badNumChan  = cfg_autoart.bad2NumChan;
   cfg_autoart = cfg_autoart.child;
 end

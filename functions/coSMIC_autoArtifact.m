@@ -11,7 +11,7 @@ function [ cfgAutoArt ] = coSMIC_autoArtifact( cfg, data )
 %
 % The configuration options are
 %   cfg.part        = participants which shall be processed: mother, child or both (default: both)
-%   cfg.channel     = cell-array with channel labels (default: {'Cz', 'O1', 'O2'}))
+%   cfg.channel     = 1x2 cell-array with channel labels for mother and child (default: {{'Cz', 'O1', 'O2'}, {'Cz', 'O1', 'O2'}}))
 %   cfg.method      = 'minmax', 'range' or 'stddev' (default: 'minmax'
 %   cfg.sliding     = use a sliding window, 'yes' or 'no', (default: 'no')
 %   cfg.winsize     = size of sliding window (default: 200 ms)
@@ -38,7 +38,7 @@ function [ cfgAutoArt ] = coSMIC_autoArtifact( cfg, data )
 % See also COSMIC_GENTRL, COSMIC_PREPROCESSING, COSMIC_SEGMENTATION, 
 % COSMIC_CONCATDATA, FT_ARTIFACT_THRESHOLD
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Load general definitions
@@ -51,7 +51,8 @@ load(sprintf('%s/../general/coSMIC_generalDefinitions.mat', filepath), ...
 % Get and check config options
 % -------------------------------------------------------------------------
 part        = ft_getopt(cfg, 'part', 'both');                               % participant selection
-chan        = ft_getopt(cfg, 'channel', {'Cz', 'O1', 'O2'});                % channels to test
+chan        = ft_getopt(cfg, 'channel', ...                                 % channels to test
+                          {{'Cz', 'O1', 'O2'},{'Cz', 'O1', 'O2'}});
 method      = ft_getopt(cfg, 'method', 'minmax');                           % artifact detection method
 sliding     = ft_getopt(cfg, 'sliding', 'no');                              % use a sliding window
 
@@ -140,7 +141,6 @@ end
 cfg = [];
 cfg.method                        = method;
 cfg.sliding                       = sliding;
-cfg.artfctdef.threshold.channel   = chan;                                   % specify channels of interest
 cfg.artfctdef.threshold.bpfilter  = 'no';                                   % use no additional bandpass
 cfg.artfctdef.threshold.bpfreq    = [];                                     % use no additional bandpass
 cfg.artfctdef.threshold.onset     = [];                                     % just defined to get a similar output from ft_artifact_threshold and artifact_threshold
@@ -192,6 +192,7 @@ ft_info off;
 
 if ismember(part, {'mother', 'both'})
   fprintf('<strong>Estimate artifacts in mother...</strong>\n');            % mother
+  cfg.artfctdef.threshold.channel   = chan{1};                              % specify channels of interest
   if strcmp(sliding, 'yes')
     cfg.artfctdef.threshold.trl = trlM;
   else
@@ -211,6 +212,10 @@ if ismember(part, {'mother', 'both'})
     artfctmap = cfgAutoArt.mother.artfctdef.threshold.artfctmap;
     artfctmap = cellfun(@(x) sum(x, 2), artfctmap, 'UniformOutput', false);
     cfgAutoArt.bad1NumChan = sum(cat(2,artfctmap{:}),2);
+
+    cfgAutoArt.labelMother = ft_channelselection(...
+                cfgAutoArt.mother.artfctdef.threshold.channel, ...
+                data.mother.label);
   end
 end
 
@@ -228,6 +233,7 @@ if ismember(part, {'child', 'both'})
   end
 
   fprintf('<strong>Estimate artifacts in child...</strong>\n');             % child
+  cfg.artfctdef.threshold.channel   = chan{2};                              % specify channels of interest
   if strcmp(sliding, 'yes')
     cfg.artfctdef.threshold.trl = trlC;
   else
@@ -248,7 +254,7 @@ if ismember(part, {'child', 'both'})
     artfctmap = cellfun(@(x) sum(x, 2), artfctmap, 'UniformOutput', false);
     cfgAutoArt.bad2NumChan = sum(cat(2,artfctmap{:}),2);
 
-    cfgAutoArt.label = ft_channelselection(...
+    cfgAutoArt.labelChild = ft_channelselection(...
                 cfgAutoArt.child.artfctdef.threshold.channel, ...
                 data.child.label);
   end
