@@ -31,7 +31,6 @@ dyad      = ft_getopt(cfg, 'dyad', []);
 % -------------------------------------------------------------------------
 cfg             = [];
 cfg.dyad        = dyad;
-cfg.channel     = {'all', '-V1', '-V2'};
 cfg.ylim        = [-100 100];
 cfgAllArt.mother = [];                                       
 cfgAllArt.child = [];
@@ -42,6 +41,7 @@ cfgAllArt.child = [];
 
 fprintf('\n<strong>Search for artifacts with mother...</strong>\n');
 cfg.part = 'mother';
+cfg.channel     = {'all', '-V1', '-V2'};
 cfg.artifact = artifact.mother.artfctdef;
 ft_warning off;
 coSMIC_easyArtfctmapPlot(cfg, artifact);                                    % plot artifact map
@@ -53,6 +53,7 @@ cfgAllArt.mother = keepfields(cfgAllArt.mother, {'artfctdef', 'showcallinfo'});
   
 fprintf('\n<strong>Search for artifacts with child...</strong>\n');
 cfg.part = 'child';
+cfg.channel     = {'all'};
 cfg.artifact = artifact.child.artfctdef;
 ft_warning off;
 coSMIC_easyArtfctmapPlot(cfg, artifact);                                    % plot artifact map
