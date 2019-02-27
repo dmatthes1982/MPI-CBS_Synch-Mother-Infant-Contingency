@@ -232,6 +232,8 @@ warning off;
 T.artMethod(numOfPart) = {method};
 T.artTholdMother(numOfPart) = threshold(1);
 T.artTholdChild(numOfPart)  = threshold(2);
+T.artChanMother(numOfPart)  = channelsMother;
+T.artChanChild(numOfPart)   = channelsChild;
 warning on;
 delete(file_path);
 writetable(T, file_path);

@@ -162,6 +162,8 @@ if pwelch == true
     fprintf('<strong>Segmentation of preprocessed data.</strong>\n');
     data_preproc2 = coSMIC_segmentation( cfg, data_preproc2 );
 
+    numOfAllSeg = coSMIC_numOfSeg( data_preproc2 );                         % estimate number of segments for each existing condition and participant
+
     fprintf('\n');
     
     % Load artifact definitions 
@@ -200,13 +202,19 @@ if pwelch == true
       
       clear cfg_allart
     end
-    
+
+    numOfGoodSeg = coSMIC_numOfSeg( data_preproc2 );                        % estimate number of remaining segments (after artifact rejection) for each existing condition and participant
+
     % Estimation of power spectrum
     cfg         = [];
     cfg.foi     = 1:1:50;                                                   % frequency of interest
       
     data_preproc2 = coSMIC_pWelch( cfg, data_preproc2 );                    % calculate power activity using Welch's method
     data_pwelch = data_preproc2;                                            % to save need of RAM
+    data_pwelch.mother.numOfAllSeg  = numOfAllSeg.mother;                   % add number of segments of each existing condition
+    data_pwelch.child.numOfAllSeg   = numOfAllSeg.child;
+    data_pwelch.mother.numOfGoodSeg = numOfGoodSeg.mother;                  % add number of clean segments of each existing condition
+    data_pwelch.child.numOfGoodSeg  = numOfGoodSeg.child;
     clear data_preproc2
     
     % export power spectrum into a *.mat file
@@ -228,4 +236,4 @@ end
 
 %% clear workspace
 clear file_path cfg sourceList numOfSources i choise tfr pwelch T ...
-      artifactRejection artifactAvailable
+      artifactRejection artifactAvailable numOfAllSeg numOfGoodSeg
