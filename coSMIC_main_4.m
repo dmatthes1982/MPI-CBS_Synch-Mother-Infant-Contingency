@@ -152,7 +152,7 @@ for i = numOfPart
   % Find EOG-like ICA Components (Correlation with EOGV and EOGH, 80 %
   % confirmity)
   cfg           = [];
-  cfg.part      = 'mother';
+  cfg.part      = 'both';
   cfg.threshold = threshold;
   
   data_eogcomp  = coSMIC_detEOGComp(cfg, data_icacomp, data_eogchan);
@@ -163,7 +163,7 @@ for i = numOfPart
   % Verify EOG-like ICA Components and add further bad components to the
   % selection
   cfg           = [];
-  cfg.part      = 'mother';
+  cfg.part      = 'both';
 
   data_eogcomp  = coSMIC_selectBadComp(cfg, data_eogcomp, data_icacomp);
   
@@ -190,8 +190,14 @@ for i = numOfPart
   else
     ICAcompMother = {strjoin(data_eogcomp.mother.elements,',')};
   end
+  if isempty(data_eogcomp.child.elements)
+    ICAcompChild = {'---'};
+  else
+    ICAcompChild = {strjoin(data_eogcomp.child.elements,',')};
+  end
   warning off;
-  T.ICAcompMother(i) = ICAcompMother;
+  T.ICAcompMother(i)  = ICAcompMother;
+  T.ICAcompChild(i)   = ICAcompChild;
   warning on;
 
   delete(settings_file);
@@ -208,7 +214,7 @@ for i = numOfPart
   
   % correct EEG signals
   cfg           = [];
-  cfg.part      = 'mother';
+  cfg.part      = 'both';
 
   data_eyecor = coSMIC_correctSignals(cfg, data_eogcomp, data_preproc1);
   
@@ -271,4 +277,4 @@ end
 
 %% clear workspace
 clear file_path cfg sourceList numOfSources i threshold selection x T ...
-      settings_file ICAcompMother reference refchannel mastoid
+      settings_file ICAcompMother ICAcompChild reference refchannel mastoid
