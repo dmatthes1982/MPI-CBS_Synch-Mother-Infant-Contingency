@@ -16,7 +16,7 @@ function [ data_eogcomp ] = coSMIC_selectBadComp( cfg, data_eogcomp, data_icacom
 %
 % This function requires the fieldtrip toolbox
 %
-% See also COSMIC_DETEOGCOMP, COSMIC_ICA and FT_DATABROWSER
+% See also COSMIC_DETEOGCOMP, COSMIC_ICA and FT_ICABROWSER
 
 % Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
