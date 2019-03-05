@@ -82,6 +82,7 @@ cfg               = [];
 cfg.rejcomp       = idx;
 cfg.blocksize     = 30;
 cfg.layout        = lay;
+cfg.zlim          = 'maxabs';
 cfg.colormap      = 'jet';
 cfg.showcallinfo  = 'no';
 
