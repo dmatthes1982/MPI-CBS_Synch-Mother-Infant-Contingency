@@ -1,9 +1,9 @@
-function [ data_mplv ] = coSMIC_mPLVoverDyads( cfg )
+function [ data_mplvod ] = coSMIC_mPLVoverDyads( cfg )
 % COSMIC_MPLVOVERDYADS estimates the mean of the phase locking values for
 % all conditions and over all dyads.
 %
 % Use as
-%   [ data_mplv ] = coSMIC_mPLVoverDyads( cfg )
+%   [ data_mplvod ] = coSMIC_mPLVoverDyads( cfg )
 %
 % The configuration options are
 %   cfg.path      = source path' (i.e. '/data/pt_01888/eegData/DualEEG_coSMIC_processedData/07b_mplv/')
@@ -15,7 +15,7 @@ function [ data_mplv ] = coSMIC_mPLVoverDyads( cfg )
 % 
 % See also COSMIC_CALCMEANPLV
 
-% Copyright (C) 2018, Daniel Matthes, MPI CBS 
+% Copyright (C) 2018-2019, Daniel Matthes, MPI CBS
 
 % -------------------------------------------------------------------------
 % Get and check config options
@@ -78,7 +78,7 @@ fprintf('\n');
 % -------------------------------------------------------------------------
 % Load and organize data
 % -------------------------------------------------------------------------
-data_mplv.avgData.trialinfo = generalDefinitions.condNum;
+data_mplvod.avgData.trialinfo = generalDefinitions.condNum;
 
 data{1, numOfDyads} = [];
 trialinfo{1, numOfDyads} = [];
@@ -88,17 +88,15 @@ for i=1:1:numOfDyads
                     fileSuffix, session);
   file = strcat(path, filename);
   fprintf('Load %s ...\n', filename);
-  load(file, sprintf('data_mplv_%s', passband));
-  eval(['data_mplv_in=' sprintf('data_mplv_%s', passband) ';']);
-  eval(['clear ' sprintf('data_mplv_%s', passband)]);
-  data{i} = data_mplv_in.dyad.mPLV;
-  trialinfo{i} = data_mplv_in.dyad.trialinfo;
+  load(file, 'data_mplv');
+  data{i} = data_mplv.dyad.mPLV;
+  trialinfo{i} = data_mplv.dyad.trialinfo;
   if i == 1
-    data_mplv.centerFreq    = data_mplv_in.centerFreq;
-    data_mplv.bpFreq        = data_mplv_in.bpFreq;
-    data_mplv.avgData.label = data_mplv_in.dyad.label;
+    data_mplvod.centerFreq    = data_mplv.centerFreq;
+    data_mplvod.bpFreq        = data_mplv.bpFreq;
+    data_mplvod.avgData.label = data_mplv.dyad.label;
   end
-  clear data_mplv_in
+  clear data_mplv
 end
 
 data = fixTrialOrder( data, trialinfo, generalDefinitions.condNumDual, ...
@@ -122,8 +120,8 @@ else
 end
 data = squeeze(num2cell(data, [1 2]))';
 
-data_mplv.avgData.mPLV  = data;
-data_mplv.dyads         = listOfDyads;
+data_mplvod.avgData.mPLV  = data;
+data_mplvod.dyads         = listOfDyads;
 
 end
 
