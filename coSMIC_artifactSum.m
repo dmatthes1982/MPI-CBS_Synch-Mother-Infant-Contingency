@@ -1,13 +1,13 @@
 % -------------------------------------------------------------------------
-% Add directory and subfolders to path
+% Add directory and subfolders to path, clear workspace, clear command
+% windwow
 % -------------------------------------------------------------------------
-clc;
 coSMIC_init;
 
 cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
 cprintf([0,0.6,0], '<strong>Synchronization in Mother Infant Contingency project</strong>\n');
 cprintf([0,0.6,0], '<strong>Export number of segments with artifacts</strong>\n');
-cprintf([0,0.6,0], 'Copyright (C) 2018, Daniel Matthes, MPI CBS\n');
+cprintf([0,0.6,0], 'Copyright (C) 2018-2019, Daniel Matthes, MPI CBS\n');
 cprintf([0,0.6,0], '<strong>----------------------------------------------------</strong>\n');
 
 % -------------------------------------------------------------------------
