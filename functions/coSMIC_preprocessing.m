@@ -62,11 +62,13 @@ cfg.showcallinfo      = 'no';                                               % pr
 
 fprintf('Filter mothers''s data (basic bandpass)...\n');
 cfg.channel = motherChan;
-data.mother  = ft_preprocessing(cfg, data.mother);
+data.mother = ft_preprocessing(cfg, data.mother);
+data.mother = removefields(data.mother, {'hdr'});
 
 fprintf('Filter child''s data (basic bandpass)...\n');
 cfg.channel = childChan;
 data.child  = ft_preprocessing(cfg, data.child);
+data.child  = removefields(data.child, {'hdr'});
 
 fprintf('Estimate EOG signals for mother...\n');
 data.mother = estimEOG(data.mother);

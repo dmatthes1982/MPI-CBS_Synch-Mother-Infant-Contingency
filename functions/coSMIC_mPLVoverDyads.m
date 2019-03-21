@@ -78,7 +78,7 @@ fprintf('\n');
 % -------------------------------------------------------------------------
 % Load and organize data
 % -------------------------------------------------------------------------
-data_mplvod.avgData.trialinfo = generalDefinitions.condNum;
+data_mplvod.avgData.trialinfo = generalDefinitions.condNumDual;
 
 data{1, numOfDyads} = [];
 trialinfo{1, numOfDyads} = [];
